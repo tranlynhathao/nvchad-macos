@@ -1,0 +1,9 @@
+lua/plugins/backup/
+lua/plugins/backup/*
+
+.env
+.stylua.toml.bck
+lazy-lock.json
+cd-project.nvim.json
+_archive.lua
+.benchmark.lua
