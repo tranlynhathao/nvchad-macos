@@ -32,7 +32,6 @@ return {
             hint = { enable = true },
             telemetry = { enable = false },
             diagnostics = { globals = { "bit", "vim", "it", "describe", "before_each", "after_each" } },
-            -- workspace libraries are set via lazydev
           },
         },
       },
@@ -46,7 +45,6 @@ return {
         end,
       },
       somesass_ls = {},
-      -- tailwindcss = {},
       taplo = {},
       vtsls = {
         settings = {
@@ -72,6 +70,16 @@ return {
       },
       yamlls = {},
       zls = {},
+      dartls = {
+        cmd = { "dart", "language-server", "--protocol=lsp" },
+        on_attach = lsp.create_on_attach(),
+        capabilities = lsp.capabilities,
+        settings = {
+          dart = {
+            analysisExcludedFolders = { "/path/to/your/excluded/folder" },
+          },
+        },
+      },
     }
 
     for name, opts in pairs(servers) do

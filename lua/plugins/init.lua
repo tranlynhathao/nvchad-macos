@@ -3,6 +3,7 @@ return {
   { import = "plugins.local.js-playground" },
   { import = "plugins.local.popurri" },
   { import = "plugins.local.yerbreak" },
+  { import = "plugins.spec.coc" },
   { import = "plugins.spec.autopairs" },
   { import = "plugins.spec.better-escape" },
   { import = "plugins.spec.ccc" },
@@ -58,6 +59,7 @@ return {
   { import = "plugins.spec.zen-mode" },
   { import = "plugins.spec.lazygit" },
   { import = "plugins.spec.markdown" },
+  { import = "plugins.spec.flutter" },
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },
@@ -72,4 +74,36 @@ return {
   { import = "plugins.override.telescope" },
   { import = "plugins.override.ui" },
   { import = "plugins.override.whichkey" },
+
+  -- plugins
+  {
+    "neoclide/coc.nvim",
+    branch = "release",
+    build = "yarn install --frozen-lockfile",
+    config = function()
+      require "plugins.local.coc"
+    end,
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "hrsh7th/cmp-cmdline",
+      "hrsh7th/cmp-nvim-lsp-signature-help",
+      "saadparwaiz1/cmp_luasnip",
+      "L3MON4D3/LuaSnip", -- For snippets
+      "rafamadriz/friendly-snippets", -- For snippets
+    },
+  },
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+  {
+    "nvim-treesitter/playground",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  },
+  {
+    "nvim-treesitter/nvim-treesitter-textobjects",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  },
+  { "nvim-treesitter/nvim-treesitter-refactor" }, -- refactoring
 }

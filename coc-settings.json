@@ -1,0 +1,21 @@
+{
+	"suggest.autoTrigger": "always",
+	"coc.preferences.formatOnSaveFiletypes": [
+		"ruby",
+		"go",
+		"rust",
+		"kotlin",
+		"dart",
+		"php",
+		"java"
+	],
+	"coc.globalExtensions": [
+		"coc-ruby",
+		"coc-go",
+		"coc-rust-analyzer",
+		"coc-kotlin",
+		"coc-dart",
+		"coc-phpls",
+		"coc-java"
+	]
+}

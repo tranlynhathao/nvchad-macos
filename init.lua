@@ -9,6 +9,8 @@ require "gale.macos"
 require "options"
 require "mappings"
 
+vim.cmd "autocmd BufWritePost *.lua source %"
+
 vim.cmd [[
 augroup StatusLineGroup
   autocmd!

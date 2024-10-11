@@ -13,6 +13,13 @@ return {
   opts = {
     formatters_by_ft = {
       -- clang should work by default
+      c = { "clangformat" },
+      cpp = { "clangformat" },
+      c_sharp = { "clangformat" },
+      cs = { "clangformat" },
+      csharp = { "dotnet-format" },
+      objc = { "clangformat" },
+      dart = { "dart_format" },
       bash = { "shfmt" },
       css = { "prettier" },
       scss = { "prettier" },
@@ -32,6 +39,18 @@ return {
       toml = { "taplo" },
       yaml = { "yamlfmt" },
       zig = { "zigfmt" },
+      ruby = { "rufo" }, -- or "standardrb"
+      elixir = { "mix" }, -- or "format"
+      erlang = { "erlfmt" },
+      rust = { "rustfmt" },
+      kotlin = { "ktlint" },
+      php = { "phpcbf" },
+      sql = { "sqlformat" },
+      svelte = { "prettier" },
+      solidity = { "prettier" },
+      java = { "google-java-format" },
+      ["javascriptnext.jsx"] = { "prettier" },
+      ["javascriptnuxt.jsx"] = { "prettier" },
     },
     format_on_save = function(bufnr)
       -- Disable with a global or buffer-local variable
