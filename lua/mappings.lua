@@ -33,6 +33,9 @@ map("i", "<ESC>k", "<ESC>:m .4<CR>==gi")
 map("v", "<ESC>j", ":move '>+7<CR>gv")
 map("v", "<ESC>k", ":move '<4<CR>gv")
 
+-- Redo
+map("n", "U", "<C-r>")
+
 -- Mapping to make text bold/italic/underline
 map("v", "<leader>b", 'c**<C-r>"**<Esc>', { desc = "Bold" })
 map("v", "<leader>i", 'c*<C-r>"*<Esc>', { desc = "Italic" })
@@ -117,7 +120,7 @@ map("n", "<Up>", 'v:count || mode(7)[0:1] == "no" ? "k" : "gk"', { expr = true }
 map("n", "<Down>", 'v:count || mode(7)[0:1] == "no" ? "j" : "gj"', { expr = true })
 
 -- Buffer motions
-map("i", "<C-b>", "<ESC>^i", { desc = "Go to beginning of line" })
+-- map("i", "<C-b>", "<ESC>^i", { desc = "Go to beginning of line" })
 map("i", "<C-e>", "<End>", { desc = "Go to end of line" })
 map("i", "<C-h>", "<Left>", { desc = "Go to left" })
 map("i", "<C-l>", "<Right>", { desc = "Go to right" })
@@ -248,9 +251,16 @@ map({ "n", "t" }, "<leader>h", function()
   }
 end, { desc = "Term toggle horizontal split in buffer location" })
 
-map({ "n", "t" }, "<C-i>", function()
-  require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
-end, { desc = "Term toggle floating" })
+map(
+  {
+    "n", --[[ "t" ]]
+  },
+  "<C-i>",
+  function()
+    require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
+  end,
+  { desc = "Term toggle floating" }
+)
 
 map({ "n", "t" }, "<A-S-i>", function()
   require("nvchad.term").toggle {
