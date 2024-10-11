@@ -61,6 +61,7 @@ return {
   { import = "plugins.spec.markdown" },
   { import = "plugins.spec.flutter" },
   { import = "plugins.spec.rust" },
+  { import = "plugins.spec.go" },
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },
@@ -107,4 +108,7 @@ return {
     dependencies = { "nvim-treesitter/nvim-treesitter" },
   },
   { "nvim-treesitter/nvim-treesitter-refactor" }, -- refactoring
+  { "vim-ruby/vim-ruby" }, -- Syntax highlighting
+  { "tpope/vim-rails" }, -- rails
+  { "tpope/vim-bundler" },
 }
