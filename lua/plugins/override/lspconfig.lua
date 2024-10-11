@@ -24,7 +24,18 @@ return {
       eslint = {},
       html = {},
       hls = {},
-      gopls = {},
+      gopls = {
+        -- config for gopls (Go)
+        settings = {
+          gopls = {
+            analyses = {
+              unusedparams = true,
+              shadow = true,
+            },
+            staticcheck = true,
+          },
+        },
+      },
       jsonls = {},
       lua_ls = {
         settings = {
@@ -40,7 +51,6 @@ return {
       pyright = {},
       ruff_lsp = {
         on_attach = function(client, _)
-          -- prefer pyright's hover provider
           client.server_capabilities.hoverProvider = false
         end,
       },
@@ -77,6 +87,33 @@ return {
         settings = {
           dart = {
             analysisExcludedFolders = { "/path/to/your/excluded/folder" },
+          },
+        },
+      },
+      rust_analyzer = {
+        settings = {
+          ["rust-analyzer"] = {
+            assist = {
+              importMergeBehavior = "last",
+              importPrefix = "by_self",
+            },
+            cargo = {
+              allFeatures = true,
+            },
+            procMacro = {
+              enable = true,
+            },
+            checkOnSave = {
+              command = "clippy",
+            },
+          },
+        },
+      },
+      -- TODO: add rust_analyzer
+      solargraph = {
+        settings = {
+          solargraph = {
+            diagnostics = true,
           },
         },
       },
