@@ -60,6 +60,7 @@ return {
   { import = "plugins.spec.lazygit" },
   { import = "plugins.spec.markdown" },
   { import = "plugins.spec.flutter" },
+  { import = "plugins.spec.rust" },
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },
