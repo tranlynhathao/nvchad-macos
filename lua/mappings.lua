@@ -325,3 +325,5 @@ end, { desc = "Go to GitHub link generated from string" })
 -- map("n", "<leader>rf", function()
 --   vim.cmd [[%s/[a-zA-Z]/\=nr8char((char2nr(submatch(0)) - (char2nr(submatch(0)) >= 97 ? 97 : 65) + 13) % 26 + (char2nr(submatch(0)) >= 97 ? 97 : 65))/g]]
 -- end, { desc = "_ Mum and dad were having fun" })
+
+map("n", "gx", [[:silent execute '!open ' . shellescape(expand('<cfile>'), 1)<CR>]], { noremap = true })

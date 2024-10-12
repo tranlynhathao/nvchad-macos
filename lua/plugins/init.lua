@@ -111,4 +111,6 @@ return {
   { "vim-ruby/vim-ruby" }, -- Syntax highlighting
   { "tpope/vim-rails" }, -- rails
   { "tpope/vim-bundler" },
+  { "tpope/vim-unimpaired" },
+  { "plasticboy/vim-markdown" },
 }
