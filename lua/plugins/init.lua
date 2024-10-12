@@ -62,6 +62,11 @@ return {
   { import = "plugins.spec.flutter" },
   { import = "plugins.spec.rust" },
   { import = "plugins.spec.go" },
+  { import = "plugins.spec.leap" },
+  { import = "plugins.spec.conda" },
+  { import = "plugins.spec.iron" },
+  { import = "plugins.spec.jupyter" },
+  { import = "plugins.spec.neoterm" },
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },
@@ -76,6 +81,8 @@ return {
   { import = "plugins.override.telescope" },
   { import = "plugins.override.ui" },
   { import = "plugins.override.whichkey" },
+  { import = "plugins.override.leetcode" },
+  { import = "plugins.override.notebookNavigator" },
 
   -- plugins
   {
