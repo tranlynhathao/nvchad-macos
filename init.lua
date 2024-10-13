@@ -8,6 +8,7 @@ require "gale.aliases"
 require "gale.macos"
 require "options"
 require "mappings"
+require "configs.keymaps"
 
 vim.cmd "autocmd BufWritePost *.lua source %"
 
@@ -33,3 +34,20 @@ vim.api.nvim_create_user_command("Lazygit", function()
 end, {})
 
 vim.opt.clipboard = "unnamedplus"
+
+vim.g.slime_target = "neovim"
+vim.api.nvim_set_keymap("v", "<C-c>", "<Plug>SlimeSend", { noremap = true, silent = true })
+
+-- Lua configuration for telescope to open markdown links
+function OpenMarkdownLink()
+  local line = vim.api.nvim_get_current_line()
+  local path = string.match(line, "%]%((.-)%)")
+
+  if path then
+    vim.cmd("edit " .. path)
+  else
+    print "No markdown link found on this line"
+  end
+end
+
+vim.api.nvim_set_keymap("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true })

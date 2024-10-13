@@ -8,9 +8,15 @@ return {
           python = {
             command = { "ipython", "jupyter", "console", "--simple-prompt" },
           },
+          quarto = {
+            command = { "quarto", "repl", "R", "-e", "IRkernel::main()", "--slave" },
+          },
           -- other languages here
         },
-        repl_open_cmd = "rightbelow", -- or "split", "vsplit", "botright split"
+        repl_open_cmd = "rightbelow vnew", -- or "split", "vsplit", "botright split"
+        scratch_repl = true,
+        always_show_repl = true,
+        always_open = true,
       },
       keymaps = {
         send_motion = "<leader>sc", -- send current line

@@ -85,7 +85,9 @@ return {
   { import = "plugins.override.notebookNavigator" },
   { import = "plugins.override.workspace" },
   { import = "plugins.override.quarto" },
+  -- { import = "plugins.override.vim-slime" },
 
+  -- plugins (local)
   -- plugins
   {
     "neoclide/coc.nvim",
@@ -122,4 +124,5 @@ return {
   { "tpope/vim-bundler" },
   { "tpope/vim-unimpaired" },
   { "plasticboy/vim-markdown" },
+  { "jpalardy/vim-slime", lazy = false },
 }
