@@ -5,11 +5,11 @@ local map = utils.glb_map
 -- Naviagtion word
 -- w: move to next word
 -- b: move to previous word
--- e: move to next end of word
 -- ge: move to previous end of word
 
 -- Movement
 -- h: move to left
+-- e: move to next end of word
 -- j: move down
 -- k: move up
 -- l: move to right

@@ -83,6 +83,8 @@ return {
   { import = "plugins.override.whichkey" },
   { import = "plugins.override.leetcode" },
   { import = "plugins.override.notebookNavigator" },
+  { import = "plugins.override.workspace" },
+  { import = "plugins.override.quarto" },
 
   -- plugins
   {
