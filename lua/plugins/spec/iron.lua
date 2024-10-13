@@ -6,11 +6,11 @@ return {
       config = {
         repl_definition = {
           python = {
-            command = { "ipython" },
+            command = { "ipython", "jupyter", "console", "--simple-prompt" },
           },
           -- other languages here
         },
-        repl_open_cmd = "vsplit",
+        repl_open_cmd = "rightbelow", -- or "split", "vsplit", "botright split"
       },
       keymaps = {
         send_motion = "<leader>sc", -- send current line
