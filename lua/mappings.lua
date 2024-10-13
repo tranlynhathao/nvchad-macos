@@ -5,11 +5,11 @@ local map = utils.glb_map
 -- Naviagtion word
 -- w: move to next word
 -- b: move to previous word
+-- e: move to next end of word
 -- ge: move to previous end of word
 
 -- Movement
 -- h: move to left
--- e: move to next end of word
 -- j: move down
 -- k: move up
 -- l: move to right
@@ -227,9 +227,9 @@ end, { desc = "Open NvChad menu" })
 -- Term
 map("t", "<C-x>", "<C-\\><C-N>", { desc = "Term escape terminal mode" })
 
-map({ "n", "t" }, "<A-v>", function()
-  require("nvchad.term").toggle { pos = "vsp", id = "vtoggleTerm" }
-end, { desc = "Term toggle vertical split" })
+-- map({ "n", "t" }, "<A-v>", function()
+--   require("nvchad.term").toggle { pos = "vsp", id = "vtoggleTerm" }
+-- end, { desc = "Term toggle vertical split" })
 
 map({ "n", "t" }, "<leader>v", function()
   require("nvchad.term").toggle {
@@ -239,9 +239,9 @@ map({ "n", "t" }, "<leader>v", function()
   }
 end, { desc = "Term toggle vertical split in buffer location" })
 
-map({ "n", "t" }, "<A-h>", function()
-  require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" }
-end, { desc = "Term toggle horizontal split" })
+-- map({ "n", "t" }, "<A-h>", function()
+--   require("nvchad.term").toggle { pos = "sp", id = "htoggleTerm" }
+-- end, { desc = "Term toggle horizontal split" })
 
 map({ "n", "t" }, "<leader>h", function()
   require("nvchad.term").toggle {
