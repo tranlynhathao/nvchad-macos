@@ -3,7 +3,7 @@ return {
   "laytan/cloak.nvim",
   lazy = false,
   init = function()
-    vim.keymap.set("n", "<leader><F10>", "<cmd>CloakToggle<CR>", { desc = "Toggle Cloak" })
+    vim.keymap.set("n", "<leader>ct", "<cmd>CloakToggle<CR>", { desc = "Toggle Cloak" })
   end,
   opts = function(_, opts)
     opts = vim.tbl_deep_extend("force", opts, {
