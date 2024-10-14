@@ -253,9 +253,10 @@ end, { desc = "Term toggle horizontal split in buffer location" })
 
 map(
   {
-    "n", --[[ "t" ]]
+    "n",
+    "t",
   },
-  "<C-i>",
+  "<leader>f",
   function()
     require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
   end,
