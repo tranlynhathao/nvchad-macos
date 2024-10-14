@@ -1,6 +1,6 @@
 # NvChad Neovim configuration
 
-<p align="center"><img with=80% src="https://i.imgur.com/UlaUGNg.png"></p>
+<p align="center"><img width=80% src="https://i.imgur.com/UlaUGNg.png"></p>
 <hr>
 
 ### Features
