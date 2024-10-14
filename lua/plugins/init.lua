@@ -67,6 +67,7 @@ return {
   { import = "plugins.spec.iron" },
   { import = "plugins.spec.jupyter" },
   { import = "plugins.spec.neoterm" },
+  { import = "plugins.spec.pug" },
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },
