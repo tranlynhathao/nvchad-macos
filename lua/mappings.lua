@@ -76,12 +76,15 @@ map("n", "<leader>lg", ":LazyGit<CR>", { desc = "Open Lazygit" })
 map("n", "z-", "z^") -- Remap z^ into z- for convenience
 map("n", "g-", "g;") -- Remap g; into g- for convenience
 map("n", ";", ":", { desc = "General enter CMD mode" })
+
 map("i", "jk", "<ESC>", { desc = "General exit insert mode" })
+
 map({ "n", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "General save file" })
 map("n", "<C-c>", "<cmd>%y+<CR>", { desc = "General copy file content" })
 map("n", "<Esc>", "<cmd>noh<CR>", { desc = "General clear search highlights" })
 map("n", "<leader>cs", "<cmd><CR>", { desc = "General clear statusline" })
 map("n", "<leader><F10>", "<cmd>stop<CR>", { desc = "Genaral stop NVIM" })
+
 map("n", "<leader>cm", "<cmd>mes clear<CR>", { desc = "General clear messages" })
 -- https://github.com/neovim/neovim/issues/2054
 map("i", "<A-BS>", "<C-w>", { desc = "General remove word" })
