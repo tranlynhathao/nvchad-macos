@@ -1,4 +1,4 @@
---[[ ---@type NvPluginSpec
+---@type NvPluginSpec
 return {
   "jpalardy/vim-slime",
   -- keys = {
@@ -22,4 +22,4 @@ return {
       target_pane = "{last}",
     }
   end,
-} ]]
+}
