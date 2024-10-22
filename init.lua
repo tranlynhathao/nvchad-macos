@@ -50,4 +50,5 @@ function OpenMarkdownLink()
   end
 end
 
+-- Open markdown link in neovim
 vim.api.nvim_set_keymap("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true })
