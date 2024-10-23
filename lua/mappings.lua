@@ -26,14 +26,14 @@ map("n", "<C-z>", "<C-d>zz")
 map("n", "<C-p>", "<C-u>zz")
 
 -- Move line up and down
-map("n", "<ESC>j", ":m .+7<CR>==")
-map("n", "<ESC>k", ":m .4<CR>==")
-map("i", "<ESC>j", "<ESC>:m .+7<CR>==gi")
-map("i", "<ESC>k", "<ESC>:m .4<CR>==gi")
+map("n", "<ESC>j", ":m .+1<CR>==")
+map("n", "<ESC>k", ":m .-2<CR>==")
+map("i", "<ESC>j", "<ESC>:m .+1<CR>==gi")
+map("i", "<ESC>k", "<ESC>:m .-2<CR>==gi")
 
 -- Move section up and down
-map("v", "<ESC>j", ":move '>+7<CR>gv")
-map("v", "<ESC>k", ":move '<4<CR>gv")
+map("v", "<ESC>j", ":move '>+1<CR>gv")
+map("v", "<ESC>k", ":move '<-2<CR>gv")
 
 -- Redo
 map("n", "U", "<C-r>")
@@ -106,6 +106,10 @@ map("v", "d", '"6d', { desc = "Delete selection" })
 map("n", "cc", '"6cc', { desc = "Change line" })
 map("v", "c", '"6c', { desc = "Change selection" })
 
+-- Use register `"0` for default yank register
+map("v", "d", '"_d"0p', { desc = "Delete selection and store in default yank register" })
+map("n", "dd", '"_dd"0p', { desc = "Delete line and store in default yank register" })
+
 -- Yank/Paste/Delete/Cut improvements for clipboard
 map({ "n", "v" }, "<C-y>", '"+ygv<Esc>', { desc = "Yank selection into system clipboard" })
 map("n", "<c-y>", '"+y$', { desc = "yank up to eol into system clipboard" })
@@ -117,6 +121,8 @@ map("n", "<C-D>", "dd", { desc = "Delete line (x register)" })
 map("v", "<C-d>", "d", { desc = "Delete selection (x register)" })
 map("n", "<C-C>", "cc", { desc = "Change line (x register)" })
 map("v", "<C-c>", "c", { desc = "Change selection (x register)" })
+
+map("v", "d", '"6d', { desc = "Delete selection and store in register 6" })
 
 -- Allow moving the cursor through wrapped lines with j, k, <Up> and <Down>
 map("n", "j", 'v:count || mode(7)[0:1] == "no" ? "j" : "gj"', { expr = true })
