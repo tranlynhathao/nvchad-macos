@@ -101,14 +101,14 @@ map({ "n", "v" }, "yy", '"6yy', { desc = "Yank line" })
 map({ "n", "v" }, "p", '"6p', { desc = "Paste below" })
 map({ "n", "v" }, "P", '"6P', { desc = "Paste above" })
 map("n", "x", '"6x', { desc = "Delete character" })
-map("n", "dd", '"6dd', { desc = "Delete line" })
-map("v", "d", '"6d', { desc = "Delete selection" })
+-- map("n", "dd", '"6dd', { desc = "Delete line" })
+-- map("v", "d", '"6d', { desc = "Delete selection" })
 map("n", "cc", '"6cc', { desc = "Change line" })
 map("v", "c", '"6c', { desc = "Change selection" })
 
 -- Use register `"0` for default yank register
 map("v", "d", '"_d"0p', { desc = "Delete selection and store in default yank register" })
-map("n", "dd", '"_dd"0p', { desc = "Delete line and store in default yank register" })
+-- map("n", "dd", '"_dd"0p', { desc = "Delete line and store in default yank register" })
 
 -- Yank/Paste/Delete/Cut improvements for clipboard
 map({ "n", "v" }, "<C-y>", '"+ygv<Esc>', { desc = "Yank selection into system clipboard" })
