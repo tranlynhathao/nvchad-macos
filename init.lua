@@ -52,3 +52,25 @@ end
 
 -- Open markdown link in neovim
 vim.api.nvim_set_keymap("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true })
+
+-- Toggle wrap for long lines
+function ToggleWrap()
+  if vim.bo.filetype == "markdown" then
+    if vim.wo.wrap then
+      vim.wo.wrap = false
+      vim.wo.linebreak = false
+      vim.wo.breakindent = false
+      print "Markdown Wrap OFF"
+    else
+      vim.wo.wrap = true
+      vim.wo.linebreak = true
+      vim.wo.breakindent = true
+      vim.wo.showbreak = "↪ "
+      print "Markdown Wrap ON"
+    end
+  else
+    print "Not a markdown file"
+  end
+end
+
+vim.api.nvim_set_keymap("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true })
