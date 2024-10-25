@@ -6,7 +6,8 @@ local map = utils.glb_map
 -- w: move to next word
 -- b: move to previous word
 -- e: move to next end of word
--- ge: move to previous end of word
+-- ge or E: move to previous end of word
+map("n", "E", "ge")
 
 -- Movement
 -- h: move to left
