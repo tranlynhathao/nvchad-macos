@@ -3,25 +3,25 @@
 <p align="center"><img width=80% src="https://i.imgur.com/UlaUGNg.png"></p>
 <hr>
 
-### Features
+### features
 
-- Features [NvChad v2.5](https://nvchad.com/news/v2.5_release)
-- Target OS: WSL2/Linux/macOS
-- Modularised setup of plugins and configurations
-- Scripting with Bash, Lua and Toml as smooth as it gets
-- Web development with JS/TS, React and Astro **fully covered**
-- Development with Rust, C and Go
-- Git integrated using [Neogit](https://github.com/NeogitOrg/neogit),
-  [Gitsigns](https://github.com/lewis6991/gitsigns.nvim),
-  [DiffView](https://github.com/sindrets/diffview.nvim),
-  [Telescope](https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#git-pickers)
-  and [VimFugitive](https://github.com/tpope/vim-fugitive)
-- [Markdown Preview](https://github.com/iamcco/markdown-preview.nvim) with live
+- features [nvchad v2.5](https://nvchad.com/news/v2.5_release)
+- target os: wsl2/linux/macos
+- modularised setup of plugins and configurations
+- scripting with bash, lua and toml as smooth as it gets
+- web development with js/ts, react and astro **fully covered**
+- development with rust, c and go
+- git integrated using [neogit](https://github.com/neogitorg/neogit),
+  [gitsigns](https://github.com/lewis6991/gitsigns.nvim),
+  [diffview](https://github.com/sindrets/diffview.nvim),
+  [telescope](https://github.com/nvim-telescope/telescope.nvim?tab=readme-ov-file#git-pickers)
+  and [vimfugitive](https://github.com/tpope/vim-fugitive)
+- [markdown preview](https://github.com/iamcco/markdown-preview.nvim) with live
   changes in browser
-- Round borders as a priority over sharp borders
+- round borders as a priority over sharp borders
 
-<!-- >[!TIP] -->
-<!-- > Pair with <a href="https://github.com/mgastonportillo/wezterm-config"> my -->
+<!-- >[!tip] -->
+<!-- > pair with <a href="https://github.com/mgastonportillo/wezterm-config"> my -->
 <!-- > Wezterm configuration</a> for a smoother experience -->
 <!---->
 <!-- >[!WARNING] > **Disclaimer**: I frequently use `git rebase -i` to streamline my -->
