@@ -1,3 +1,5 @@
+vim.g.maplocalleader = ","
+
 ---@type NvPluginSpec
 return {
   "stevearc/oil.nvim",
@@ -140,7 +142,7 @@ return {
       },
     }
 
-    map("n", "<C-n>", function()
+    map("n", "<localleader><localleader>", function()
       toggle_oil()
     end, { desc = "Open Oil" })
 

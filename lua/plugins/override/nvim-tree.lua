@@ -4,7 +4,7 @@ return {
   enabled = true, -- disable by default
   auto_close = false,
   init = function()
-    vim.keymap.set("n", "<C-n>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
+    vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
   end,
   config = function()
     dofile(vim.g.base46_cache .. "nvimtree")
