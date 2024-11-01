@@ -1,6 +1,9 @@
 ---@type NvPluginSpec
 return {
   "rcarriga/nvim-notify",
+  opts = {
+    timeout = 100,
+  },
   lazy = false,
   config = function()
     dofile(vim.g.base46_cache .. "notify")
