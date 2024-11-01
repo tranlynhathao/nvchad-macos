@@ -72,6 +72,7 @@ return {
   -- { import = "plugins.spec.neoscroll" },
   { import = "plugins.spec.smoothie" },
   { import = "plugins.spec.surround" },
+  { import = "plugins.spec.noice" },
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },

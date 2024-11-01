@@ -1,3 +1,5 @@
+-- ~/.config/nvim/init.lua
+-- require module
 require "gale.globals"
 require "bootstrap"
 require "gale.usercmds"
@@ -9,6 +11,7 @@ require "gale.macos"
 require "options"
 require "mappings"
 require "configs.keymaps"
+-- end require
 
 vim.cmd "autocmd BufWritePost *.lua source %"
 
@@ -33,8 +36,10 @@ vim.api.nvim_create_user_command("Lazygit", function()
   require("lazygit").lazygit()
 end, {})
 
+-- clipboard
 vim.opt.clipboard = "unnamedplus"
 
+-- slime config
 vim.g.slime_target = "neovim"
 vim.api.nvim_set_keymap("v", "<C-c>", "<Plug>SlimeSend", { noremap = true, silent = true })
 
@@ -73,6 +78,17 @@ function ToggleWrap()
   end
 end
 
+-- wrap markdown
 vim.api.nvim_set_keymap("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true })
+
+-- notify config
+local original_notify = vim.notify
+
+vim.notify = function(msg, level, opts)
+  if msg:match "Re-sourcing your config is not supported with lazy.nvim" then
+    return
+  end
+  original_notify(msg, level, opts)
+end
 
 vim.opt.updatetime = 200
