@@ -74,3 +74,5 @@ function ToggleWrap()
 end
 
 vim.api.nvim_set_keymap("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true })
+
+vim.opt.updatetime = 200
