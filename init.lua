@@ -13,7 +13,12 @@ require "mappings"
 require "configs.keymaps"
 -- end require
 
-vim.cmd "autocmd BufWritePost *.lua source %"
+vim.cmd [[
+augroup LuaAutoSource
+  autocmd!
+  autocmd BufWritePost *.lua luafile %
+augroup END
+]]
 
 vim.cmd [[
 augroup StatusLineGroup
@@ -88,7 +93,11 @@ vim.notify = function(msg, level, opts)
   if msg:match "Re-sourcing your config is not supported with lazy.nvim" then
     return
   end
-  original_notify(msg, level, opts)
+  if original_notify then
+    original_notify(msg, level, opts)
+  else
+    print("Notify triggered:", msg)
+  end
 end
 
-vim.opt.updatetime = 200
+vim.opt.updatetime = 500
