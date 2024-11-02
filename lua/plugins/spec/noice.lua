@@ -17,7 +17,45 @@ return {
         command_palette = true,
         long_message_to_split = false,
       },
+      routes = {
+        {
+          filter = {
+            event = "msg_show",
+            find = "pattern to filter",
+          },
+          opts = { skip = true },
+          view = "mini",
+        },
+      },
       -- routes = {
+      --   {
+      --     filter = {
+      --       event = "msg_show",
+      --       kind = "warning",
+      --     },
+      --     view = "popup", -- Display warning in popup window
+      --   },
+      --   {
+      --     filter = {
+      --       event = "msg_show",
+      --       min_height = 2,
+      --     },
+      --     view = "split", -- Display long message in split window
+      --   },
+      --   {
+      --     filter = {
+      --       event = "msg_show",
+      --       kind = "error",
+      --     },
+      --     view = "notify", -- Display error with notify
+      --   },
+      --   {
+      --     filter = {
+      --       event = "lsp",
+      --       kind = "hover",
+      --     },
+      --     view = "hover", -- Hover view for LSP hover
+      --   },
       --   {
       --     filter = {
       --       event = "msg_show",
@@ -27,44 +65,6 @@ return {
       --     view = "mini",
       --   },
       -- },
-      routes = {
-        {
-          filter = {
-            event = "msg_show",
-            kind = "warning",
-          },
-          view = "popup", -- Hiển thị cảnh báo trong cửa sổ popup
-        },
-        {
-          filter = {
-            event = "msg_show",
-            min_height = 2,
-          },
-          view = "split", -- Hiển thị các thông báo dài trong split window
-        },
-        {
-          filter = {
-            event = "msg_show",
-            kind = "error",
-          },
-          view = "notify", -- Hiển thị lỗi dưới dạng notify
-        },
-        {
-          filter = {
-            event = "lsp",
-            kind = "hover",
-          },
-          view = "hover", -- Dùng hover view cho LSP hover
-        },
-        {
-          filter = {
-            event = "msg_show",
-            find = "pattern to filter",
-          },
-          opts = { skip = true },
-          view = "mini", -- Bỏ qua hoặc hiển thị ngắn gọn các thông báo không cần thiết
-        },
-      },
 
       background_colour = "#1e1e1e",
       notify = {
