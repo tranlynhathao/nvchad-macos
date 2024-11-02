@@ -1,7 +1,10 @@
 ---@type NvPluginSpec
 return {
   "numToStr/Comment.nvim",
-  dependencies = "JoosepAlviste/nvim-ts-context-commentstring",
+  dependencies = {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    "nvim-treesitter/nvim-treesitter",
+  },
   init = function()
     local map = vim.keymap.set
     local api = require "Comment.api"
@@ -25,7 +28,20 @@ return {
   config = function(_, opts)
     local comment = require "Comment"
     local ts_addon = require "ts_context_commentstring.integrations.comment_nvim"
-    opts.pre_hook = ts_addon.create_pre_hook()
+    opts.pre_hook = function(ctx)
+      vim.api.nvim_echo({ { vim.inspect(ctx), "Normal" } }, false, {})
+      vim.api.nvim_echo({ { vim.inspect(require("Comment.ft").ctype), "Normal" } }, false, {})
+      if vim.bo.filetype == "pug" then
+        if ctx.ctype == require("Comment.ft").ctype.line then
+          return "// %s"
+        else
+          return "//- %s"
+        end
+      end
+
+      local ts_pre_hook = ts_addon.create_pre_hook()
+      return ts_pre_hook and ts_pre_hook(ctx) or ""
+    end
     comment.setup(opts)
   end,
 }

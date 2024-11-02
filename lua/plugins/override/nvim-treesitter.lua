@@ -24,6 +24,7 @@ return {
       "markdown_inline",
       "ocaml",
       "rust",
+      "pug",
       "scheme",
       "scss",
       "toml",
