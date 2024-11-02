@@ -5,11 +5,12 @@ local M = {}
 
 local modules = require("gale.chadrc_aux").modules
 local themes_customs = require("gale.chadrc_aux").themes_customs
+vim.opt.termguicolors = true
 
 M.base46 = {
-  transparency = true,
-  theme = "gruvbox", ---@diagnostic disable-line -- TODO: remove kanagawa
-  theme_toggle = { "gruvbox", "gruvbox" }, ---@diagnostic disable-line --TODO remove kanagawa
+  transparency = false,
+  theme = "solarized_osaka", ---@diagnostic disable-line -- TODO: remove kanagawa
+  theme_toggle = { "solarized_osaka", "solarized_osaka" }, ---@diagnostic disable-line --TODO remove kanagawa
   integrations = {
     "blankline",
     "cmp",
