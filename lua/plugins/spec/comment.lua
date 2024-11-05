@@ -39,7 +39,7 @@ return {
     local ts_addon = require "ts_context_commentstring.integrations.comment_nvim"
 
     opts.pre_hook = function(ctx)
-      vim.api.nvim_echo({ { vim.inspect(ctx), "Normal" } }, false, {})
+      -- vim.api.nvim_echo({ { vim.inspect(ctx), "Normal" } }, false, {})
       if vim.bo.filetype == "pug" then
         if ctx.ctype == require("Comment.ft").ctype.line then
           return "// %s"
