@@ -92,4 +92,5 @@ return {
   { import = "plugins.override.vim-slime" },
   { import = "plugins.override.whichkey" },
   { import = "plugins.override.workspace" },
+  { import = "plugins.override.devicons" },
 }
