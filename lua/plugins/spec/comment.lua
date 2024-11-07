@@ -26,6 +26,11 @@ return {
       end
     end, { desc = "Comment toggle for Pug files" })
 
+    -- comment for normalfile
+    -- map("n", "<leader>/", function()
+    --   api.toggle.linewise.current()
+    -- end, { desc = "Comment toggle" })
+
     map(
       "x",
       "<leader>/",
@@ -38,21 +43,21 @@ return {
     local comment = require "Comment"
     local ts_addon = require "ts_context_commentstring.integrations.comment_nvim"
 
-    opts.pre_hook = function(ctx)
-      -- vim.api.nvim_echo({ { vim.inspect(ctx), "Normal" } }, false, {})
-      if vim.bo.filetype == "pug" then
-        if ctx.ctype == require("Comment.ft").ctype.line then
-          return "// %s"
-        elseif ctx.ctype == require("Comment.ft").ctype.block then
-          return "//- %s"
-        else
-          return "// %s"
-        end
-      end
-
-      local ts_pre_hook = ts_addon.create_pre_hook()
-      return ts_pre_hook and ts_pre_hook(ctx) or ""
-    end
+    -- opts.pre_hook = function(ctx)
+    --   -- vim.api.nvim_echo({ { vim.inspect(ctx), "Normal" } }, false, {})
+    --   if vim.bo.filetype == "pug" then
+    --     if ctx.ctype == require("Comment.ft").ctype.line then
+    --       return "// %s"
+    --     elseif ctx.ctype == require("Comment.ft").ctype.block then
+    --       return "//- %s"
+    --     else
+    --       return "// %s"
+    --     end
+    --   end
+    --
+    --   local ts_pre_hook = ts_addon.create_pre_hook()
+    --   return ts_pre_hook and ts_pre_hook(ctx) or ""
+    -- end
 
     comment.setup(opts)
   end,
