@@ -20,6 +20,18 @@ return {
           color = "#FA9E59",
           name = "Vitest",
         },
+        pug = {
+          icon = "", -- 謹
+          color = "#a86454",
+          cterm_color = "65",
+          name = "Pug",
+        },
+        rb = {
+          icon = "",
+          color = "#f50707",
+          cterm_color = "167",
+          name = "Ruby",
+        },
       },
       color_icons = true,
       default = true,
