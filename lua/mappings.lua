@@ -18,6 +18,12 @@ map("n", "E", "ge")
 map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })
 
+-- Resize window
+map("n", "<C-w><left>", "<C-w><")
+map("n", "<C-w><right>", "<C-w>>")
+map("n", "<C-w><up>", "<C-w>+")
+map("n", "<C-w><down>", "<C-w>-")
+
 -- Select all
 -- map("n", "<C-a>", "<cmd>normal! ggVG<CR>", { desc = "Select all" })
 map("n", "<C-a>", "gg<S-v>G", { desc = "Select all" })
@@ -248,6 +254,7 @@ map({ "n", "t" }, "<leader>v", function()
     pos = "vsp",
     id = "vtoggleTermLoc",
     cmd = "cd " .. vim.fn.expand "%:p:h",
+    size = 0.5, -- Adjust width for vertical split
   }
 end, { desc = "Term toggle vertical split in buffer location" })
 
@@ -260,6 +267,7 @@ map({ "n", "t" }, "<leader>h", function()
     pos = "sp",
     id = "htoggleTermLoc",
     cmd = "cd " .. vim.fn.expand "%:p:h",
+    size = 0.2, -- Adjust height for horizontal split
   }
 end, { desc = "Term toggle horizontal split in buffer location" })
 
