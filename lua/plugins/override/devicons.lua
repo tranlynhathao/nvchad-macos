@@ -32,6 +32,18 @@ return {
           cterm_color = "167",
           name = "Ruby",
         },
+        Makefile = {
+          icon = "",
+          color = "#6d8086",
+          cterm_color = "66",
+          name = "Makefile",
+        },
+        ["rockspec"] = {
+          icon = "",
+          color = "#a074c4",
+          cterm_color = "140",
+          name = "Rockspec",
+        },
       },
       color_icons = true,
       default = true,
