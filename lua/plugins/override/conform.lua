@@ -31,7 +31,7 @@ return {
       json = { "biome" },
       markdown = { "markdownlint" },
       ocaml = { "ocamlformat" },
-      python = { "ruff_format" },
+      python = { "ruff" },
       typescript = { "prettier" },
       typescriptreact = { "prettier" },
       vue = { "prettier" },

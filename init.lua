@@ -13,12 +13,12 @@ require "mappings"
 require "configs.keymaps"
 -- end require
 
-vim.cmd [[
-augroup LuaAutoSource
-  autocmd!
-  autocmd BufWritePost *.lua luafile %
-augroup END
-]]
+-- vim.cmd [[
+-- augroup LuaAutoSource
+--   autocmd!
+--   autocmd BufWritePost *.lua luafile %
+-- augroup END
+-- ]]
 
 vim.cmd [[
 augroup StatusLineGroup
@@ -101,3 +101,11 @@ vim.notify = function(msg, level, opts)
 end
 
 vim.opt.updatetime = 500
+
+-- update statusline when switching via buffers
+-- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+--   pattern = "*",
+--   callback = function()
+--     vim.api.nvim_exec("redrawstatus!", false)
+--   end,
+-- })
