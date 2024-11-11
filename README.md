@@ -1,3 +1,8 @@
+# NvChad Neovim configuration
+
+<p align="center"><img width=80% src="https://i.imgur.com/UlaUGNg.png"></p>
+<hr>
+
 <!-- toc -->
 
 - [NvChad Neovim configuration](#nvchad-neovim-configuration)
@@ -6,11 +11,6 @@
   - [Unfinished](#unfinished)
 
 <!-- tocstop -->
-
-# NvChad Neovim configuration
-
-<p align="center"><img width=80% src="https://i.imgur.com/UlaUGNg.png"></p>
-<hr>
 
 ### Features
 
