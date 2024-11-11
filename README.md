@@ -1,9 +1,18 @@
+<!-- toc -->
+
+- [NvChad Neovim configuration](#nvchad-neovim-configuration)
+  - [Features](#features)
+  - [Dependencies](#dependencies)
+  - [Unfinished](#unfinished)
+
+<!-- tocstop -->
+
 # NvChad Neovim configuration
 
 <p align="center"><img width=80% src="https://i.imgur.com/UlaUGNg.png"></p>
 <hr>
 
-### features
+### Features
 
 - features [nvchad v2.5](https://nvchad.com/news/v2.5_release)
 - target os: wsl2/linux/macos
