@@ -44,6 +44,16 @@ return {
           cterm_color = "140",
           name = "Rockspec",
         },
+        ["vitest.config.js"] = {
+          icon = "ﭧ",
+          color = "#cbcb41",
+          name = "VitestJS",
+        },
+        ["vitest.ts"] = {
+          icon = "ﭧ", -- 텦termicons
+          color = "#FA9E59",
+          name = "VitestTS",
+        },
       },
       color_icons = true,
       default = true,

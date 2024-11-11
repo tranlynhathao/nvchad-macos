@@ -8,6 +8,8 @@ require "gale.aliases"
 -- require "gale.wsl"
 -- require "gale.linux"
 require "gale.macos"
+require "gale.vim"
+require "gale.filetypes"
 require "options"
 require "mappings"
 require "configs.keymaps"
@@ -106,6 +108,6 @@ vim.opt.updatetime = 500
 -- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 --   pattern = "*",
 --   callback = function()
---     vim.api.nvim_exec("redrawstatus!", false)
+--     vim.cmd "redrawstatus"
 --   end,
 -- })
