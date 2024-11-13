@@ -15,12 +15,12 @@ require "mappings"
 require "configs.keymaps"
 -- end require
 
--- vim.cmd [[
--- augroup LuaAutoSource
---   autocmd!
---   autocmd BufWritePost *.lua luafile %
--- augroup END
--- ]]
+vim.cmd [[
+augroup LuaAutoSource
+  autocmd!
+  autocmd BufWritePost *.lua luafile %
+augroup END
+]]
 
 vim.cmd [[
 augroup StatusLineGroup
@@ -111,3 +111,13 @@ vim.opt.updatetime = 500
 --     vim.cmd "redrawstatus"
 --   end,
 -- })
+
+vim.g.slime_target = "tmux" -- Or "neovim" if you want to send 1 shell-terminal inside neovim
+vim.g.slime_bracketed_paste = 1
+
+vim.api.nvim_create_autocmd("BufWritePost", {
+  pattern = "*.lua",
+  callback = function()
+    vim.cmd "luafile %"
+  end,
+})
