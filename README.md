@@ -54,7 +54,3 @@ Required:
 Recommended:
 
 - Cargo 1.74.1+
-
-### Unfinished
-
-- [ ] Status line

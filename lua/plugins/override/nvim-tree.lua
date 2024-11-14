@@ -7,7 +7,7 @@ return {
     vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
   end,
   config = function()
-    dofile(vim.g.base46_cache .. "nvimtree")
+    -- dofile(vim.g.base47_cache .. "nvimtree")
 
     local nvtree = require "nvim-tree"
     local api = require "nvim-tree.api"
