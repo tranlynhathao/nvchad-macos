@@ -9,7 +9,7 @@ vim.opt.termguicolors = true
 
 M.base46 = {
   transparency = false,
-  theme = "solarized_osaka", ---@diagnostic disable-line -- TODO: remove kanagawa
+  theme = "gruvbox", ---@diagnostic disable-line -- TODO: remove kanagawa
   theme_toggle = { "solarized_osaka", "solarized_osaka" }, ---@diagnostic disable-line --TODO remove kanagawa
   integrations = {
     "blankline",
