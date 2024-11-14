@@ -1,6 +1,9 @@
 # NvChad Neovim configuration
 
-<p align="center"><img width=80% src="https://i.imgur.com/UlaUGNg.png"></p>
+<p align="center">
+  <img width="45%" src="https://imgur.com/UlaUGNg">
+  <img width="45%" src="https://imgur.com/ON6aN9p">
+</p>
 <hr>
 
 <!-- toc -->
@@ -8,7 +11,6 @@
 - [NvChad Neovim configuration](#nvchad-neovim-configuration)
   - [Features](#features)
   - [Dependencies](#dependencies)
-  - [Unfinished](#unfinished)
 
 <!-- tocstop -->
 
