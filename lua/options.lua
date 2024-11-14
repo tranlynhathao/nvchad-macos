@@ -56,7 +56,7 @@ for k, v in pairs(opt) do
   vim.opt[k] = v
 end
 
--- Thiết lập giao diện và cấu hình lualine
+-- set up interface and colorscheme
 vim.opt.background = "dark"
 vim.cmd.colorscheme "gruvbox"
 
@@ -98,6 +98,12 @@ require("lualine").setup {
   },
   sections = {
     lualine_a = { "mode" },
+    -- lualine_a = {
+    --   {
+    --     "mode",
+    --     icon = "", --                                                             
+    --   },
+    -- },
     lualine_b = { "branch", "diff", "diagnostics" },
     lualine_c = {
       {
@@ -106,7 +112,17 @@ require("lualine").setup {
         path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
       },
     },
-    lualine_x = { "encoding", "fileformat", "filetype" },
+    lualine_x = {
+      "encoding",
+      {
+        "fileformat",
+        icons_enabled = false, -- disable default icons
+        fmt = function()
+          return "%#MyIconColor#%#Normal#"
+        end,
+      },
+      "filetype",
+    },
     lualine_y = { "progress" },
     lualine_z = { "location" },
   },
@@ -121,3 +137,5 @@ require("lualine").setup {
   tabline = {},
   extensions = {},
 }
+
+vim.cmd "highlight MyIconColor guifg=#FF5733"
