@@ -144,7 +144,7 @@ local filename = function()
     if devicons_present then
       local ft_hl_id = vim.api.nvim_get_hl_id_by_name("DevIcon" .. ext)
       local ft_hl = vim.api.nvim_get_hl(0, { id = ft_hl_id })
-      local ft_fg = string.format("#%06x", ft_hl.fg)
+      local ft_fg = ft_hl and ft_hl.fg and string.format("#%06x", ft_hl.fg) or "#000000"
       local st_hl_name = "St_DevIcon" .. ext
       hl = "%#" .. st_hl_name .. "#"
       vim.api.nvim_set_hl(0, st_hl_name, { bg = transparency and "NONE" or "#242d3d", fg = ft_fg })
