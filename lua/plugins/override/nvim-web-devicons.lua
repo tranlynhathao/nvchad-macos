@@ -1,6 +1,7 @@
 ---@type NvPluginSpec
 return {
-  "nvim-tree/nvim-web-devicons",
+  -- "nvim-tree/nvim-web-devicons",
+  "DaikyXendo/nvim-web-devicons",
   opts = {
     override = {
       -- For some reason md changes here don't take effect
@@ -65,6 +66,18 @@ return {
         color = "#ff5722",
         cterm_color = "202",
         name = "License",
+      },
+      [".env"] = {
+        icon = "",
+        color = "#42a5f4",
+        cterm_color = "66",
+        name = "Env",
+      },
+      [".env.example"] = {
+        icon = "",
+        color = "#42a5f4",
+        cterm_color = "66",
+        name = "Env",
       },
     },
     override_by_extension = {

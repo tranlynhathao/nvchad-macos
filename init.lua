@@ -121,3 +121,5 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     vim.cmd "luafile %"
   end,
 })
+
+vim.g.base47_cache = vim.fn.stdpath "cache" .. "/base47/"
