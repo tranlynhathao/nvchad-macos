@@ -5,11 +5,11 @@ local M = {}
 
 local modules = require("gale.chadrc_aux").modules
 local themes_customs = require("gale.chadrc_aux").themes_customs
-vim.opt.termguicolors = true
+-- vim.opt.termguicolors = true
 
 M.base46 = {
-  transparency = false,
-  theme = "gruvbox", ---@diagnostic disable-line -- TODO: remove kanagawa
+  transparency = true,
+  theme = "solarized_osaka", ---@diagnostic disable-line -- TODO: remove kanagawa
   theme_toggle = { "solarized_osaka", "solarized_osaka" }, ---@diagnostic disable-line --TODO remove kanagawa
   integrations = {
     "blankline",
@@ -19,6 +19,7 @@ M.base46 = {
     "devicons",
     "hop",
     "lsp",
+    "markview",
     "mason",
     "neogit",
     "notify",
@@ -33,14 +34,17 @@ M.base46 = {
 M.base46.hl_override = {
   DevIconMd = { fg = "#FFFFFF", bg = "NONE" },
   FloatTitle = { link = "FloatBorder" },
+  CursorLine = { link = "black2" },
   CursorLineNr = { bold = true },
   CmpBorder = { link = "FloatBorder" },
   CmpDocBorder = { link = "FloatBorder" },
   TelescopeBorder = { link = "FloatBorder" },
   TelescopePromptBorder = { link = "FloatBorder" },
-  NeogitDiffContext = { bg = "NONE" },
-  NeogitDiffContextHighlight = { bg = "NONE" },
+  NeogitDiffContext = { bg = "#171B21" },
+  NeogitDiffContextCursor = { bg = "black2" },
+  NeogitDiffContextHighlight = { bg = "NeogitDiffContext" },
   TbBufOffModified = { fg = { "green", "black", 50 } },
+  FoldColumn = { bg = "FloatBorder" },
   Comment = { italic = true },
   ["@comment"] = { link = "Comment" },
   ["@keyword"] = { italic = true },
@@ -49,11 +53,13 @@ M.base46.hl_override = {
 
 M.base46.hl_add = {
   YankVisual = { bg = "lightbg" },
+  DevIconToml = { fg = "#9C4221", bg = "NONE" },
   Border = { link = "FloatBorder" },
   St_HarpoonInactive = { link = "StText" },
   St_HarpoonActive = { link = "St_LspHints" },
   St_GitBranch = { fg = "baby_pink", bg = M.base46.transparency and "NONE" or "statusline_bg" },
   St_Oil = { fg = "grey_fg", bg = M.base46.transparency and "NONE" or "statusline_bg" },
+  GitSignsCurrentLineBlame = { link = "Comment" },
   MarkviewLayer2 = { bg = "#171B21" },
   MarkviewCode = { link = "MarkviewLayer2" },
   HelpviewCode = { link = "MarkviewLayer2" },
@@ -71,10 +77,10 @@ M.base46 = theme_customs and vim.tbl_deep_extend("force", M.base46, theme_custom
 
 M.ui = {
   cmp = {
-    style = "vscode",
+    style = "default", -- vscode
   },
   statusline = {
-    theme = "vscode",
+    theme = "vscode_colored",
     order = {
       "mode",
       "tint",
@@ -86,11 +92,13 @@ M.ui = {
       "lsp_msg",
       "%=",
       "diagnostics",
-      "lsp",
+      "lspx",
       "harpoon",
       "word_count",
       "separator",
+      "oil_dir_cwd",
       "cwd",
+      "stop",
     },
     modules = {
       hack = modules.statusline.hack,
@@ -100,7 +108,10 @@ M.ui = {
       modified = modules.statusline.modified,
       separator = modules.statusline.separator,
       word_count = modules.statusline.word_count,
+      oil_dir_cwd = modules.statusline.oil_dir_cwd,
+      stop = modules.statusline.force_stop,
       tint = modules.statusline.tint,
+      lspx = modules.lspx,
     },
   },
 
@@ -123,7 +134,7 @@ M.colorify = {
 }
 
 M.lsp = {
-  signature = true,
+  signature = false,
 }
 
 M.term = {

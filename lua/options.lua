@@ -57,8 +57,8 @@ for k, v in pairs(opt) do
 end
 
 -- set up interface and colorscheme
-vim.opt.background = "dark"
-vim.cmd.colorscheme "gruvbox"
+-- vim.opt.background = "dark"
+-- vim.cmd.colorscheme "solarize_osaka" -- gruvbox
 
 local filename = {
   "filename",
@@ -91,7 +91,7 @@ end
 
 require("lualine").setup {
   options = {
-    theme = "gruvbox", -- Change to your preferred theme
+    theme = "solarize_osaka", -- Change to your preferred theme: gruvbox, tokyonight, onedark, nord, etc.
     component_separators = { left = "|", right = "|" },
     section_separators = { left = "", right = "" },
     icons_enabled = true,

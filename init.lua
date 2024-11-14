@@ -1,7 +1,7 @@
 -- ~/.config/nvim/init.lua
 -- require module
-require "gale.globals"
 require "bootstrap"
+require "gale.globals"
 require "gale.usercmds"
 require "gale.autocmds"
 require "gale.aliases"
@@ -15,6 +15,9 @@ require "mappings"
 require "configs.keymaps"
 -- end require
 
+-- Autocommand to reload config on save
+vim.cmd "source ~/.config/nvim/lua/chadrc.lua"
+
 vim.cmd [[
 augroup LuaAutoSource
   autocmd!
@@ -22,33 +25,30 @@ augroup LuaAutoSource
 augroup END
 ]]
 
-vim.cmd [[
-augroup StatusLineGroup
-  autocmd!
-  autocmd BufEnter * setlocal statusline=%f\ %m\ %r
-augroup END
-]]
+-- vim.cmd [[
+-- augroup StatusLineGroup
+--   autocmd!
+--   autocmd BufEnter * setlocal statusline=%f\ %m\ %r
+-- augroup END
+-- ]]
 
--- Custom configuration
+-- Other custom configurations
+vim.opt.colorcolumn = ""
+vim.opt.clipboard = "unnamedplus"
+vim.opt.updatetime = 500
+
+-- ###### Custom functions and mappings #####
 local function InsertBackLink()
   local backlink_text = vim.fn.input "Backlink Text: "
   local backlink_url = vim.fn.input "Backlink URL: "
   vim.api.nvim_put({ "[" .. backlink_text .. "](" .. backlink_url .. ")" }, "c", true, true)
 end
-
 _G.InsertBackLink = InsertBackLink
 
 -- Open Lazygit
 vim.api.nvim_create_user_command("Lazygit", function()
   require("lazygit").lazygit()
 end, {})
-
--- clipboard
-vim.opt.clipboard = "unnamedplus"
-
--- slime config
-vim.g.slime_target = "neovim"
-vim.api.nvim_set_keymap("v", "<C-c>", "<Plug>SlimeSend", { noremap = true, silent = true })
 
 -- Lua configuration for telescope to open markdown links
 function OpenMarkdownLink()
@@ -62,7 +62,6 @@ function OpenMarkdownLink()
   end
 end
 
--- Open markdown link in neovim
 vim.api.nvim_set_keymap("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true })
 
 -- Toggle wrap for long lines
@@ -85,12 +84,10 @@ function ToggleWrap()
   end
 end
 
--- wrap markdown
 vim.api.nvim_set_keymap("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true })
 
 -- notify config
 local original_notify = vim.notify
-
 vim.notify = function(msg, level, opts)
   if msg:match "Re-sourcing your config is not supported with lazy.nvim" then
     return
@@ -102,8 +99,6 @@ vim.notify = function(msg, level, opts)
   end
 end
 
-vim.opt.updatetime = 500
-
 -- update statusline when switching via buffers
 -- vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
 --   pattern = "*",
@@ -112,14 +107,18 @@ vim.opt.updatetime = 500
 --   end,
 -- })
 
+-- slime config
+vim.g.slime_target = "neovim"
+vim.api.nvim_set_keymap("v", "<C-c>", "<Plug>SlimeSend", { noremap = true, silent = true })
 vim.g.slime_target = "tmux" -- Or "neovim" if you want to send 1 shell-terminal inside neovim
 vim.g.slime_bracketed_paste = 1
 
+vim.g.base47_cache = vim.fn.stdpath "cache" .. "/base47/"
+
+-- Autocommand to reload Lua files on save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "*.lua",
   callback = function()
     vim.cmd "luafile %"
   end,
 })
-
-vim.g.base47_cache = vim.fn.stdpath "cache" .. "/base47/"
