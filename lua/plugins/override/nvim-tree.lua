@@ -110,8 +110,10 @@ return {
     end)
 
     local SIZES = {
+      -- HEIGHT = 0.8,
+      -- WIDTH = 0.5,
       HEIGHT = 0.8,
-      WIDTH = 0.5,
+      WIDTH = 0.3,
     }
 
     nvtree.setup {
