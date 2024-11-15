@@ -3,6 +3,7 @@ return {
   { import = "plugins.local.js-playground" },
   { import = "plugins.local.popurri" },
   { import = "plugins.local.yerbreak" },
+  -- ### Spec plugins ###
   { import = "plugins.spec.autopairs" },
   { import = "plugins.spec.better-escape" },
   { import = "plugins.spec.ccc" },
@@ -76,6 +77,9 @@ return {
   { import = "plugins.spec.vim-illuminate" },
   { import = "plugins.spec.vim-visual-multi" },
   { import = "plugins.spec.zen-mode" },
+  { import = "plugins.spec.conflict-marker" },
+  -- { import = "plugins.spec.merge-tool" },
+  -- ### Override plugins ###
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
   { import = "plugins.override.cmp" },

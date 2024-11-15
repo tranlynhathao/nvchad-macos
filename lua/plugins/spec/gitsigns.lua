@@ -7,6 +7,14 @@ return {
     preview_config = {
       border = "rounded",
     },
+    update_debounce = 100, -- optimization for big repositories
+    current_line_blame = true,
+    current_line_blame_opts = {
+      delay = 500,
+      virt_text_pos = "eol",
+    },
+    current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
+
     on_attach = function(bufnr)
       local gs = require "gitsigns"
       local map = require("gale.utils").buf_map
