@@ -6,6 +6,7 @@ return {
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     { "hrsh7th/cmp-cmdline" },
+    { "hrsh7th/cmp-emoji" },
     { "brenoprata10/nvim-highlight-colors" },
   },
   opts = function(_, opts)
@@ -47,12 +48,22 @@ return {
       sources = {
         { name = "cmdline" },
         { name = "path" },
+        { name = "emoji" },
         {
           name = "lazydev",
           group_index = 0, -- set group index to 0 to skip loading LuaLS completions
         },
       },
     })
+
+    cmp.setup {
+      sources = cmp.config.sources({
+        { name = "emoji", debug = "true" },
+      }, {
+        { name = "buffer" },
+        { name = "path" },
+      }),
+    }
 
     local colors = require "nvim-highlight-colors.color.utils"
     local utils = require "nvim-highlight-colors.utils"
