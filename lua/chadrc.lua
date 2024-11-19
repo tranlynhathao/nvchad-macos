@@ -80,7 +80,7 @@ M.ui = {
     style = "default", -- vscode
   },
   statusline = {
-    theme = "vscode_colored",
+    theme = "default",
     order = {
       "mode",
       "tint",

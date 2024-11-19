@@ -91,7 +91,34 @@ end
 
 require("lualine").setup {
   options = {
-    theme = "solarize_osaka", -- Change to your preferred theme: gruvbox, tokyonight, onedark, nord, etc.
+    theme = "nord",
+    -- - `16color`
+    -- - `auto` (default theme)
+    -- - `ayu_dark`
+    -- - `ayu_light`
+    -- - `ayu_mirage`
+    -- - `catppuccin` *(Catpucin was set up)*
+    -- - `dracula`
+    -- - `everforest`
+    -- - `gruvbox`
+    -- - `gruvbox_material`
+    -- - `horizon`
+    -- - `iceberg`
+    -- - `material`
+    -- - `molokai`
+    -- - `nightfly`
+    -- - `nord`
+    -- - `onedark`
+    -- - `palenight`
+    -- - `powerline`
+    -- - `powerline_dark`
+    -- - `rose-pine`
+    -- - `solarized`
+    -- - `solarized_dark`
+    -- - `solarized_light`
+    -- - `tokyonight`
+    -- - `wombat`
+
     component_separators = { left = "|", right = "|" },
     section_separators = { left = "", right = "" },
     icons_enabled = true,
