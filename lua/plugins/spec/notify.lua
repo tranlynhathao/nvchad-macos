@@ -6,6 +6,11 @@ return {
   },
   lazy = false,
   config = function()
+    if not vim.g.base46_cache then
+      vim.notify("base46_cache is not set!", vim.log.levels.ERROR)
+      return
+    end
+
     dofile(vim.g.base46_cache .. "notify")
 
     vim.notify = require "notify"
@@ -13,7 +18,7 @@ return {
     vim.notify.setup {
       -- background_colour = "#1c2433",
       background_colour = "#1e1e1e",
-      top_down = true,
+      top_down = false,
     }
   end,
 }

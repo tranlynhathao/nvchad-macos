@@ -106,6 +106,10 @@ map("n", "<leader>cs", "<cmd><CR>", { desc = "General clear statusline" })
 map("n", "<leader><F10>", "<cmd>stop<CR>", { desc = "Genaral stop NVIM" })
 
 map("n", "<leader>cm", "<cmd>mes clear<CR>", { desc = "General clear messages" })
+map("n", "<leader>cn", function()
+  require("notify").dismiss { silent = true, pending = true }
+end, { desc = "Clear notifications" })
+
 -- https://github.com/neovim/neovim/issues/2054
 map("i", "<A-BS>", "<C-w>", { desc = "General remove word" })
 

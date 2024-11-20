@@ -4,6 +4,10 @@ return {
   lazy = false,
   config = function()
     require("noice").setup {
+      -- cmdline = {
+      --   enabled = true,
+      --   view = "cmdline",
+      -- },
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -66,7 +70,7 @@ return {
       --   },
       -- },
 
-      background_colour = "#1e1e1e",
+      background_colour = "#1e1e2e",
       notify = {
         enabled = false, -- notify of noice: disable
       },
