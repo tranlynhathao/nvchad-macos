@@ -78,6 +78,44 @@ capabilities.textDocument.completion.completionItem = {
   },
 }
 
+require("lspconfig").rust_analyzer.setup {
+  on_attach = function(client, bufnr)
+    local map = function(mode, lhs, rhs, opts)
+      local options = { buffer = bufnr }
+      if opts then
+        options = vim.tbl_deep_extend("force", options, opts)
+      end
+      vim.keymap.set(mode, lhs, rhs, options)
+    end
+
+    map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
+
+    vim.api.nvim_create_autocmd("BufWritePre", {
+      pattern = "*.rs",
+      callback = function()
+        vim.lsp.buf.format { async = true }
+      end,
+    })
+  end,
+
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = {
+        allFeatures = true,
+        loadOutDirsFromCheck = true,
+        runBuildScripts = true,
+      },
+      checkOnSave = {
+        command = "clippy",
+      },
+      rustfmt = {
+        enable = true,
+        extraArgs = { "--edition=2021" },
+      },
+    },
+  },
+}
+
 M.capabilities = capabilities
 
 M.inlay_hints_settings = {
