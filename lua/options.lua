@@ -91,7 +91,7 @@ end
 
 require("lualine").setup {
   options = {
-    theme = "nord",
+    theme = "gruvbox",
     -- - `16color`
     -- - `auto` (default theme)
     -- - `ayu_dark`

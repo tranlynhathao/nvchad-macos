@@ -9,7 +9,7 @@ local themes_customs = require("gale.chadrc_aux").themes_customs
 
 M.base46 = {
   transparency = true,
-  theme = "solarized_dark", ---@diagnostic disable-line -- TODO: remove kanagawa
+  theme = "gruvbox", ---@diagnostic disable-line -- TODO: remove kanagawa
   theme_toggle = { "solarized_dark", "solarized_dark" }, ---@diagnostic disable-line --TODO remove kanagawa
   integrations = {
     "blankline",
