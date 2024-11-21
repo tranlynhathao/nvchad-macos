@@ -7,7 +7,7 @@ local map = utils.glb_map
 -- b: move to previous word
 -- e: move to next end of word
 -- ge or E: move to previous end of word
-map("n", "E", "ge")
+map("n", "n", "ge") -- or E
 
 -- Movement
 -- h: move to left
@@ -17,6 +17,14 @@ map("n", "E", "ge")
 -- #################################
 map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
 map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })
+
+-- compress code
+map(
+  "n",
+  "<leader>cf",
+  "<cmd>lua vim.lsp.buf.format({ async = true })<CR>",
+  { desc = "Compress code (all supported formats)" }
+)
 
 -- Better escape using jk in insert and terminal mode
 map("i", "jk", "<ESC>")

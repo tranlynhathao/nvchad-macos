@@ -1,7 +1,7 @@
 return {
   "supermaven-inc/supermaven-nvim",
   event = "LspAttach",
-  enabled = true,
+  enabled = false,
   opts = {
     keymaps = {
       accept_suggestion = "<Tab>",
