@@ -143,6 +143,13 @@ local filename = function()
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
     if devicons_present then
       local ft_hl_id = vim.api.nvim_get_hl_id_by_name("DevIcon" .. ext)
+        or vim.api.nvim_get_hl_id_by_name "DevIconDefault"
+
+      if not ft_hl_id then
+        print("No valid highlight group found for 'DevIcon" .. ext .. "' or fallback.")
+        return
+      end
+
       local ft_hl = vim.api.nvim_get_hl(0, { id = ft_hl_id })
       local ft_fg = ft_hl and ft_hl.fg and string.format("#%06x", ft_hl.fg) or "#000000"
       local st_hl_name = "St_DevIcon" .. ext
