@@ -122,3 +122,39 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     vim.cmd "luafile %"
   end,
 })
+
+-- Function to toggle comment for Pug
+local function toggle_pug_comment(mode)
+  local comment_prefix = mode == "html" and "//" or "//-"
+  local line_start = vim.fn.getpos("'<")[2] -- Get start line of selection
+  local line_end = vim.fn.getpos("'>")[2] -- Get end line of selection
+
+  for line = line_start, line_end do
+    local content = vim.fn.getline(line) -- Get the content of the line
+    if vim.startswith(content, comment_prefix) then
+      -- Uncomment: Remove the prefix if it exists
+      vim.fn.setline(line, content:sub(#comment_prefix + 2)) -- Remove `//` or `//-` plus a space
+    else
+      -- Comment: Add the prefix
+      vim.fn.setline(line, comment_prefix .. " " .. content)
+    end
+  end
+end
+
+-- Keymaps for commenting in Normal mode
+vim.keymap.set("n", "<leader>ch", function()
+  vim.cmd "normal! I// "
+end, { desc = "Insert HTML comment (//) in Normal mode" })
+
+vim.keymap.set("n", "<leader>cp", function()
+  vim.cmd "normal! I//- "
+end, { desc = "Insert Pug comment (//-) in Normal mode" })
+
+-- Keymaps for commenting in Visual mode
+vim.keymap.set("v", "<leader>ch", function()
+  toggle_pug_comment "html"
+end, { desc = "Toggle HTML comments (//) in Visual mode" })
+
+vim.keymap.set("v", "<leader>cp", function()
+  toggle_pug_comment "pug"
+end, { desc = "Toggle Pug comments (//-) in Visual mode" })
