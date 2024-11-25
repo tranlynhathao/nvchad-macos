@@ -57,12 +57,11 @@ return {
     })
 
     cmp.setup {
-      sources = cmp.config.sources({
-        { name = "emoji", debug = "true" },
-      }, {
+      sources = {
+        { name = "emoji" },
         { name = "buffer" },
         { name = "path" },
-      }),
+      },
     }
 
     local colors = require "nvim-highlight-colors.color.utils"
