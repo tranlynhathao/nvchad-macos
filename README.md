@@ -56,3 +56,8 @@ Required:
 Recommended:
 
 - Cargo 1.74.1+
+
+### Checklist
+
+- [ ] Auto-session
+- [ ] nvim-tree-text-objects
