@@ -106,4 +106,5 @@ return {
   { import = "plugins.override.whichkey" },
   { import = "plugins.override.workspace" },
   { import = "plugins.override.lualine" },
+  { import = "plugins.override.maximizer" },
 }
