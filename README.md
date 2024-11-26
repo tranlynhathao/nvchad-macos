@@ -11,6 +11,7 @@
 - [NvChad Neovim configuration](#nvchad-neovim-configuration)
   - [Features](#features)
   - [Dependencies](#dependencies)
+  - [Check List](#checklist)
 
 <!-- tocstop -->
 
