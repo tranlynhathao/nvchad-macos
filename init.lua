@@ -11,6 +11,7 @@ require "gale.macos"
 require "gale.vim"
 require "gale.filetypes"
 require "options"
+require "gale.material-ui"
 require "mappings"
 require "configs.keymaps"
 -- end require
