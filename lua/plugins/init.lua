@@ -80,6 +80,7 @@ return {
   { import = "plugins.spec.zen-mode" },
   { import = "plugins.spec.conflict-marker" },
   { import = "plugins.spec.icons" },
+  { import = "plugins.spec.emmet" },
   -- { import = "plugins.spec.merge-tool" },
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
