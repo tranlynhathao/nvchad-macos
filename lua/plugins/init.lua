@@ -81,6 +81,7 @@ return {
   { import = "plugins.spec.conflict-marker" },
   { import = "plugins.spec.icons" },
   { import = "plugins.spec.emmet" },
+  { import = "plugins.spec.friendly-snippets" },
   -- { import = "plugins.spec.merge-tool" },
   -- ### Override plugins ###
   { import = "plugins.override.base46" },

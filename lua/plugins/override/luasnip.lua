@@ -9,6 +9,8 @@ return {
 
     ls.filetype_extend("javascriptreact", { "html" })
     ls.filetype_extend("typescriptreact", { "html" })
+    ls.filetype_extend("javascriptreact", { "javascript" })
+    ls.filetype_extend("typescriptreact", { "javascript" })
 
     require("luasnip.loaders.from_vscode").lazy_load { paths = { vim.fn.stdpath "config" .. "/snippets/vscode" } }
 
