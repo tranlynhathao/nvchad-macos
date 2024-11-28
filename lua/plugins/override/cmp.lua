@@ -8,6 +8,7 @@ return {
     { "hrsh7th/cmp-cmdline" },
     { "hrsh7th/cmp-emoji" },
     { "brenoprata10/nvim-highlight-colors" },
+    { "onsails/lspkind-nvim" },
   },
   opts = function(_, opts)
     ---@type cmp.ConfigSchema

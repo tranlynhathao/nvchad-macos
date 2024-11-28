@@ -82,6 +82,8 @@ return {
   { import = "plugins.spec.icons" },
   { import = "plugins.spec.emmet" },
   { import = "plugins.spec.friendly-snippets" },
+  { import = "plugins.spec.jsdoc" },
+  { import = "plugins.spec.typescript" },
   -- { import = "plugins.spec.merge-tool" },
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
@@ -109,4 +111,8 @@ return {
   { import = "plugins.override.workspace" },
   { import = "plugins.override.lualine" },
   { import = "plugins.override.maximizer" },
+  { import = "plugins.override.docs_view" },
+  { import = "plugins.override.lspsaga" },
+  -- { import = "plugins.override.nvim-doc-view" },
+  -- { import = "plugins.override.telescope-lsp-docs" },
 }
