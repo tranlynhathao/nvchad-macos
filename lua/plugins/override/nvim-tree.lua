@@ -123,9 +123,12 @@ return {
       on_attach = custom_on_attach,
       sync_root_with_cwd = true,
       filters = { custom = { "^.git$" } },
-      git = { enable = true },
+      git = {
+        enable = true,
+        ignore = false,
+      },
       renderer = {
-        highlight_git = "none",
+        highlight_git = true, -- "none"
         icons = {
           glyphs = {
             folder = {
@@ -145,10 +148,22 @@ return {
             },
           },
         },
+        indent_markers = {
+          enable = true,
+          icons = {
+            corner = "└ ",
+            edge = "│ ",
+            none = "  ",
+          },
+        },
+        on_attach = my_on_attach,
       },
       view = {
         -- Allow statuscolumn to be applied on nvim-tree
-        signcolumn = "no",
+        -- width = 30,
+        adaptive_size = true,
+        signcolumn = "yes", -- no
+        side = "left",
         float = {
           enable = true,
           open_win_config = function()
@@ -174,7 +189,14 @@ return {
           return math.floor(vim.opt.columns:get() * SIZES.WIDTH)
         end,
       },
+      actions = {
+        open_file = {
+          resize_window = true,
+          -- quit_on_open = false,
+        },
+      },
       filesystem_watchers = {
+        enable = true,
         ignore_dirs = {
           "node_modules",
         },
