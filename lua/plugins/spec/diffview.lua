@@ -4,10 +4,10 @@ return {
   cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
   init = function()
     local map = vim.keymap.set
-    map("n", "<leader>dv", "<cmd>DiffviewOpen<CR>", { desc = "Diffview open" })
+    map("n", "<leader>df", "<cmd>DiffviewOpen<CR>", { desc = "Diffview open" })
     map("n", "<leader>dc", "<cmd>DiffviewClose<CR>", { desc = "Diffview close" })
     map("n", "<leader>dt", "<cmd>DiffviewToggleFiles<CR>", { desc = "Diffview toggle files" })
-    map("n", "<leader>df", "<cmd>DiffviewFocusFiles<CR>", { desc = "Diffview focus files" })
+    map("n", "<leader>dF", "<cmd>DiffviewFocusFiles<CR>", { desc = "Diffview focus files" })
   end,
   config = function()
     require("diffview").setup {
