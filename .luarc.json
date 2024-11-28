@@ -1,3 +1,4 @@
 {
-	"workspace.maxPreload": 10000
+	"workspace.maxPreload": 10000,
+	"completion.autoRequire": false
 }
