@@ -113,6 +113,7 @@ return {
   { import = "plugins.override.maximizer" },
   { import = "plugins.override.docs_view" },
   { import = "plugins.override.lspsaga" },
+  { import = "plugins.override.nvim-ufo" },
   -- { import = "plugins.override.nvim-doc-view" },
   -- { import = "plugins.override.telescope-lsp-docs" },
 }
