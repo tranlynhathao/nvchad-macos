@@ -61,6 +61,12 @@ Recommended:
 
 ### Checklist
 
-- [ ] Require:
+- [ ] Require plugin module
   - Auto-session
   - nvim-tree-text-objects
+- [ ] Fix:
+  - Change UI theme
+  - Format Rust, Ruby,...
+- [ ] Optimize plugin
+- [ ] Rebuild module structure
+- [ ] Add LSP
