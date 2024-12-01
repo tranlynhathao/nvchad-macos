@@ -7,7 +7,7 @@ local map = utils.glb_map
 -- b: move to previous word
 -- e: move to next end of word
 -- ge or E: move to previous end of word
-map("n", "n", "ge") -- or E
+map("n", "E", "ge")
 
 -- Movement
 -- h: move to left
@@ -62,6 +62,93 @@ map("i", "<ESC>k", "<ESC>:m .-2<CR>==gi")
 -- Move section up and down
 map("v", "<ESC>j", ":move '>+1<CR>gv")
 map("v", "<ESC>k", ":move '<-2<CR>gv")
+
+-- ## Command: <ESC>nj/k (n is character)
+local function move_line_or_block(direction)
+  local n = tonumber(vim.fn.input("Move by how many lines? ", "1")) or 1
+
+  if vim.fn.mode() == "v" or vim.fn.mode() == "V" then
+    if direction == "down" then
+      vim.cmd(string.format(":'<,'>move '>+%d", n))
+    elseif direction == "up" then
+      vim.cmd(string.format(":'<,'>move '<-%d", n))
+    end
+  else
+    local line = vim.fn.line "."
+    if direction == "down" then
+      vim.cmd(string.format(":move %d", line + n))
+    elseif direction == "up" then
+      vim.cmd(string.format(":move %d", line - n - 1))
+    end
+  end
+end
+
+local function map(mode, lhs, rhs, opts)
+  opts = opts or {}
+  vim.keymap.set(mode, lhs, rhs, opts)
+end
+
+map("n", "<ESC>nj", function()
+  move_line_or_block "down"
+end, { silent = true })
+map("n", "<ESC>nk", function()
+  move_line_or_block "up"
+end, { silent = true })
+
+map("v", "<ESC>nj", function()
+  move_line_or_block "down"
+end, { silent = true })
+map("v", "<ESC>nk", function()
+  move_line_or_block "up"
+end, { silent = true })
+
+-- OR
+
+-- ## Command: n<ESC>j/k (n is a number) -- Ex: 5<ESC>j/k
+-- local function move_line_or_block(direction, count)
+--   count = count or 1
+--
+--   if vim.fn.mode() == "v" or vim.fn.mode() == "V" then
+--     if direction == "down" then
+--       vim.cmd(string.format(":'<,'>move '>+%d", count))
+--     elseif direction == "up" then
+--       vim.cmd(string.format(":'<,'>move '<-%d", count))
+--     end
+--   else
+--     if direction == "down" then
+--       vim.cmd(string.format(":move .+%d", count))
+--     elseif direction == "up" then
+--       vim.cmd(string.format(":move .-%d", count))
+--     end
+--   end
+-- end
+--
+-- local function map(mode, lhs, rhs, opts)
+--   opts = opts or {}
+--   vim.keymap.set(mode, lhs, rhs, opts)
+-- end
+--
+-- -- Keymap support `n` lines
+-- map("n", "<ESC>j", function()
+--   local count = tonumber(vim.v.count) or 1
+--   move_line_or_block("down", count)
+-- end, { silent = true })
+--
+-- map("n", "<ESC>k", function()
+--   local count = tonumber(vim.v.count) or 1
+--   move_line_or_block("up", count)
+-- end, { silent = true })
+--
+-- -- Visual mode support n lines
+-- map("v", "<ESC>j", function()
+--   local count = tonumber(vim.v.count) or 1
+--   move_line_or_block("down", count)
+-- end, { silent = true })
+--
+-- map("v", "<ESC>k", function()
+--   local count = tonumber(vim.v.count) or 1
+--   move_line_or_block("up", count)
+-- end, { silent = true })
 
 -- Redo
 map("n", "U", "<C-r>")
