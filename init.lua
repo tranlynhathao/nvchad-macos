@@ -12,6 +12,7 @@ require "gale.vim"
 require "gale.filetypes"
 require "options"
 require "gale.material-ui"
+require "gale.LSP"
 require "mappings"
 require "configs.keymaps"
 -- end require
