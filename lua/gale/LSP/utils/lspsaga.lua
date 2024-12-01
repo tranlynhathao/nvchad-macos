@@ -1,12 +1,12 @@
-local ok = require("rin.utils.check_requires").check({
+local ok = require("gale.utils.check_requires").check {
   "lspsaga",
-})
+}
 if not ok then
   return
 end
-local lspsaga = require("lspsaga")
+local lspsaga = require "lspsaga"
 
-lspsaga.setup({
+lspsaga.setup {
   finder = {
     max_height = 0.5,
     left_width = 0.3,
@@ -58,7 +58,7 @@ lspsaga.setup({
       exec_action = "o",
       quit = "q",
       toggle_or_jump = "<CR>",
-      quit_in_show = { "q", "<ESC>" }
+      quit_in_show = { "q", "<ESC>" },
     },
   },
 
@@ -120,8 +120,8 @@ lspsaga.setup({
     expand = "",
     collapse = "",
     code_action = "💡",
-    actionfix = ' ',
-    imp_sign = '󰳛 ',
+    actionfix = " ",
+    imp_sign = "󰳛 ",
     kind = nil,
   },
-})
+}

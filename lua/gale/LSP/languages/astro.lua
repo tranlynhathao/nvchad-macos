@@ -6,7 +6,7 @@ npm i -g @astrojs/language-server eslint_d @fsouza/prettierd
 ```
 --]=]
 
-local ok = require("rin.utils.check_requires").check {
+local ok = require("gale.utils.check_requires").check {
   "lspconfig",
   "cmp_nvim_lsp",
   "null-ls",
@@ -20,7 +20,7 @@ local cmp_nvim_lsp = require "cmp_nvim_lsp"
 local null_ls = require "null-ls"
 
 local on_attach = function(client, bufnr)
-  require "rin.LSP.utils.keymap"(bufnr)
+  require "gale.LSP.utils.keymap"(bufnr)
   if client.server_capabilities.documentFormattingProvider then
     vim.cmd "autocmd BufWritePre <buffer> lua vim.lsp.buf.format()"
   end

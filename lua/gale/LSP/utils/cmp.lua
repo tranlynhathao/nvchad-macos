@@ -1,13 +1,13 @@
-local ok = require("rin.utils.check_requires").check({
+local ok = require("gale.utils.check_requires").check {
   "cmp",
   "luasnip",
-})
+}
 if not ok then
   return
 end
 
-local cmp = require("cmp")
-local luasnip = require("luasnip")
+local cmp = require "cmp"
+local luasnip = require "luasnip"
 
 local icons = {
   Text = "󰉿",
@@ -34,10 +34,10 @@ local icons = {
   Struct = "󰙅",
   Event = "",
   Operator = "",
-  TypeParameter = ""
+  TypeParameter = "",
 }
 
-cmp.setup({
+cmp.setup {
   snippet = {
     expand = function(args)
       luasnip.lsp_expand(args.body)
@@ -95,6 +95,6 @@ cmp.setup({
         latex_symbols = "[LaTex]",
       })[entry.source.name]
       return vim_item
-    end
+    end,
   },
-})
+}
