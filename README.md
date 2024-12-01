@@ -32,10 +32,6 @@
   changes in browser
 - round borders as a priority over sharp borders
 
->[!TIP]
-> Pair with <a href="https://github.com/mgastonportillo/wezterm-config"> my
-> Wezterm configuration</a> for a smooth experience
-
 >[!WARNING]
 > **Disclaimer**: I frequently use `git rebase -i` to streamline my
 > configuration. if you plan to use `lazy-lock.json` to stick with certain
