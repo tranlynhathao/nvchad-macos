@@ -37,29 +37,29 @@ M.plugin = {
 
 M.setup = function()
   -- # LSP utils
-  require("rin.LSP.utils.icon")
-  require("rin.LSP.utils.cmp")
+  require "gale.LSP.utils.icon"
+  require "gale.LSP.utils.cmp"
   -- # LSP UI
-  -- require("rin.LSP.utils.lspsaga")
+  -- require("gale.LSP.utils.lspsaga")
   -- # LSP Config
-  require("rin.LSP.languages.typescript")
-  require("rin.LSP.languages.css")
-  require("rin.LSP.languages.svelte")
-  require("rin.LSP.languages.vue")
-  require("rin.LSP.languages.astro")
-  require("rin.LSP.languages.deno")
-  require("rin.LSP.languages.rust")
-  require("rin.LSP.languages.go")
-  require("rin.LSP.languages.cpp")
-  require("rin.LSP.languages.python")
-  require("rin.LSP.languages.lua")
-  require("rin.LSP.languages.php")
-  require("rin.LSP.languages.csharp")
+  require "gale.LSP.languages.typescript"
+  require "gale.LSP.languages.css"
+  require "gale.LSP.languages.svelte"
+  require "gale.LSP.languages.vue"
+  require "gale.LSP.languages.astro"
+  require "gale.LSP.languages.deno"
+  require "gale.LSP.languages.rust"
+  require "gale.LSP.languages.go"
+  require "gale.LSP.languages.cpp"
+  require "gale.LSP.languages.python"
+  require "gale.LSP.languages.lua"
+  require "gale.LSP.languages.php"
+  require "gale.LSP.languages.csharp"
   -- format some markup and dif file
-  require("rin.LSP.languages.prettier")
+  require "gale.LSP.languages.prettier"
 
   -- # LuaSnip
-  require("rin.LSP.luasnip.main")
+  require "gale.LSP.luasnip.main"
 end
 
 if not pcall(debug.getlocal, 4, 1) then

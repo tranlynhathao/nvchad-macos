@@ -1,6 +1,6 @@
 vim.opt.signcolumn = "yes"
 
-vim.diagnostic.config({
+vim.diagnostic.config {
   virtual_text = true,
   signs = true,
   underline = true,
@@ -11,7 +11,7 @@ vim.diagnostic.config({
     source = true,
     border = "rounded",
   },
-})
+}
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type

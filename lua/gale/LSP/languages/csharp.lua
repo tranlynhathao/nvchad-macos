@@ -4,19 +4,19 @@ https://dotnet.microsoft.com/en-us/download
 https://github.com/omnisharp/omnisharp-roslyn
 --]=]
 
-local ok = require("rin.utils.check_requires").check({
+local ok = require("gale.utils.check_requires").check {
   "lspconfig",
   "cmp_nvim_lsp",
-})
+}
 if not ok then
   return
 end
 
-local lspconfig = require("lspconfig")
-local cmp_nvim_lsp = require("cmp_nvim_lsp")
+local lspconfig = require "lspconfig"
+local cmp_nvim_lsp = require "cmp_nvim_lsp"
 
 local on_attach = function(client, bufnr)
-  require("rin.LSP.utils.keymap")(bufnr)
+  require "gale.LSP.utils.keymap"(bufnr)
 end
 
 local capabilities
@@ -58,7 +58,7 @@ lspconfig.omnisharp.setup {
   -- true
   analyze_open_documents_only = false,
 
-  cmd = { "dotnet", os.getenv("HOME") .. "/.LSP/omnisharp/OmniSharp.dll" },
+  cmd = { "dotnet", os.getenv "HOME" .. "/.LSP/omnisharp/OmniSharp.dll" },
   capabilities = capabilities,
   on_attach = function(client, bufnr)
     on_attach(client, bufnr)

@@ -1,4 +1,4 @@
-local ok = require("rin.utils.check_requires").check {
+local ok = require("gale.utils.check_requires").check {
   "luasnip",
 }
 if not ok then
