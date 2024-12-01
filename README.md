@@ -61,5 +61,6 @@ Recommended:
 
 ### Checklist
 
-- [ ] Auto-session
-- [ ] nvim-tree-text-objects
+- [ ] Require:
+  - Auto-session
+  - nvim-tree-text-objects
