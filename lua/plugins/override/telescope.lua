@@ -18,6 +18,7 @@ return {
             height = SIZES.HEIGHT,
           },
         },
+        -- previewer = true,
         follow = true,
         no_ignore = true,
         hidden = true,
@@ -34,6 +35,7 @@ return {
             height = SIZES.HEIGHT,
           },
         },
+        -- previewer = true,
         prompt_title = "Files",
       })
     end, { desc = "Telescope search files" })
@@ -46,18 +48,26 @@ return {
             height = SIZES.HEIGHT,
           },
         },
+        -- previewer = true,
         prompt_title = "Old Files",
       })
     end, { desc = "Telescope search recent files" })
 
     map("n", "<leader>fw", function()
       pickers.grep("live_grep", nil, nil, {
+        layout_strategy = "horizontal",
         layout_config = {
-          vertical = {
-            width = SIZES.WIDTH,
-            height = SIZES.HEIGHT,
+          -- vertical = {
+          --   width = SIZES.WIDTH,
+          --   height = SIZES.HEIGHT,
+          -- },
+          horizontal = {
+            width = 0.8,
+            height = 0.8,
+            preview_width = 0.5,
           },
         },
+        previewer = true,
         prompt_title = "Live Grep",
       })
     end, { desc = "Telescope live grep" })
@@ -70,6 +80,7 @@ return {
             height = SIZES.HEIGHT,
           },
         },
+        previewer = true,
       })
     end, { desc = "Telescope buffers" })
 
@@ -89,11 +100,12 @@ return {
     opts = vim.tbl_deep_extend("force", opts, {
       defaults = {
         preview = {
-          hide_on_startup = true,
+          hide_on_startup = false, -- hide preview: false
         },
         results_title = false,
         selection_caret = " ",
         entry_prefix = " ",
+        layout_strategy = "vertical", -- "dropdown", "vertical", "center", "horizontal"
         layout_config = {
           horizontal = {
             width = SIZES.WIDTH,
