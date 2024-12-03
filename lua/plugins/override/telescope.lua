@@ -18,7 +18,7 @@ return {
             height = SIZES.HEIGHT,
           },
         },
-        -- previewer = true,
+        previewer = true,
         follow = true,
         no_ignore = true,
         hidden = true,
@@ -35,7 +35,7 @@ return {
             height = SIZES.HEIGHT,
           },
         },
-        -- previewer = true,
+        previewer = true,
         prompt_title = "Files",
       })
     end, { desc = "Telescope search files" })
@@ -48,7 +48,7 @@ return {
             height = SIZES.HEIGHT,
           },
         },
-        -- previewer = true,
+        previewer = true,
         prompt_title = "Old Files",
       })
     end, { desc = "Telescope search recent files" })
@@ -86,26 +86,26 @@ return {
 
     map("n", "<leader>fc", "<cmd>Telescope current_buffer_fuzzy_find<CR>", { desc = "Telescope find in current file" })
     map("n", "<leader>ft", "<cmd>Telescope terms<CR>", { desc = "Telescope terms" })
-    -- map("n", "<leader>th", "<cmd>Telescope themes<CR>", { desc = "Telescope NvChad themes" })
+    map("n", "<leader>th", "<cmd>Telescope themes<CR>", { desc = "Telescope NvChad themes" })
     map("n", "<leader>fr", "<cmd>Telescope lsp_references<CR>", { desc = "Telescope LSP references" })
     map("n", "<leader>ma", "<cmd>Telescope marks<CR>", { desc = "Telescope find marks" })
     map("n", "<leader>fh", "<cmd>Telescope highlights<CR>", { desc = "Telescope find highlights" })
     map("n", "<leader>fd", "<cmd>Telescope diagnostics<CR>", { desc = "Telescope LSP diagnostics" })
     map("n", "<leader>ts", "<cmd>Telescope treesitter<CR>", { desc = "Telescope TreeSitter" })
     map("n", "<leader>fp", "<cmd>Telescope builtin<CR>", { desc = "Telescope pickers" })
-    map("n", "<leader>gc", "<cmd>Telescope git_commits<CR>", { desc = "Telescope Git commits" })
+    map("n", "<leader>gcm", "<cmd>Telescope git_commits<CR>", { desc = "Telescope Git commits" })
     map("n", "<leader>gs", "<cmd>Telescope git_status<CR>", { desc = "Telescope Git status" })
     map("n", "<leader>f?", "<cmd>Telescope help_tags<CR>", { desc = "Telescope help tags" })
 
     opts = vim.tbl_deep_extend("force", opts, {
       defaults = {
         preview = {
-          hide_on_startup = false, -- hide preview: false
+          hide_on_startup = false, -- hide preview: true
         },
         results_title = false,
         selection_caret = " ",
         entry_prefix = " ",
-        layout_strategy = "vertical", -- "dropdown", "vertical", "center", "horizontal"
+        layout_strategy = "horizontal", -- "dropdown", "vertical", "center", "horizontal"
         layout_config = {
           horizontal = {
             width = SIZES.WIDTH,
