@@ -63,6 +63,7 @@ Recommended:
 - [ ] Fix:
   - Change UI theme
   - Format Rust, Ruby,...
+  - Attempt to call local 'module' (a nil value) [Issue 1]
 - [ ] Optimize plugin
 - [ ] Rebuild module structure
 - [ ] Add LSP
