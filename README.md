@@ -61,9 +61,9 @@ Recommended:
   - Auto-session
   - nvim-tree-text-objects
 - [ ] Fix:
-  - Change UI theme
   - Format Rust, Ruby,...
-  - Attempt to call local 'module' (a nil value) [Issue 1]
+  - Attempt to call local 'module' (a nil value) [issue 2](https://github.com/tranlynhathao/nvchad-macos/issues/2)
+  - Change UI theme [issue 3](https://github.com/tranlynhathao/nvchad-macos/issues/3)
 - [ ] Optimize plugin
 - [ ] Rebuild module structure
 - [ ] Add LSP
