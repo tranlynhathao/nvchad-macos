@@ -15,8 +15,39 @@ map("n", "E", "ge")
 -- k: move up
 -- l: move to right
 -- #################################
-map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "nvimtree toggle window" })
-map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "nvimtree focus window" })
+
+-- ~/.config/nvim/lua/mappings.lua
+
+-- Keymaps for general functionality
+-- Navigation & File
+map("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true }) -- Open markdown links
+map("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true }) -- Toggle wrap for markdown
+map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree window" })
+map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "Focus NvimTree window" })
+
+-- #################################
+-- Slime Integration
+-- #################################
+map("v", "<C-c>", "<Plug>SlimeSend", { noremap = true, silent = true })
+
+-- #################################
+-- Commenting Functions
+-- #################################
+map("n", "<leader>ch", function()
+  vim.cmd "normal! I// " -- Insert HTML comment (//) in Normal mode
+end, { desc = "Insert HTML comment (//) in Normal mode" })
+
+map("n", "<leader>cp", function()
+  vim.cmd "normal! I//- " -- Insert Pug comment (//-) in Normal mode
+end, { desc = "Insert Pug comment (//-) in Normal mode" })
+
+map("v", "<leader>ch", function()
+  toggle_pug_comment "html" -- Toggle HTML comments (//) in Visual mode
+end, { desc = "Toggle HTML comments (//) in Visual mode" })
+
+map("v", "<leader>cp", function()
+  toggle_pug_comment "pug" -- Toggle Pug comments (//-) in Visual mode
+end, { desc = "Toggle Pug comments (//-) in Visual mode" })
 
 -- compress code
 map(
