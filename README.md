@@ -67,3 +67,4 @@ Recommended:
 - [ ] Optimize plugin
 - [ ] Rebuild module structure
 - [ ] Add LSP
+- [ ] Adjust keymaps: abolish
