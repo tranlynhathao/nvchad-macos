@@ -117,8 +117,6 @@ return {
   { import = "plugins.override.docs_view" },
   { import = "plugins.override.lspsaga" },
   { import = "plugins.override.nvim-ufo" },
-  { import = "plugins.override.leet_buddy" },
-  { import = "plugins.override.leetcode_nvim" },
   -- { import = "plugins.override.nvim-doc-view" },
   -- { import = "plugins.override.telescope-lsp-docs" },
 }
