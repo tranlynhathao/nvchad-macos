@@ -97,6 +97,10 @@ map("v", "<ESC>k", ":move '<-2<CR>gv")
 -- ## Command: <ESC>nj/k (n is character)
 local function move_line_or_block(direction)
   local n = tonumber(vim.fn.input("Move by how many lines? ", "1")) or 1
+  if n < 1 then
+    n = 1
+  end
+  local line = vim.fn.line "."
 
   if vim.fn.mode() == "v" or vim.fn.mode() == "V" then
     if direction == "down" then
@@ -105,7 +109,6 @@ local function move_line_or_block(direction)
       vim.cmd(string.format(":'<,'>move '<-%d", n))
     end
   else
-    local line = vim.fn.line "."
     if direction == "down" then
       vim.cmd(string.format(":move %d", line + n))
     elseif direction == "up" then
