@@ -3,6 +3,7 @@ return {
   { import = "plugins.local.js-playground" },
   { import = "plugins.local.popurri" },
   { import = "plugins.local.yerbreak" },
+
   -- ### Spec plugins ###
   -- { import = "plugins.spec.solarized-osaka" },
   { import = "plugins.spec.autopairs" },
@@ -84,7 +85,9 @@ return {
   { import = "plugins.spec.friendly-snippets" },
   { import = "plugins.spec.jsdoc" },
   { import = "plugins.spec.typescript" },
-  -- { import = "plugins.spec.merge-tool" },
+  { import = "plugins.spec.treesitter-textobjects" },
+  { import = "plugins.spec.git-conflict" },
+
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
   { import = "plugins.override.blankline" },
@@ -114,7 +117,8 @@ return {
   { import = "plugins.override.docs_view" },
   { import = "plugins.override.lspsaga" },
   { import = "plugins.override.nvim-ufo" },
-  { import = "plugins.spec.treesitter-textobjects" },
+  { import = "plugins.override.leet_buddy" },
+  { import = "plugins.override.leetcode_nvim" },
   -- { import = "plugins.override.nvim-doc-view" },
   -- { import = "plugins.override.telescope-lsp-docs" },
 }
