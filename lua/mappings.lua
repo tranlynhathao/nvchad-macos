@@ -17,6 +17,8 @@ map("n", "E", "ge")
 
 -- xp: move charater to the right
 -- xhp: move character to the left
+
+-- n>>: indent n lines
 -- #################################
 
 map("n", "<leader>sn", ":Telescope scissors<CR>", { noremap = true, silent = true, desc = "Search Snippets" })
