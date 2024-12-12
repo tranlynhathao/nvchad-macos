@@ -58,6 +58,9 @@ Recommended:
 ### Checklist
 
 - [ ] Require plugin module
+  - officer
+  - savior
+  - gotest
   - Auto-session
   - nvim-tree-text-objects
 - [ ] Fix:

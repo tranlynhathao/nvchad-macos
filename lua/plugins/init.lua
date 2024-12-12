@@ -89,6 +89,7 @@ return {
   { import = "plugins.spec.git-conflict" },
   { import = "plugins.spec.abolish" },
   { import = "plugins.spec.sandwich" },
+  { import = "plugins.spec.coerce" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
@@ -119,6 +120,7 @@ return {
   { import = "plugins.override.docs_view" },
   { import = "plugins.override.lspsaga" },
   { import = "plugins.override.nvim-ufo" },
+  { import = "plugins.override.scissors" },
   -- { import = "plugins.override.nvim-doc-view" },
   -- { import = "plugins.override.telescope-lsp-docs" },
 }

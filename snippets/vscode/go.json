@@ -1,0 +1,12 @@
+{
+	"fmt.Println": {
+		"prefix": "fmt",
+		"body": ["fmt.Println($1)"],
+		"description": "Print to console"
+	},
+	"func": {
+		"prefix": "func",
+		"body": ["func $1($2) $3 {", "\t$4", "}"],
+		"description": "Create a function"
+	}
+}

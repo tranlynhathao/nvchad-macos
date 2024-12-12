@@ -1,0 +1,12 @@
+{
+	"printf": {
+		"prefix": "printf",
+		"body": ["printf(\"$1\\n\");"],
+		"description": "Print to console"
+	},
+	"function": {
+		"prefix": "func",
+		"body": ["$1 $2($3) {", "\t$4", "}"],
+		"description": "Create a function"
+	}
+}
