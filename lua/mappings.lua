@@ -15,7 +15,8 @@ map("n", "E", "ge")
 -- k: move up
 -- l: move to right
 
--- xp and hp
+-- xp: move charater to the right
+-- xhp: move character to the left
 -- #################################
 
 map("n", "<leader>sn", ":Telescope scissors<CR>", { noremap = true, silent = true, desc = "Search Snippets" })
