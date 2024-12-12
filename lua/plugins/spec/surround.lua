@@ -7,8 +7,8 @@ return {
   config = function()
     require("nvim-surround").setup {
       keymaps = {
-        normal = "ys",
-        normal_cur = "yss",
+        normal = "ys", -- word
+        normal_cur = "yss", -- line
         delete = "ds",
         change = "cs",
         visual = "<leader>sr",
