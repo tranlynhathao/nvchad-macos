@@ -14,7 +14,11 @@ map("n", "E", "ge")
 -- j: move down
 -- k: move up
 -- l: move to right
+
+-- xp and hp
 -- #################################
+
+map("n", "<leader>sn", ":Telescope scissors<CR>", { noremap = true, silent = true, desc = "Search Snippets" })
 
 -- ~/.config/nvim/lua/mappings.lua
 
