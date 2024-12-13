@@ -36,7 +36,7 @@ lspconfig.tsserver.setup {
     client.server_capabilities.documentRangeFormattingProvider = false
     on_attach(client, bufnr)
   end,
-  root_dir = lspconfig.util.root_pattern "package.json",
+  root_dir = require("lspconfig.util").root_pattern "package.json, .git",
   single_file_support = false,
 }
 
