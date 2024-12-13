@@ -1,7 +1,3 @@
-if not require("configs").gale.angular then
-  return {}
-end
-
 return {
   {
     "neovim/nvim-lspconfig",

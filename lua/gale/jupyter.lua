@@ -1,7 +1,3 @@
-if not require("configs").gale.jupyter then
-  return {}
-end
-
 local function get_commenter()
   local commenter = { python = "# ", lua = "-- ", julia = "# ", fennel = ";; ", scala = "// ", r = "# " }
   local bufnr = vim.api.nvim_get_current_buf()

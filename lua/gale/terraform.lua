@@ -1,7 +1,3 @@
-if not require("configs").gale.terraform then
-  return {}
-end
-
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "hcl", "terraform" },
   desc = "terraform/hcl commentstring configuration",

@@ -1,7 +1,3 @@
-if not require("configs").gale.java then
-  return {}
-end
-
 local function get_jdtls()
   local mason_registry = require "mason-registry"
   local jdtls = mason_registry.get_package "jdtls"

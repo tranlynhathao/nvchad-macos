@@ -1,7 +1,3 @@
-if not require("configs").gale.r then
-  return {}
-end
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",
@@ -14,7 +10,7 @@ return {
     opts = {
       servers = {
         r_language_server = {
-          flags = { debounce_text_changes = 150 },
+          flags = { debounce_text_changes = 100 },
         },
       },
     },
