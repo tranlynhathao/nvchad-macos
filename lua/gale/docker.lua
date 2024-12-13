@@ -1,7 +1,3 @@
-if not require("configs").gale.docker then
-  return {}
-end
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",

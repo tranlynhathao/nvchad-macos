@@ -1,7 +1,3 @@
-if not require("configs").gale.kotlin then
-  return {}
-end
-
 local function get_debug_adapter()
   local mason_registry = require "mason-registry"
   local debug_adapter = mason_registry.get_package "kotlin-debug-adapter"

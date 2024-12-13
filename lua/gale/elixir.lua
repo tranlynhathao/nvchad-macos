@@ -1,7 +1,3 @@
-if not require("configs").gale.elixir then
-  return {}
-end
-
 return {
   {
     "nvim-treesitter/nvim-treesitter",

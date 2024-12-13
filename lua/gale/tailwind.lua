@@ -1,7 +1,3 @@
-if not require("configs").gale.tailwind then
-  return {}
-end
-
 return {
   {
     "neovim/nvim-lspconfig",
