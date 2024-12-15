@@ -37,7 +37,7 @@ vim.api.nvim_create_user_command("Lazygit", function()
 end, {})
 
 -- Notify configuration
-local original_notify = vim.notify
+local original_notify = vim.notify or function() end
 vim.notify = function(msg, level, opts)
   if not msg:match "Re-sourcing your config is not supported with lazy.nvim" then
     original_notify(msg, level, opts)
