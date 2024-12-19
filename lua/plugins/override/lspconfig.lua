@@ -18,24 +18,25 @@ return {
           end
         end,
       },
-      clangd = {
-        cmd = {
-          "clangd",
-          "--background-index",
-          "--clang-tidy",
-          "--completion-style=detailed",
-          "-std=c++14",
-          "-std=c11",
-        },
-        init_options = {
-          fallbackFlags = { "-std=c++14" },
-        },
-        settings = {
-          clangd = {
-            completion = { enableSnippets = true },
-          },
-        },
-      },
+      -- clangd = {
+      --   cmd = {
+      --     "clangd",
+      --     "--background-index",
+      --     "--clang-tidy",
+      --     "--completion-style=detailed",
+      --     -- "-std=c++14",
+      --     "-std=c11",
+      --   },
+      --   init_options = {
+      --     fallbackFlags = { "-std=c14" },
+      --   },
+      --   settings = {
+      --     clangd = {
+      --       completion = { enableSnippets = true },
+      --     },
+      --   },
+      -- },
+      clangd = {},
       css_variables = {},
       cssls = {},
       eslint = {},
