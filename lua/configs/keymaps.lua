@@ -28,6 +28,7 @@ cmap("<C-a>", "<Home>")
 
 -- exit insert mode with jk
 imap("jk", "<esc>")
+-- imap(";", "<esc>")
 
 -- Add undo break-points
 imap(",", ",<c-g>u")
