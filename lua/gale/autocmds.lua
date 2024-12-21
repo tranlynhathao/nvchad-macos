@@ -283,3 +283,17 @@ autocmd("UILeave", {
     io.write "\027]11;#1e1e2e\007"
   end,
 })
+
+-- local augroup = vim.api.nvim_create_augroup
+-- local autocmd = vim.api.nvim_create_autocmd
+-- local vault_location = vim.fn.expand "~/Documents/ObsidianVault" .. "/**/*.md"
+-- local obsidian_group = augroup("obsidian_cmds", { clear = true })
+--
+-- autocmd("BufRead", {
+--   pattern = vault_location,
+--   group = obsidian_group,
+--   callback = function()
+--     vim.cmd "ObsidianOpen"
+--   end,
+--   desc = "Opens the current buffer in Obsidian",
+-- })
