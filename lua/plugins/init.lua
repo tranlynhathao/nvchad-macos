@@ -1,4 +1,5 @@
 return {
+  -- ### Local plugins ###
   { import = "plugins.local.binary-peek" },
   { import = "plugins.local.js-playground" },
   { import = "plugins.local.popurri" },
