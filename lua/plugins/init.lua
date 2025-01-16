@@ -7,6 +7,7 @@ return {
 
   -- ### Spec plugins ###
   -- { import = "plugins.spec.solarized-osaka" },
+  { import = "plugins.spec.nim" },
   { import = "plugins.spec.autopairs" },
   { import = "plugins.spec.better-escape" },
   { import = "plugins.spec.ccc" },
