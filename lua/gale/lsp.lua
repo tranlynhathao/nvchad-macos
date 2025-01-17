@@ -13,6 +13,7 @@ local on_attach = function(_, bufnr)
     vim.keymap.set(mode, lhs, rhs, options)
   end
 
+  map("n", "K", vim.lsp.buf.hover, {})
   map("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition" })
   map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP go to implementation" })
   map("n", "<leader>gd", vim.lsp.buf.declaration, { desc = "LSP go to declaration" })
@@ -21,6 +22,22 @@ local on_attach = function(_, bufnr)
   map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, { desc = "LSP remove workspace folder" })
   map("n", "<leader>gr", vim.lsp.buf.references, { desc = "LSP show references" })
   map("n", "<leader>gt", vim.lsp.buf.type_definition, { desc = "LSP go to type definition" })
+  -- map("n", "<leader>rn", vim.lsp.buf.rename, {})
+  -- map({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, {})
+
+  vim.keymap.set("n", "<leader>me", function()
+    local filetype = vim.bo.filetype
+    local symbols_map = {
+      python = "function",
+      javascript = "function",
+      typescript = "function",
+      java = "class",
+      lua = "function",
+      go = { "method", "struct", "interface" },
+    }
+    local symbols = symbols_map[filetype] or "function"
+    require("telescope.builtin").lsp_document_symbols { symbols = symbols }
+  end, {})
 
   map("n", "<leader>wl", function()
     print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
