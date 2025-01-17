@@ -373,6 +373,7 @@ map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "Toggle nvcheatsheet" }
 
 -- LSP
 map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
+map("n", "<leader>de", vim.diagnostic.open_float)
 
 -- Minty
 map("n", "<leader>cp", function()

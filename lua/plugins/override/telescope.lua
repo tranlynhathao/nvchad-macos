@@ -53,7 +53,7 @@ return {
       })
     end, { desc = "Telescope search recent files" })
 
-    map("n", "<leader>fw", function()
+    map("n", "<leader>fw", function() -- CTRL Q combinations [:cdo ]
       pickers.grep("live_grep", nil, nil, {
         layout_strategy = "horizontal",
         layout_config = {
