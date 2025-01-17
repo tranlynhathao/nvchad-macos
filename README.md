@@ -2,8 +2,8 @@
 
 <p align="center">
     <!-- <img width="45%" src="https://i.imgur.com/UlaUGNg.png"> -->
-    <img with="45%" src="https://ibb.co/2WBpHBz">
-    <img with="45%" src="https://ibb.co/q0jYw9f">
+    <img with="45%" src="https://i.ibb.co/xmLqQG0/Screenshot-2025-01-17-at-10-13-05.png">
+    <img with="45%" src="https://i.ibb.co/tQ51F50/Screenshot-2025-01-17-at-10-11-50.png">
     <!-- <img width="45%" src="https://i.imgur.com/ON6aN9p.jpeg"> -->
 </p>
 <hr>
