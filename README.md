@@ -1,8 +1,10 @@
 # NvChad Neovim configuration
 
 <p align="center">
-  <img width="45%" src="https://i.imgur.com/UlaUGNg.png">
-  <img width="45%" src="https://i.imgur.com/ON6aN9p.jpeg">
+    <!-- <img width="45%" src="https://i.imgur.com/UlaUGNg.png"> -->
+    <img with="45%" src="https://ibb.co/2WBpHBz">
+    <img with="45%" src="https://ibb.co/q0jYw9f">
+    <!-- <img width="45%" src="https://i.imgur.com/ON6aN9p.jpeg"> -->
 </p>
 <hr>
 
