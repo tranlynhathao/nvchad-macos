@@ -95,7 +95,20 @@ capabilities.textDocument.completion.completionItem = {
   },
 }
 
-require("lspconfig").rust_analyzer.setup {
+local lspconfig = require "lspconfig"
+
+lspconfig.configs.prolog_lsp = {
+  default_config = {
+    cmd = { "swipl", "--lsp" },
+    filetypes = { "prolog" },
+    root_dir = function(startpath)
+      return vim.fs.dirname(vim.fs.find(".git", { path = startpath, upward = true })[1])
+    end,
+    settings = {},
+  },
+}
+
+lspconfig.rust_analyzer.setup {
   on_attach = function(client, bufnr)
     local map = function(mode, lhs, rhs, opts)
       local options = { buffer = bufnr }

@@ -92,6 +92,7 @@ return {
   { import = "plugins.spec.abolish" },
   { import = "plugins.spec.sandwich" },
   { import = "plugins.spec.coerce" },
+  { import = "plugins.spec.prolog" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
