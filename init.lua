@@ -26,6 +26,15 @@ require "functions"
 -- Autocommand to reload config on save
 vim.cmd "source ~/.config/nvim/lua/chadrc.lua"
 
+vim.cmd [[
+  autocmd BufRead,BufNewFile *.pl
+    \ if search(':-', 'nw') |
+    \   let b:filetype = 'prolog' |
+    \ else |
+    \   let b:filetype = 'perl' |
+    \ endif
+]]
+
 -- Autocommand to reload Lua files on save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "*.lua",

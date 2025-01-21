@@ -10,49 +10,41 @@ return {
           cterm_color = "65",
           name = "Zsh",
         },
-        [".prettierrc.json"] = {
-          icon = "",
-          color = "#cbcb41",
-          name = "Prettier",
+        -- ["pl"] = {
+        --   icon = "🐪",
+        --   color = "#3178c6",
+        --   cterm_color = "74",
+        --   name = "Perl",
+        -- },
+        ["prolog"] = {
+          icon = "",
+          color = "#A074C4",
+          cterm_color = "140",
+          name = "Prolog",
         },
-        ["vitest.config.ts"] = {
-          icon = "ﭧ",
-          color = "#FA9E59",
-          name = "Vitest",
+        ["pl"] = {
+          icon = "",
+          color = "#A074C4",
+          cterm_color = "140",
+          name = "PrologFile",
         },
-        pug = {
-          icon = "", -- 謹
+        ["pug"] = {
+          icon = "",
           color = "#a86454",
           cterm_color = "65",
           name = "Pug",
         },
-        rb = {
+        ["rb"] = {
           icon = "",
           color = "#f50707",
           cterm_color = "167",
           name = "Ruby",
         },
-        Makefile = {
+        ["Makefile"] = {
           icon = "",
           color = "#6d8086",
           cterm_color = "66",
           name = "Makefile",
-        },
-        ["rockspec"] = {
-          icon = "",
-          color = "#a074c4",
-          cterm_color = "140",
-          name = "Rockspec",
-        },
-        ["vitest.config.js"] = {
-          icon = "ﭧ",
-          color = "#cbcb41",
-          name = "VitestJS",
-        },
-        ["vitest.ts"] = {
-          icon = "ﭧ", -- 텦termicons
-          color = "#FA9E59",
-          name = "VitestTS",
         },
       },
       color_icons = true,
