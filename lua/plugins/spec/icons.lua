@@ -13,9 +13,9 @@ return {
     "nvim-lua/plenary.nvim",
     config = function()
       local emoji_map = {
-        [":penguin:"] = "🐧",
-        [":smile:"] = "😄",
-        [":heart:"] = "❤️",
+        ["🐧"] = "🐧",
+        ["😄"] = "😄",
+        ["❤️"] = "❤️",
       }
 
       vim.api.nvim_create_autocmd("BufWritePre", {
