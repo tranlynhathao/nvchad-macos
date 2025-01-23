@@ -108,6 +108,23 @@ lspconfig.configs.prolog_lsp = {
   },
 }
 
+-- lspconfig.cssls.setup {
+--   cmd = { "css-languageserver", "--stdio" },
+--   filetypes = { "css", "scss", "less" },
+--   root_dir = require("lspconfig.util").root_pattern("package.json", ".git"),
+--   settings = {
+--     css = {
+--       validate = true,
+--     },
+--     less = {
+--       validate = true,
+--     },
+--     scss = {
+--       validate = true,
+--     },
+--   },
+-- }
+
 lspconfig.rust_analyzer.setup {
   on_attach = function(client, bufnr)
     local map = function(mode, lhs, rhs, opts)
