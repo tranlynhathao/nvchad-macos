@@ -46,6 +46,19 @@ return {
           cterm_color = "66",
           name = "Makefile",
         },
+        ["netlify.toml"] = {
+          icon = "",
+          color = "#15847c",
+          cterm_color = "29",
+          name = "Netlify",
+        },
+
+        [".all-contributorsrc"] = {
+          icon = "",
+          color = "#ffcc00",
+          cterm_color = "220",
+          name = "AllContributors",
+        },
       },
       color_icons = true,
       default = true,
