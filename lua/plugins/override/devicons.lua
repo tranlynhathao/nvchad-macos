@@ -59,6 +59,12 @@ return {
           cterm_color = "220",
           name = "AllContributors",
         },
+        [".parcelrc"] = {
+          icon = "",
+          color = "#f8b400",
+          cterm_color = "214",
+          name = "ParcelRC",
+        },
       },
       color_icons = true,
       default = true,
