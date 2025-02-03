@@ -124,6 +124,7 @@ return {
   { import = "plugins.override.lspsaga" },
   { import = "plugins.override.nvim-ufo" },
   { import = "plugins.override.scissors" },
+  { import = "plugins.override.vim-json" },
   -- { import = "plugins.override.nvim-doc-view" },
   -- { import = "plugins.override.telescope-lsp-docs" },
 }

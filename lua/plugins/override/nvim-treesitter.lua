@@ -4,6 +4,7 @@ return {
   dependencies = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/playground" },
   opts = {
     ensure_installed = {
+      "json",
       "astro",
       "bash",
       "c",
