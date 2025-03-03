@@ -5,7 +5,7 @@ local M = {}
 
 local modules = require("gale.chadrc_aux").modules
 local themes_customs = require("gale.chadrc_aux").themes_customs
--- vim.opt.termguicolors = true
+vim.opt.termguicolors = true
 
 M.base46 = {
   transparency = true,
