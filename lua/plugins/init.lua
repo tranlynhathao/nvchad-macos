@@ -93,6 +93,7 @@ return {
   { import = "plugins.spec.sandwich" },
   { import = "plugins.spec.coerce" },
   { import = "plugins.spec.prolog" },
+  { import = "plugins.spec.copilot" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
