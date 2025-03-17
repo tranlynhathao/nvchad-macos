@@ -5,8 +5,8 @@ return {
     local map = vim.keymap.set
     local pickers = require("gale.telescope").pickers
     local SIZES = {
-      HEIGHT = 0.75,
-      WIDTH = 0.66,
+      HEIGHT = 0.9,
+      WIDTH = 0.9,
       PREVIEW_WIDTH = 0.5,
     }
 
@@ -57,15 +57,15 @@ return {
       pickers.grep("live_grep", nil, nil, {
         layout_strategy = "horizontal",
         layout_config = {
-          -- vertical = {
-          --   width = SIZES.WIDTH,
-          --   height = SIZES.HEIGHT,
-          -- },
           horizontal = {
-            width = 0.8,
-            height = 0.8,
-            preview_width = 0.5,
+            width = SIZES.WIDTH,
+            height = SIZES.HEIGHT,
           },
+          -- vertical = {
+          --   width = 0.8,
+          --   height = 0.8,
+          --   preview_width = 0.5,
+          -- },
         },
         previewer = true,
         prompt_title = "Live Grep",
