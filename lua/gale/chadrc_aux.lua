@@ -142,19 +142,29 @@ local filename = function()
   if name ~= "Empty" then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
     if devicons_present then
-      local ft_hl_id = vim.api.nvim_get_hl_id_by_name("DevIcon" .. ext)
-        or vim.api.nvim_get_hl_id_by_name "DevIconDefault"
+      -- clean up ext
+      local sanitized_ext = ext:gsub("[^%w_]", "")
+      local hl_name = "DevIcon" .. sanitized_ext
+      local ft_hl_id = vim.api.nvim_get_hl_id_by_name(hl_name)
 
-      if not ft_hl_id then
-        print("No valid highlight group found for 'DevIcon" .. ext .. "' or fallback.")
+      if not ft_hl_id or ft_hl_id == 0 then
+        print("Invalid highlight group:", hl_name)
+        ft_hl_id = vim.api.nvim_get_hl_id_by_name "DevIconDefault"
+      end
+
+      if not ft_hl_id or ft_hl_id == 0 then
+        print("No valid highlight group found for", hl_name, "or fallback.")
         return
       end
 
       local ft_hl = vim.api.nvim_get_hl(0, { id = ft_hl_id })
       local ft_fg = ft_hl and ft_hl.fg and string.format("#%06x", ft_hl.fg) or "#000000"
-      local st_hl_name = "St_DevIcon" .. ext
+
+      local st_hl_name = "St_DevIcon" .. sanitized_ext
+
       hl = "%#" .. st_hl_name .. "#"
       vim.api.nvim_set_hl(0, st_hl_name, { bg = transparency and "NONE" or "#242d3d", fg = ft_fg })
+
       local ft_icon = devicons.get_icon(name)
       icon = (ft_icon ~= nil and "  " .. ft_icon) or ("  " .. icon)
     end
