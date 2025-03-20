@@ -43,6 +43,14 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end,
 })
 
+-- Set cursorline
+vim.opt.guicursor = "n-v-c:block-Cursor/lCursor-blinkwait700-blinkoff400-blinkon250"
+
+vim.cmd [[
+  highlight Cursor guibg=#ffcc00 guifg=black
+  highlight lCursor guibg=#ffcc00 guifg=black
+]]
+
 -- Lazygit command
 vim.api.nvim_create_user_command("Lazygit", function()
   require("lazygit").lazygit()
