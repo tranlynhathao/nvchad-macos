@@ -44,7 +44,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 })
 
 -- Set cursorline
-vim.opt.guicursor = "n-v-c:block-Cursor/lCursor-blinkwait700-blinkoff400-blinkon250"
+vim.opt.guicursor = "n-v-c:block-Cursor/lCursor-blinkwait700-blinkoff400-blinkon250,i-ci-ve:ver25,r-cr:hor20,o:hor50"
 
 vim.cmd [[
   highlight Cursor guibg=#ffcc00 guifg=black
