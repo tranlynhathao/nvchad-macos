@@ -4,9 +4,6 @@ return {
   cmd = "Copilot",
   event = "InsertEnter",
   config = function()
-    -- Set local leader to "."
-    vim.g.maplocalleader = "."
-
     require("copilot").setup {
       suggestion = {
         enabled = true,

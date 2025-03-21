@@ -1,11 +1,14 @@
-vim.g.maplocalleader = ","
-
 ---@type NvPluginSpec
+
 return {
   "stevearc/oil.nvim",
   event = "VeryLazy",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   opts = function(_, opts)
+    -- Set localleader to "," for oil
+    local prev_localleader = vim.g.maplocalleader
+    vim.g.maplocalleader = ","
+
     local util = require "oil.util"
     local map = require("gale.utils").glb_map
 
@@ -147,6 +150,11 @@ return {
     end, { desc = "Open Oil" })
 
     opts = vim.tbl_deep_extend("force", opts, new_opts)
+
+    vim.defer_fn(function()
+      vim.g.maplocalleader = prev_localleader
+    end, 0)
+
     return opts
   end,
 }
