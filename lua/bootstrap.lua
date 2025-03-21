@@ -1,4 +1,7 @@
 vim.g.mapleader = " "
+-- Set local leader to "."
+vim.g.maplocalleader = "."
+
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 

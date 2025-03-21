@@ -64,6 +64,13 @@ vim.notify = function(msg, level, opts)
   end
 end
 
+vim.notify = function(msg, ...)
+  if msg:match "nvchad.stl.default" then
+    return
+  end
+  return require "notify"(msg, ...)
+end
+
 -- Slime configuration
 vim.g.slime_target = "tmux"
 vim.g.slime_bracketed_paste = 1
