@@ -54,13 +54,40 @@ return {
           },
         },
       },
-      jsonls = {},
+      jsonls = {
+        settings = {
+          json = {
+            schemas = require("schemastore").json.schemas(),
+            validate = { enable = true },
+          },
+        },
+        initializationOptions = {
+          editorInfo = {
+            name = "Neovim",
+            version = "0.10.4",
+          },
+          editorPluginInfo = {
+            name = "nvim-lspconfig",
+            version = "1.7.0",
+          },
+        },
+      },
       lua_ls = {
         settings = {
           Lua = {
             hint = { enable = true },
             telemetry = { enable = false },
             diagnostics = { globals = { "bit", "vim", "it", "describe", "before_each", "after_each" } },
+          },
+        },
+        initializationOptions = {
+          editorInfo = {
+            name = "Neovim",
+            version = "0.10.4",
+          },
+          editorPluginInfo = {
+            name = "nvim-lspconfig",
+            version = "1.7.0",
           },
         },
       },
