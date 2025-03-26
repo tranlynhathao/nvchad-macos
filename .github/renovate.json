@@ -1,0 +1,39 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"extends": ["config:base"],
+	"packageRules": [
+		{
+			"matchDepTypes": ["dependencies", "devDependencies"],
+			"groupName": "Neovim Plugins",
+			"matchPackagePrefixes": [
+				"nvim-",
+				"vim-",
+				"telescope-",
+				"treesitter-",
+				"lsp-",
+				"cmp-",
+				"luasnip-",
+				"conform-"
+			],
+			"schedule": ["weekly"]
+		},
+		{
+			"matchPaths": [
+				"lua/plugins/init.lua",
+				"lua/plugins/override/*.lua",
+				"lua/plugins/spec/*.lua"
+			],
+			"groupName": "Neovim Plugin Overrides",
+			"schedule": ["weekly"]
+		},
+		{
+			"matchPaths": ["lazy-lock.json"],
+			"groupName": "Neovim Lazy Lockfile",
+			"schedule": ["weekly"],
+			"automerge": true
+		}
+	],
+	"automerge": false,
+	"prHourlyLimit": 2,
+	"rebaseWhen": "behind-base-branch"
+}
