@@ -15,7 +15,7 @@
 				"luasnip-",
 				"conform-"
 			],
-			"schedule": ["weekly"]
+			"schedule": ["before 5am on Monday"]
 		},
 		{
 			"matchPaths": [
@@ -24,12 +24,12 @@
 				"lua/plugins/spec/*.lua"
 			],
 			"groupName": "Neovim Plugin Overrides",
-			"schedule": ["weekly"]
+			"schedule": ["before 5am on Monday"]
 		},
 		{
 			"matchPaths": ["lazy-lock.json"],
 			"groupName": "Neovim Lazy Lockfile",
-			"schedule": ["weekly"],
+			"schedule": ["before 5am on Monday"],
 			"automerge": true
 		}
 	],
