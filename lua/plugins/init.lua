@@ -4,6 +4,7 @@ return {
   { import = "plugins.local.js-playground" },
   { import = "plugins.local.popurri" },
   { import = "plugins.local.yerbreak" },
+  { import = "plugins.Local.profile" },
 
   -- ### Spec plugins ###
   -- { import = "plugins.spec.solarized-osaka" },
