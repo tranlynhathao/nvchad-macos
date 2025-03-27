@@ -71,6 +71,9 @@ vim.notify = function(msg, ...)
   return require "notify"(msg, ...)
 end
 
+vim.cmd "syntax enable"
+vim.cmd "filetype plugin indent on"
+
 -- Slime configuration
 vim.g.slime_target = "tmux"
 vim.g.slime_bracketed_paste = 1
