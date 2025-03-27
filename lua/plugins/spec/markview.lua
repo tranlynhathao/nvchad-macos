@@ -1,10 +1,11 @@
----@type NvPluginSpec
+-- @type NvPluginSpec
 return {
   "OXY2DEV/markview.nvim",
   lazy = false,
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
+    { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "java", "markdown", "markdown_inline" } } },
   },
   opts = function(_, opts)
     local presets = require "markview.presets"
@@ -18,8 +19,8 @@ return {
         callbacks = {
           on_enable = function(_, win)
             -- https://github.com/OXY2DEV/markview.nvim/issues/75
-            vim.wo[win].wrap = false
 
+            vim.wo[win].wrap = false
             -- https://segmentfault.com/q/1010000000532491
             vim.wo[win].conceallevel = 2
             vim.wo[win].concealcursor = "nivc"
@@ -38,6 +39,9 @@ return {
           enable = true,
           hl = nil,
         },
+        highlight = {
+          enable = true,
+        },
       },
       html = {
         enable = true,
@@ -45,11 +49,16 @@ return {
           enable = true,
           default = {
             conceal = true,
-            ---@type string?
             hl = nil,
           },
         },
       },
+    }
+
+    -- Treesitter setup
+    require("nvim-treesitter.configs").setup {
+      ensure_installed = { "java", "markdown", "markdown_inline" },
+      highlight = { enable = true },
     }
 
     opts = vim.tbl_deep_extend("force", new_opts, opts or {})
