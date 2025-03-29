@@ -114,16 +114,36 @@ return {
           },
         },
         file_ignore_patterns = { "node_modules" },
+        -- sorting_strategy = "ascending", -- ascending, descending
+        -- path_display can combine multiple options
+        -- path_display = { "smart", "truncate" }, -- tail, relative, shorten, smart, truncate, hidden, filename_first, absolute
         mappings = {
           i = {
             ["<C-j>"] = require("telescope.actions").move_selection_next,
             ["<C-k>"] = require("telescope.actions").move_selection_previous,
             ["<C-h>"] = require("telescope.actions.layout").toggle_preview,
+            ["<C-l>"] = require("telescope.actions.layout").toggle_preview,
             ["<F1>"] = require("telescope.actions.layout").toggle_preview,
+            ["<C-p>"] = function()
+              local entry = require("telescope.actions.state").get_selected_entry()
+              if entry and entry.path then
+                vim.notify(entry.path, vim.log.levels.INFO)
+              else
+                vim.notify("No file selected", vim.log.levels.WARN)
+              end
+            end,
           },
           n = {
             ["<C-h>"] = require("telescope.actions.layout").toggle_preview,
             ["<F1>"] = require("telescope.actions.layout").toggle_preview,
+            ["<C-p>"] = function()
+              local entry = require("telescope.actions.state").get_selected_entry()
+              if entry and entry.path then
+                vim.notify(entry.path, vim.log.levels.INFO)
+              else
+                vim.notify("No file selected", vim.log.levels.WARN)
+              end
+            end,
           },
         },
       },
