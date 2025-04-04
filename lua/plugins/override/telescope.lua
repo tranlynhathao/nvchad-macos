@@ -124,7 +124,7 @@ return {
             ["<C-h>"] = require("telescope.actions.layout").toggle_preview,
             ["<C-l>"] = require("telescope.actions.layout").toggle_preview,
             ["<F1>"] = require("telescope.actions.layout").toggle_preview,
-            ["<C-p>"] = function()
+            ["<C-g>"] = function()
               local entry = require("telescope.actions.state").get_selected_entry()
               if entry and entry.path then
                 vim.notify(entry.path, vim.log.levels.INFO)
@@ -136,7 +136,7 @@ return {
           n = {
             ["<C-h>"] = require("telescope.actions.layout").toggle_preview,
             ["<F1>"] = require("telescope.actions.layout").toggle_preview,
-            ["<C-p>"] = function()
+            ["<C-g>"] = function()
               local entry = require("telescope.actions.state").get_selected_entry()
               if entry and entry.path then
                 vim.notify(entry.path, vim.log.levels.INFO)

@@ -77,6 +77,10 @@ map("t", "<C-l>", "<C-\\><C-n><C-w>l")
 -- map("i", ".", ".<c-g>u")
 -- map("i", ";", ";<c-g>u")
 
+map("n", "<C-g>", function()
+  print(vim.fn.expand "%:p")
+end, { desc = "Show absolute file path" })
+
 -- Resize window
 map("n", "<C-w><left>", "<C-w><")
 map("n", "<C-w><right>", "<C-w>>")
