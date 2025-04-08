@@ -77,8 +77,8 @@ map("t", "<C-l>", "<C-\\><C-n><C-w>l")
 -- map("i", ".", ".<c-g>u")
 -- map("i", ";", ";<c-g>u")
 
-map("n", "<C-g>", function()
-  print(vim.fn.expand "%:p")
+vim.keymap.set("n", "<C-g>", function()
+  vim.notify(vim.fn.expand "%:p", vim.log.levels.INFO, { title = "Current File" })
 end, { desc = "Show absolute file path" })
 
 -- Resize window
