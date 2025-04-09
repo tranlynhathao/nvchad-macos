@@ -2,15 +2,14 @@
 
 ---@type ChadrcConfig
 local M = {}
-
-local modules = require("gale.chadrc_aux").modules
-local themes_customs = require("gale.chadrc_aux").themes_customs
-vim.opt.termguicolors = true
+local aux = require "gale.chadrc_aux"
+local modules = aux.modules
+local themes_customs = aux.themes_customs
 
 M.base46 = {
   transparency = true,
-  theme = "gruvbox", ---@diagnostic disable-line -- TODO: remove kanagawa
-  theme_toggle = { "gruvbox", "gruvbox" }, ---@diagnostic disable-line --TODO remove kanagawa
+  theme = "gruvbox",
+  theme_toggle = { "gruvbox", "gruvbox" },
   integrations = {
     "blankline",
     "cmp",
@@ -34,7 +33,7 @@ M.base46 = {
 M.base46.hl_override = {
   DevIconMd = { fg = "#FFFFFF", bg = "NONE" },
   FloatTitle = { link = "FloatBorder" },
-  CursorLine = { link = "black2" },
+  CursorLine = { bg = "black2" },
   CursorLineNr = { bold = true },
   CmpBorder = { link = "FloatBorder" },
   CmpDocBorder = { link = "FloatBorder" },
@@ -42,9 +41,9 @@ M.base46.hl_override = {
   TelescopePromptBorder = { link = "FloatBorder" },
   NeogitDiffContext = { bg = "#171B21" },
   NeogitDiffContextCursor = { bg = "black2" },
-  NeogitDiffContextHighlight = { bg = "NeogitDiffContext" },
+  NeogitDiffContextHighlight = { link = "NeogitDiffContext" },
   TbBufOffModified = { fg = { "green", "black", 50 } },
-  FoldColumn = { bg = "FloatBorder" },
+  FoldColumn = { link = "FloatBorder" },
   Comment = { italic = true },
   ["@comment"] = { link = "Comment" },
   ["@keyword"] = { italic = true },
@@ -77,10 +76,10 @@ M.base46 = theme_customs and vim.tbl_deep_extend("force", M.base46, theme_custom
 
 M.ui = {
   cmp = {
-    style = "default", -- vscode
+    style = "default",
   },
   statusline = {
-    theme = "default",
+    theme = "vscode_colored",
     order = {
       "mode",
       "tint",
