@@ -206,8 +206,8 @@ M.code_action_listener = function()
   end, clients)[1] ~= nil
 
   if has_code_action_support then
-    local context = { diagnostics = vim.lsp.diagnostic.get_line_diagnostics(buffer) }
-    local params = vim.lsp.util.make_range_params()
+    local context = { diagnostics = vim.diagnostic.get(buffer) }
+    local params = vim.lsp.util.make_range_params(nil, vim.lsp.get_clients({ bufnr = buffer })[1].offset_encoding)
     params.context = context
 
     vim.lsp.buf_request(buffer, "textDocument/codeAction", params, function(_, result, _, _)
