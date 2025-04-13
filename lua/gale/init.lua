@@ -9,6 +9,9 @@ require "gale.aliases"
 require "gale.wezterm"
 require "gale.macos"
 
+-- Setup UTF-8 encoding
+require("gale.encoding").setup()
+
 local is_mac = vim.loop.os_uname().sysname == "Darwin"
 local is_linux = vim.loop.os_uname().sysname == "Linux"
 local is_windows = vim.loop.os_uname().sysname:find "Windows" ~= nil
