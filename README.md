@@ -107,14 +107,14 @@ This configuration uses [`pre-commit`](https://pre-commit.com/) to automatically
    pre-commit run --all-files
    ```
 
-4. **Customize Luacheck behavior (optional):**
-
-   Add `.luacheckrc` with:
-
-   ```lua
-   globals = { "vim" }
-   unused_args = false
-   ```
+<!-- 4. **Customize Luacheck behavior (optional):** -->
+<!---->
+<!--    Add `.luacheckrc` with: -->
+<!---->
+<!--    ```lua -->
+<!--    globals = { "vim" } -->
+<!--    unused_args = false -->
+<!--    ``` -->
 
 > Hooks are automatically run on `git commit`. To manually test, use:
 >
