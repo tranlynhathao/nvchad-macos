@@ -72,3 +72,52 @@ Recommended:
 - [ ] Rebuild module structure
 - [ ] Add LSP
 - [ ] Adjust keymaps: abolish
+
+### Pre-commit Hooks
+
+This configuration uses [`pre-commit`](https://pre-commit.com/) to automatically lint and format Lua files before committing. Set up once and never worry about code style drift again.
+
+**Included Hooks:**
+
+- [`luacheck`](https://github.com/mpeterv/luacheck): Detects bugs and enforces best practices for Lua
+- [`stylua`](https://github.com/JohnnyMorganz/StyLua): Formats Lua code according to a standard style
+
+#### Setup
+
+1. **Install pre-commit:**
+
+   ```bash
+   brew install pre-commit
+   # or
+   pip install pre-commit
+   ```
+
+2. **Install hook dependencies:**
+
+   ```bash
+   brew install luacheck stylua
+   ```
+
+3. **Set up hooks:**
+
+   From the root of the project:
+
+   ```bash
+   pre-commit install
+   pre-commit run --all-files
+   ```
+
+4. **Customize Luacheck behavior (optional):**
+
+   Add `.luacheckrc` with:
+
+   ```lua
+   globals = { "vim" }
+   unused_args = false
+   ```
+
+> Hooks are automatically run on `git commit`. To manually test, use:
+>
+> ```bash
+> pre-commit run --all-files
+> ```
