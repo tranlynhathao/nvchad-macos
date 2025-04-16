@@ -19,5 +19,8 @@ return {
     vim.keymap.set("n", "gr", "<cmd>Lspsaga lsp_finder<CR>", { desc = "Find references" })
     vim.keymap.set("n", "ga", "<cmd>Lspsaga code_action<CR>", { desc = "Show code actions" })
     vim.keymap.set("n", "gi", "<cmd>Lspsaga implementations<CR>", { desc = "Go to implementations" })
+
+    -- finder
+    -- vim.keymap.set("n", "gi", "<cmd>Lspsaga finder<CR>")
   end,
 }
