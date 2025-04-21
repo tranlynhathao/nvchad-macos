@@ -94,6 +94,12 @@ return {
         },
         previewer = true,
         prompt_title = "Live Grep",
+
+        -- include all files in the current directory
+        -- cwd = vim.fn.expand "%:p:h",
+
+        -- git root
+        -- cwd = require("lspconfig.util").root_pattern(".git")(vim.fn.expand("%:p"))
       })
     end, { desc = "Telescope live grep" })
 
@@ -141,7 +147,9 @@ return {
         file_ignore_patterns = { "node_modules" },
         -- sorting_strategy = "ascending", -- ascending, descending
         -- path_display can combine multiple options
-        -- path_display = { "smart", "truncate" }, -- tail, relative, shorten, smart, truncate, hidden, filename_first, absolute
+        -- path_display = { "smart", "truncate" },
+        -- Options for path_display: tail, relative, shorten, smart, truncate, hidden, filename_first, absolute
+
         mappings = {
           i = {
             ["<C-j>"] = require("telescope.actions").move_selection_next,
