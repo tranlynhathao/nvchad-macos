@@ -126,5 +126,3 @@ return PhpCsFixer\Config::create()
 ```bash
 shfmt -i 2 -w script.sh
 ```
-
----
