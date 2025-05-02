@@ -22,6 +22,10 @@ return {
       cs = { "clangformat" },
       csharp = { "dotnet-format" }, -- or: "clangformat", "uncrustify"
 
+      -- macOS/iOS
+      -- objectivec = { "clangformat" },
+      -- swift = { "swiftformat" }, -- or: "swiftformat", "clangformat"
+
       -- Dart
       dart = { "dart_format" }, -- or: "dartfmt" (deprecated)
 
