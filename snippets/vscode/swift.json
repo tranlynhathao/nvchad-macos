@@ -1,0 +1,21 @@
+{
+	"Print Statement": {
+		"prefix": "print",
+		"body": ["print(\"$1\")"],
+		"description": "Swift print statement"
+	},
+	"For Loop": {
+		"prefix": "forin",
+		"body": ["for ${1:item} in ${2:collection} {", "    $3", "}"],
+		"description": "Swift for-in loop"
+	},
+	"Function": {
+		"prefix": "func",
+		"body": [
+			"func ${1:functionName}(${2:parameters}) -> ${3:ReturnType} {",
+			"    $0",
+			"}"
+		],
+		"description": "Swift function"
+	}
+}
