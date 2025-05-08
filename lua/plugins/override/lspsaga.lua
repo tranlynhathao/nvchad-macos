@@ -11,6 +11,24 @@ return {
         vsplit = "<C-v>",
       },
       definition_action_keys = { edit = "o" },
+      hover = {
+        max_width = 80,
+        max_height = 20,
+        open_link = "gx",
+        open_cmd = "!xdg-open",
+        keys = {
+          quit = "q",
+          toggle_or_open = "<CR>",
+          scroll_down = "<C-f>",
+          scroll_up = "<C-b>",
+        },
+      },
+      ui = {
+        title = true,
+        border = "rounded",
+        winblend = 0,
+        kind = nil,
+      },
     }
 
     -- Key mappings
@@ -22,5 +40,10 @@ return {
 
     -- finder
     -- vim.keymap.set("n", "gi", "<cmd>Lspsaga finder<CR>")
+
+    vim.cmd [[
+    highlight FloatBorder guifg=#7aa2f7 guibg=#1a1b26
+    highlight NormalFloat guibg=#1a1b26
+  ]]
   end,
 }
