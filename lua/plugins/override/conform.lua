@@ -18,8 +18,8 @@ return {
       objc = { "clangformat" }, -- or: "uncrustify", "astyle"
 
       -- C#, .NET
-      c_sharp = { "clangformat" }, -- or: "dotnet-format", "uncrustify"
-      cs = { "clangformat" },
+      c_sharp = { "dotnet-format" }, -- or: "clangformat", "uncrustify"
+      cs = { "dotnet-format" },
       csharp = { "dotnet-format" }, -- or: "clangformat", "uncrustify"
 
       -- macOS/iOS
