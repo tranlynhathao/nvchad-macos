@@ -93,7 +93,7 @@ return {
       kotlin = { "ktlint" }, -- or: "detekt", "ktfmt"
 
       -- PHP
-      php = { "phpcbf" }, -- or: "php-cs-fixer", "prettier"
+      php = { "phpcbf" }, -- or: "php-cs-fixer", "phpcbf"
 
       -- SQL
       sql = { "sqlformat" }, -- or: "sqlfluff", "pg_format"
