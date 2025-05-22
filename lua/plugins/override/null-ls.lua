@@ -42,5 +42,39 @@ return {
         },
       }
     )
+
+    -- C#
+    table.insert(
+      opts.sources,
+      null_ls.builtins.formatting.custom {
+        name = "dotnet_format",
+        method = null_ls.methods.FORMATTING,
+        filetypes = { "cs" },
+        generator_opts = {
+          command = "dotnet-format",
+          args = { "--include", "$FILENAME", "--folder", "--verbosity", "quiet" },
+          to_stdin = false,
+          to_temp_file = true,
+        },
+      }
+    )
+
+    -- Python (requires: black)
+    table.insert(opts.sources, null_ls.builtins.formatting.black)
+
+    -- Swift (requires: swiftformat)
+    table.insert(opts.sources, null_ls.builtins.formatting.swiftformat)
+
+    -- Go (requires: gofumpt or gofmt)
+    table.insert(opts.sources, null_ls.builtins.formatting.gofumpt)
+
+    -- Ruby (requires: rufo)
+    table.insert(opts.sources, null_ls.builtins.formatting.rufo)
+
+    -- Zig (requires: zig installed)
+    table.insert(opts.sources, null_ls.builtins.formatting.zigfmt)
+
+    -- Rust (requires: rustfmt)
+    table.insert(opts.sources, null_ls.builtins.formatting.rustfmt)
   end,
 }

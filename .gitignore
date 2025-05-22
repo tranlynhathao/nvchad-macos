@@ -8,3 +8,5 @@ cd-project.nvim.json
 _archive.lua
 .benchmark.lua
 .ipynb_checkpoints
+pack/
+pack/

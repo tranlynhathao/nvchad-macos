@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: luacheck
+        name: "Luacheck Linter"
+        entry: luacheck
+        language: system
+        types: [lua]
+
+  - repo: https://github.com/JohnnyMorganz/StyLua
+    rev: v0.14.0
+    hooks:
+      - id: stylua
+        name: "Stylua Formatter"
+        language: system
+        types: [lua]

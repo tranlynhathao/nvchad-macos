@@ -5,7 +5,10 @@ return {
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
     "nvim-tree/nvim-web-devicons",
-    { "nvim-treesitter/nvim-treesitter", opts = { ensure_installed = { "java", "markdown", "markdown_inline" } } },
+    {
+      "nvim-treesitter/nvim-treesitter",
+      opts = { ensure_installed = { "java", "python", "rust", "markdown", "markdown_inline" } },
+    },
   },
   opts = function(_, opts)
     local presets = require "markview.presets"

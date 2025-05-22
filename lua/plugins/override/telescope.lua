@@ -1,6 +1,23 @@
 ---@type NvPluginSpec
 return {
   "nvim-telescope/telescope.nvim",
+  requires = {
+    { "nvim-lua/plenary.nvim" },
+    -- { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
+    -- { "nvim-telescope/telescope-ui-select.nvim" },
+    -- { "nvim-telescope/telescope-file-browser.nvim" },
+    { "nvim-telescope/telescope-frecency.nvim" },
+    -- { "nvim-telescope/telescope-symbols.nvim" },
+    { "nvim-telescope/telescope-github.nvim" },
+    -- { "nvim-telescope/telescope-packer.nvim" },
+    -- { "nvim-telescope/telescope-undo.nvim" },
+    -- { "nvim-telescope/telescope-media-files.nvim" },
+    -- { "nvim-telescope/telescope-project.nvim" },
+    -- { "nvim-telescope/telescope-hop.nvim" },
+    -- { "nvim-telescope/telescope-prompt.nvim" },
+    -- { "nvim-telescope/telescope-vim-bookmarks.nvim" },
+    -- { "nvim-telescope/telescope-emoji.nvim" },
+  },
   opts = function(_, opts)
     local map = vim.keymap.set
     local pickers = require("gale.telescope").pickers
@@ -53,6 +70,14 @@ return {
       })
     end, { desc = "Telescope search recent files" })
 
+    -- Add keybinding for telescope file browser
+    map("n", "<leader>gh", "<cmd>Telescope github issues<CR>", { desc = "Search GitHub Issues" })
+    map("n", "<leader>gp", "<cmd>Telescope github pull_requests<CR>", { desc = "Search GitHub PRs" })
+    map("n", "<leader>gr", "<cmd>Telescope github repos<CR>", { desc = "Search GitHub Repos" })
+
+    -- Add keybinding for telescope frecency
+    map("n", "<leader>fr", "<cmd>Telescope frecency<CR>", { desc = "Search recently opened files" })
+
     map("n", "<leader>fw", function() -- CTRL Q combinations [:cdo ]
       pickers.grep("live_grep", nil, nil, {
         layout_strategy = "horizontal",
@@ -69,6 +94,12 @@ return {
         },
         previewer = true,
         prompt_title = "Live Grep",
+
+        -- include all files in the current directory
+        -- cwd = vim.fn.expand "%:p:h",
+
+        -- git root
+        -- cwd = require("lspconfig.util").root_pattern(".git")(vim.fn.expand("%:p"))
       })
     end, { desc = "Telescope live grep" })
 
@@ -116,7 +147,9 @@ return {
         file_ignore_patterns = { "node_modules" },
         -- sorting_strategy = "ascending", -- ascending, descending
         -- path_display can combine multiple options
-        -- path_display = { "smart", "truncate" }, -- tail, relative, shorten, smart, truncate, hidden, filename_first, absolute
+        -- path_display = { "smart", "truncate" },
+        -- Options for path_display: tail, relative, shorten, smart, truncate, hidden, filename_first, absolute
+
         mappings = {
           i = {
             ["<C-j>"] = require("telescope.actions").move_selection_next,
@@ -147,9 +180,16 @@ return {
           },
         },
       },
+      -- pickers = {
+      --   builtin = {
+      --     prompt_title = "Builtin Pickers",
+      --   },
+      -- },
       pickers = {
-        builtin = {
-          prompt_title = "Builtin Pickers",
+        git_status = {
+          theme = "dropdown",
+          previewer = true,
+          prompt_title = "Git Changes",
         },
       },
     })
