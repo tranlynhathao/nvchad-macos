@@ -130,4 +130,6 @@ return {
   { import = "plugins.override.schemastore" },
   -- { import = "plugins.override.nvim-doc-view" },
   -- { import = "plugins.override.telescope-lsp-docs" },
+  { import = "plugins.override.nvim-spectre" },
+  { import = "plugins.override.quickfix" },
 }

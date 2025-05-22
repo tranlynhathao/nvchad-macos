@@ -58,7 +58,7 @@ return {
               projectRoot = vim.fn.getcwd() .. "/app",
               hostName = "localhost",
               port = 5005,
-              timeout = 1000,
+              timeout = 10000,
             },
           }
         end,

@@ -28,20 +28,20 @@ M.themes_customs = {
       St_NTerminalMode = { bg = "one_bg1" },
       TbBufOn = { link = "Normal" },
       CursorLineNr = { fg = "yellow" },
-      MatchWord = { fg = "NONE", bg = "black2" },
-      MatchBackground = { link = "MatchWord" },
+      ColorColumn = { bg = "black2" },
     },
   },
 
   ["eldritch"] = {
     ---@type Base46HLGroupsList
     hl_override = {
+      NormalFloat = { bg = "black" },
       Comment = { fg = "dark_purple" },
       FloatBorder = { fg = "purple" },
-      LspInlayHint = { fg = "dark_purple" },
-      TelescopeSelection = { fg = X_COLOURS.D_WHITE },
-      StText = { fg = X_COLOURS.ST_GREY },
-      St_cwd = { fg = "black", bg = "yellow" },
+      TelescopeSelection = { bg = "black", fg = X_COLOURS.D_WHITE, bold = true },
+      FoldColumn = { fg = "purple" },
+      StText = { fg = "light_grey" },
+      St_cwd = { bg = "yellow", fg = "black" },
       St_NormalMode = { bg = "blue", fg = "black" },
       St_InsertMode = { bg = "purple", fg = "black" },
       St_CommandMode = { bg = "black", reverse = true },
@@ -52,11 +52,17 @@ M.themes_customs = {
       St_TerminalMode = { bg = "black", reverse = true },
       St_NTerminalMode = { bg = "black", reverse = true },
       St_HarpoonActive = { link = "St_Ft" },
-      TbBufOn = { link = "St_Lsp" },
-      CursorLineNr = { fg = "yellow" },
-      MatchWord = { fg = "NONE", bg = "black2" },
+      CursorLineNr = { fg = "yellow", bold = true },
+      MatchWord = { bg = "#444C5B", fg = "#ABB7C1" },
       MatchBackground = { link = "MatchWord" },
       CodeActionSignHl = { fg = "yellow" },
+      TbBufOn = { fg = "green" },
+      TbBufOnClose = { fg = "baby_pink" },
+      TbBufOff = { fg = "nord_blue" },
+      TbTabOn = { fg = "baby_pink" },
+      TbCloseAllBufsBtn = { bg = "pink", fg = "black" },
+      TbTabTitle = { fg = "white", bg = "blue" },
+      ColorColumn = { bg = "black2" },
     },
   },
 }
@@ -64,6 +70,8 @@ M.themes_customs = {
 --- Show harpoon indicator in statusline
 local harpoon_statusline_indicator = function()
   -- inspiration from https://github.com/letieu/harpoon-lualine
+  local run = "%@RunHarpoon@"
+  local stop = "%X"
   local inactive = "%#St_HarpoonInactive#"
   local active = "%#St_HarpoonActive#"
 
@@ -115,7 +123,7 @@ local harpoon_statusline_indicator = function()
 
   if length > 0 then
     table.insert(status, " ")
-    return table.concat(status, options.separator)
+    return run .. table.concat(status, options.separator) .. stop
   else
     return ""
   end
@@ -133,40 +141,21 @@ local filename = function()
   local name = (path == "" and "Empty") or vim.fs.basename(path)
   local ext = name:match "%.([^%.]+)$" or name
 
-  -- Pretty sure there's a better solution than hardcoding these
-  local ignore_fts = { "oil", "NeogitStatus", "checkhealth", "yerbreak", "nvcheatsheet" }
-  if vim.tbl_contains(ignore_fts, vim.bo.ft) then
-    return
-  end
-
   if name ~= "Empty" then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
     if devicons_present then
-      -- clean up ext
-      local sanitized_ext = ext:gsub("[^%w_]", "")
-      local hl_name = "DevIcon" .. sanitized_ext
-      local ft_hl_id = vim.api.nvim_get_hl_id_by_name(hl_name)
-
-      if not ft_hl_id or ft_hl_id == 0 then
-        print("Invalid highlight group:", hl_name)
-        ft_hl_id = vim.api.nvim_get_hl_id_by_name "DevIconDefault"
-      end
-
-      if not ft_hl_id or ft_hl_id == 0 then
-        print("No valid highlight group found for", hl_name, "or fallback.")
+      local hl_group = "DevIcon" .. ext
+      local ok, ft_hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
+      if ok and ft_hl.fg then
+        local ft_fg = string.format("#%06x", ft_hl.fg)
+        local st_hl_name = "St_DevIcon" .. ext
+        hl = "%#" .. st_hl_name .. "#"
+        vim.api.nvim_set_hl(0, st_hl_name, { bg = transparency and "NONE" or "#242D3D", fg = ft_fg })
+        local ft_icon = devicons.get_icon(name)
+        icon = (ft_icon ~= nil and "  " .. ft_icon) or ("  " .. icon)
+      else
         return
       end
-
-      local ft_hl = vim.api.nvim_get_hl(0, { id = ft_hl_id })
-      local ft_fg = ft_hl and ft_hl.fg and string.format("#%06x", ft_hl.fg) or "#000000"
-
-      local st_hl_name = "St_DevIcon" .. sanitized_ext
-
-      hl = "%#" .. st_hl_name .. "#"
-      vim.api.nvim_set_hl(0, st_hl_name, { bg = transparency and "NONE" or "#242d3d", fg = ft_fg })
-
-      local ft_icon = devicons.get_icon(name)
-      icon = (ft_icon ~= nil and "  " .. ft_icon) or ("  " .. icon)
     end
   end
 
@@ -174,6 +163,9 @@ local filename = function()
 end
 
 local git_custom = function()
+  local run = "%@RunNeogit@"
+  local stop = "%X"
+
   local bufnr = stbufnr()
   if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then
     return ""
@@ -196,7 +188,30 @@ local git_custom = function()
     or ""
   local branch_name = branch_hl .. " " .. clear_hl .. git_status.head
 
-  return " " .. branch_name .. " " .. added .. changed .. removed
+  return run .. " " .. branch_name .. " " .. added .. changed .. removed .. stop
+end
+
+local lspx = function()
+  local count = 0
+  local display = ""
+  local run = "%@LspHealthCheck@"
+  local stop = "%X"
+
+  if rawget(vim, "lsp") then
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      if client.attached_buffers[vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)] then
+        count = count + 1
+        display = (vim.o.columns > 100 and run .. " %#St_Lsp#  LSP ~ " .. client.name .. " " .. stop)
+          or run .. " %#St_Lsp#  LSP " .. stop
+      end
+    end
+  end
+
+  if count > 1 then
+    return run .. " %#St_Lsp#  LSP (" .. count .. ") " .. stop
+  else
+    return display
+  end
 end
 
 M.modules = {
@@ -205,6 +220,8 @@ M.modules = {
     separator = " ", -- Add space between modules
     hack = "%#@comment#%", -- Hack to make module highlight visible
     tint = "%#StText#", -- Force grey on modules that absorb neighbour colour
+    oil_dir_cwd = "%@OilDirCWD@",
+    force_stop = "%X",
 
     modified = function()
       return vim.bo.modified and " *" or " "
@@ -219,7 +236,7 @@ M.modules = {
     git_custom = git_custom,
     harpoon = harpoon_statusline_indicator,
     word_count = function()
-      return utils.count_words_in_line() .. utils.count_words_in_buffer()
+      return " %#StText#󱀽" .. utils.count_words_in_line() .. utils.count_words_in_buffer()
     end,
   },
 
@@ -229,6 +246,8 @@ M.modules = {
       return "%#TbFill#%="
     end, -- Fill tabufline with TbFill hl
   },
+
+  lspx = lspx,
 }
 
 return M

@@ -1,11 +1,11 @@
 vim.g.clipboard = {
-  name = "macOS clipboard",
+  name = "macOS-clipboard",
   copy = {
-    ["+"] = "pbcopy",
-    ["*"] = "pbcopy",
+    ["+"] = "/usr/bin/pbcopy",
+    ["*"] = "/usr/bin/pbcopy",
   },
   paste = {
-    ["+"] = "pbpaste",
-    ["*"] = "pbpaste",
+    ["+"] = "/usr/bin/pbpaste",
+    ["*"] = "/usr/bin/pbpaste",
   },
 }
