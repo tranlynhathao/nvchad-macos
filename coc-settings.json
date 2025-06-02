@@ -17,5 +17,18 @@
 		"coc-dart",
 		"coc-phpls",
 		"coc-java"
-	]
+	],
+
+	"coc.node_path": "/Users/tranlynhathao/.nvm/versions/node/v23.5.0/bin/node",
+
+	"coc.preferences.formatOnSave": true,
+
+	"diagnostic.enable": true,
+	"diagnostic.virtualText": true,
+
+	"snippets.ultisnips.directories": ["UltiSnips", "my-snippets"],
+
+	"suggest.timeout": 500,
+
+	"diagnostic.level": "hint"
 }
