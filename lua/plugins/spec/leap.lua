@@ -1,4 +1,6 @@
 ---@type NvPluginSpec
+
+-- Super fast 2-character jump navigation
 return {
   "ggandor/leap.nvim",
   config = function()

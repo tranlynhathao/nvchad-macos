@@ -95,6 +95,11 @@ return {
   { import = "plugins.spec.coerce" },
   { import = "plugins.spec.prolog" },
   { import = "plugins.spec.copilot" },
+  { import = "plugins.spec.flash" },
+  { import = "plugins.spec.nvim-treehopper" },
+  { import = "plugins.spec.vim-repeat" },
+  { import = "plugins.spec.dial" },
+  { import = "plugins.spec.glance" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
@@ -132,4 +137,8 @@ return {
   -- { import = "plugins.override.telescope-lsp-docs" },
   { import = "plugins.override.nvim-spectre" },
   { import = "plugins.override.quickfix" },
+  { import = "plugins.override.mini-files" },
+  { import = "plugins.override.symbol-usage" },
+  { import = "plugins.override.arial" },
+  { import = "plugins.override.toggleterm" },
 }
