@@ -1,5 +1,6 @@
 local utils = require "gale.utils"
 local map = utils.glb_map
+local comments = require "utils.comments"
 
 -- #################################
 -- Naviagtion word
@@ -30,7 +31,7 @@ map("n", "<leader>sn", ":Telescope scissors<CR>", { noremap = true, silent = tru
 map("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true }) -- Open markdown links
 map("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true }) -- Toggle wrap for markdown
 map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree window" })
-map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "Focus NvimTree window" })
+-- map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "Focus NvimTree window" })
 
 -- #################################
 -- Slime Integration
@@ -49,11 +50,11 @@ map("n", "<leader>cp", function()
 end, { desc = "Insert Pug comment (//-) in Normal mode" })
 
 map("v", "<leader>ch", function()
-  toggle_pug_comment "html" -- Toggle HTML comments (//) in Visual mode
+  comments.toggle_pug_comment "html" -- Toggle HTML comments (//) in Visual mode
 end, { desc = "Toggle HTML comments (//) in Visual mode" })
 
 map("v", "<leader>cp", function()
-  toggle_pug_comment "pug" -- Toggle Pug comments (//-) in Visual mode
+  comments.toggle_pug_comment "pug" -- Toggle Pug comments (//-) in Visual mode
 end, { desc = "Toggle Pug comments (//-) in Visual mode" })
 
 -- compress code
@@ -128,10 +129,10 @@ local function move_line_or_block(direction)
   end
 end
 
-local function map(mode, lhs, rhs, opts)
-  opts = opts or {}
-  vim.keymap.set(mode, lhs, rhs, opts)
-end
+-- local function map(mode, lhs, rhs, opts)
+--   opts = opts or {}
+--   vim.keymap.set(mode, lhs, rhs, opts)
+-- end
 
 map("n", "<ESC>nj", function()
   move_line_or_block "down"
@@ -329,13 +330,14 @@ map("n", "<C-A-l>", "11<C-w><", { desc = "Window decrease width by 5" })
 map("n", "<C-A-k>", "11<C-w>+", { desc = "Window increase height by 5" })
 map("n", "<C-A-j>", "11<C-w>-", { desc = "Window decrease height by 5" })
 
--- Replace text
+-- -- Replace text
 -- map("n", "s", ":s//g<left><left>") -- Line
 -- map("n", "S", ":%s//g<left><left>") -- All
 -- map("v", "s", ":s//g<left><left>") -- Selection
 
--- Replace text
-function ReplaceCurrentLine()
+local M = {}
+
+function M.ReplaceCurrentLine()
   local search = vim.fn.input "Search: "
   if search == "" then
     print "Search is empty"
@@ -345,7 +347,7 @@ function ReplaceCurrentLine()
   vim.cmd(string.format("s/%s/%s/g", search, replace))
 end
 
-function ReplaceInFile()
+function M.ReplaceInFile()
   local search = vim.fn.input "Search: "
   if search == "" then
     print "Search is empty"
@@ -355,7 +357,7 @@ function ReplaceInFile()
   vim.cmd(string.format("%%s/%s/%s/g", search, replace))
 end
 
-function ReplaceInSelection()
+function M.ReplaceInSelection()
   local search = vim.fn.input "Search: "
   if search == "" then
     print "Search is empty"
@@ -365,9 +367,19 @@ function ReplaceInSelection()
   vim.cmd(string.format("'<,'>s/%s/%s/g", search, replace))
 end
 
-map("n", "<leader>r", ":lua ReplaceCurrentLine()<CR>", { desc = "Replace text on line" })
-map("n", "<leader>R", ":lua ReplaceInFile()<CR>", { desc = "Replace text on file" })
-map("v", "<leader>r", ":lua ReplaceInSelection()<CR>", { desc = "Replace text on selection" })
+-- Register this table as a pseudo-module to avoid luacheck warning
+package.loaded.replace_text = M
+
+-- Key mappings
+map("n", "<leader>r", function()
+  require("replace_text").ReplaceCurrentLine()
+end, { desc = "Replace text on line" })
+map("n", "<leader>R", function()
+  require("replace_text").ReplaceInFile()
+end, { desc = "Replace text on file" })
+map("v", "<leader>r", function()
+  require("replace_text").ReplaceInSelection()
+end, { desc = "Replace text on selection" })
 
 -- Togglers
 map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "Toggle line number" })
@@ -497,12 +509,18 @@ end, { desc = "Go to GitHub link generated from string" })
 -- map(
 --   "n",
 --   "<leader>rl",
---   "<cmd>s/[a-zA-Z]/\\=nr8char((char2nr(submatch(0)) - (char2nr(submatch(0)) >= 97 ? 97 : 65) + 13) % 26 + (char2nr(submatch(0)) >= 97 ? 97 : 65))/g<CR>",
+--   "<cmd>s/[a-zA-Z]/\\=nr8char(("
+--     .. "char2nr(submatch(0)) - (char2nr(submatch(0)) >= 97 ? 97 : 65) + 13"
+--     .. ") % 26 + (char2nr(submatch(0)) >= 97 ? 97 : 65))/g<CR>",
 --   { desc = "_ Mum and dad were having fun" }
 -- )
 --
 -- map("n", "<leader>rf", function()
---   vim.cmd [[%s/[a-zA-Z]/\=nr8char((char2nr(submatch(0)) - (char2nr(submatch(0)) >= 97 ? 97 : 65) + 13) % 26 + (char2nr(submatch(0)) >= 97 ? 97 : 65))/g]]
+--   vim.cmd [[
+--     %s/[a-zA-Z]/\=nr8char((
+--       char2nr(submatch(0)) - (char2nr(submatch(0)) >= 97 ? 97 : 65) + 13
+--     ) % 26 + (char2nr(submatch(0)) >= 97 ? 97 : 65))/g
+--   ]]
 -- end, { desc = "_ Mum and dad were having fun" })
 
 map("n", "gx", [[:silent execute '!open ' . shellescape(expand('<cfile>'), 1)<CR>]], { noremap = true })

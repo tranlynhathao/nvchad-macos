@@ -21,7 +21,7 @@ return {
       keymaps = {
         send_motion = "<leader>sc", -- send current line
         visual_send = "<leader>sv", -- send visual selection
-        send_file = "<leader>sf", -- send entire file
+        -- send_file = "<leader>sf", -- send entire file
         send_line = "<leader>sl", -- send current line
         send_until_cursor = "<leader>su", -- send until cursor
         send_mark = "<leader>sm", -- send marked text

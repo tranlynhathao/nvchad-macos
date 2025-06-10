@@ -96,7 +96,7 @@ return {
       php = { "phpcbf" }, -- or: "php-cs-fixer", "phpcbf"
 
       -- SQL
-      sql = { "sqlformat" }, -- or: "sqlfluff", "pg_format"
+      sql = { "sqlfluff" }, -- or: "sqlfluff", "pg_format", "sql-formatter", "sql-formatter-plus"
 
       -- Solidity
       solidity = { "prettier" }, -- or: "solhint", "solfmt"
@@ -118,6 +118,19 @@ return {
     formatters = {
       yamlfmt = {
         args = { "-formatter", "retain_line_breaks_single=true" },
+      },
+      sqlfluff = {
+        command = "sqlfluff",
+        args = { "fix", "--dialect", "postgres", "--disable-progress-bar", "-" },
+        stdin = true,
+        cwd = function(ctx)
+          if ctx.filename == nil or ctx.filename == "" then
+            return vim.loop.cwd()
+          else
+            return vim.fn.fnamemodify(ctx.filename, ":h")
+          end
+        end,
+        timeout_ms = 50000,
       },
     },
   },

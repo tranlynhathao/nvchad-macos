@@ -9,12 +9,13 @@ return {
       --   view = "cmdline",
       -- },
       lsp = {
+        hover = { enabled = true, opts = { border = "rounded" } },
+        progress = { enabled = true },
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
         },
         signature = { enabled = false },
-        hover = { enabled = false },
       },
       presets = {
         bottom_search = false,
@@ -92,7 +93,7 @@ return {
 
     -- vim.notify = require("noice").notify
 
-    vim.notify = custom_notify
+    -- vim.notify = custom_notify
   end,
 }
 
