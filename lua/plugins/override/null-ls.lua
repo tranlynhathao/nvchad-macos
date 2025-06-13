@@ -65,8 +65,10 @@ return {
     -- Swift (requires: swiftformat)
     table.insert(opts.sources, null_ls.builtins.formatting.swiftformat)
 
-    -- Go (requires: gofumpt or gofmt)
+    -- Go (requires: gofumpt, golines, goimports-reviser)
     table.insert(opts.sources, null_ls.builtins.formatting.gofumpt)
+    table.insert(opts.sources, null_ls.builtins.formatting.golines)
+    table.insert(opts.sources, null_ls.builtins.formatting.goimports_reviser)
 
     -- Ruby (requires: rufo)
     table.insert(opts.sources, null_ls.builtins.formatting.rufo)
