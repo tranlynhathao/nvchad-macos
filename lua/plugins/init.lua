@@ -100,6 +100,8 @@ return {
   { import = "plugins.spec.vim-repeat" },
   { import = "plugins.spec.dial" },
   { import = "plugins.spec.glance" },
+  { import = "plugins.spec.nvim-dap-go" },
+  { import = "plugins.spec.gopher" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
