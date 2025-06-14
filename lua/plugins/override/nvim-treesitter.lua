@@ -29,6 +29,7 @@ return {
       "scheme",
       "scss",
       "toml",
+      "jsx",
       "tsx",
       "typescript",
       "vim",
