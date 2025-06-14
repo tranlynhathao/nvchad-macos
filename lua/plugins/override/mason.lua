@@ -4,9 +4,10 @@ return {
   opts = {
     ui = { border = "rounded" },
     ensure_installed = {
-      "eslint-ls",
+      "eslint-lsp",
       "typescript-language-server",
       "prettier",
+      "tailwindcss-language-server",
     },
   },
 }

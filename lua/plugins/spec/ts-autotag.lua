@@ -8,6 +8,12 @@ return {
   "windwp/nvim-ts-autotag",
   -- https://github.com/windwp/nvim-ts-autotag?tab=readme-ov-file#a-note-on-lazy-loading
   event = { "BufReadPre", "BufNewFile" },
+  ft = {
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+  },
   config = function()
     ---@diagnostic disable-next-line
     auto_tag.setup {
@@ -15,5 +21,6 @@ return {
         enable = true,
       },
     }
+    require("nvim-ts-autotag").setup()
   end,
 }

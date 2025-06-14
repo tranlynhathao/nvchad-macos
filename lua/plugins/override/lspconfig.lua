@@ -12,6 +12,14 @@ return {
     local lsp = require "gale.lsp"
     local util = require "lspconfig/util"
 
+    local function organize_imports()
+      local params = {
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+      }
+      vim.lsp.execute_command(params)
+    end
+
     lspconfig.gopls.setup {
       on_attach = on_attach,
       capabilities = capabilities,
@@ -40,6 +48,22 @@ return {
           disableSuggestinos = true,
         },
       },
+      commands = {
+        OrganizeImports = {
+          organize_imports,
+          description = "Organize Imports",
+        },
+      },
+    }
+
+    lspconfig.tailwindcss.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }
+
+    lspconfig.eslint.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
     }
 
     local servers = {
