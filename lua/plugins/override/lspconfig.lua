@@ -5,8 +5,66 @@ return {
   config = function()
     dofile(vim.g.base46_cache .. "lsp")
 
+    local on_attach = require("gale.lsp").on_attach
+    local capabilities = require("gale.lsp").capabilities
+
     local lspconfig = require "lspconfig"
     local lsp = require "gale.lsp"
+    local util = require "lspconfig/util"
+
+    local function organize_imports()
+      local params = {
+        command = "_typescript.organizeImports",
+        arguments = { vim.api.nvim_buf_get_name(0) },
+      }
+      vim.lsp.execute_command(params)
+    end
+
+    lspconfig.gopls.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      cmd = { "gopls", "serve" },
+      filetypes = { "go", "gomod", "gowork", "gotmpl" },
+      root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+      settings = {
+        gopls = {
+          completeUnimported = true,
+          usePlaceholders = true,
+          analyses = {
+            unusedparams = true,
+            shadow = true,
+          },
+          staticcheck = true,
+        },
+      },
+    }
+
+    -- lspconfig.tsserver.setup {
+    lspconfig.ts_ls.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      init_options = {
+        preferences = {
+          disableSuggestions = true,
+        },
+      },
+      commands = {
+        OrganizeImports = {
+          organize_imports,
+          description = "Organize Imports",
+        },
+      },
+    }
+
+    lspconfig.tailwindcss.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }
+
+    lspconfig.eslint.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }
 
     local servers = {
       astro = {},

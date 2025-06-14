@@ -22,6 +22,10 @@ map("n", "E", "ge")
 -- n>>: indent n lines
 -- #################################
 
+-- DAP
+vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<CR>", { desc = "Toggle breakpoint" })
+vim.keymap.set("n", "<leader>dr", "<cmd>DapContinue<CR>", { desc = "Continue debugger" })
+
 map("n", "<leader>sn", ":Telescope scissors<CR>", { noremap = true, silent = true, desc = "Search Snippets" })
 
 -- ~/.config/nvim/lua/mappings.lua
