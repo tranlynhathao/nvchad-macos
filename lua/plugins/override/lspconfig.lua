@@ -45,7 +45,7 @@ return {
       capabilities = capabilities,
       init_options = {
         preferences = {
-          disableSuggestinos = true,
+          disableSuggestions = true,
         },
       },
       commands = {
