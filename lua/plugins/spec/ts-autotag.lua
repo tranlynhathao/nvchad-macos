@@ -21,6 +21,5 @@ return {
         enable = true,
       },
     }
-    require("nvim-ts-autotag").setup()
   end,
 }
