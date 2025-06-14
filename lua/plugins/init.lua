@@ -100,6 +100,9 @@ return {
   { import = "plugins.spec.vim-repeat" },
   { import = "plugins.spec.dial" },
   { import = "plugins.spec.glance" },
+  { import = "plugins.spec.nvim-dap-go" },
+  { import = "plugins.spec.gopher" },
+  { import = "plugins.spec.dap-ts" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
@@ -141,4 +144,6 @@ return {
   { import = "plugins.override.symbol-usage" },
   { import = "plugins.override.arial" },
   { import = "plugins.override.toggleterm" },
+  { import = "plugins.override.nvim-lint" },
+  { import = "plugins.override.formatter" },
 }
