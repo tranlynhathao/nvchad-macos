@@ -31,6 +31,17 @@ return {
       },
     }
 
+    -- lspconfig.tsserver.setup {
+    lspconfig.ts_ls.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      init_options = {
+        preferences = {
+          disableSuggestinos = true,
+        },
+      },
+    }
+
     local servers = {
       astro = {},
       bashls = {
