@@ -3,6 +3,8 @@ return {
   "jose-elias-alvarez/null-ls.nvim",
   opts = function(_, opts)
     local null_ls = require "null-ls"
+    local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
     opts.sources = opts.sources or {}
 
     -- JS/TS/JSX/TSX
@@ -12,6 +14,13 @@ return {
         filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
       }
     )
+    table.insert(
+      opts.sources,
+      null_ls.builtins.diagnostics.eslint.with {
+        filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+      }
+    )
+    table.insert(opts.sources, null_ls.builtins.code_actions.eslint)
 
     -- HTML
     table.insert(
@@ -78,5 +87,18 @@ return {
 
     -- Rust (requires: rustfmt)
     table.insert(opts.sources, null_ls.builtins.formatting.rustfmt)
+
+    opts.on_attach = function(client, bufnr)
+      if client.supports_method "textDocument/formatting" then
+        vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          group = augroup,
+          buffer = bufnr,
+          callback = function()
+            vim.lsp.buf.format { bufnr = bufnr }
+          end,
+        })
+      end
+    end
   end,
 }
