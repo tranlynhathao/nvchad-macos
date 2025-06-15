@@ -1,4 +1,3 @@
--- ~/.config/nvim/lua/plugins/svelte.lua
 return {
   {
     "nvim-treesitter/nvim-treesitter",

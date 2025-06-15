@@ -1,5 +1,4 @@
 ---@type NvPluginSpec
-
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
