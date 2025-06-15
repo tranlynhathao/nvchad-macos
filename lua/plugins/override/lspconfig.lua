@@ -11,6 +11,7 @@ return {
     "hrsh7th/cmp-cmdline",
     "jcha0713/cmp-tw2css",
     "hrsh7th/nvim-cmp",
+    "hoffs/omnisharp-extended-lsp.nvim",
   },
 
   config = function()
@@ -23,6 +24,15 @@ return {
     local lsp = require "gale.lsp"
     local util = require "lspconfig/util"
 
+    lspconfig.volar.setup {
+      filetypes = { "typescript", "javascript", "vue" },
+      init_options = {
+        typescript = {
+          tsdk = vim.fn.stdpath "data" .. "/mason/packages/typescript-language-server/node_modules/typescript/lib",
+        },
+      },
+    }
+
     local function organize_imports()
       local params = {
         command = "_typescript.organizeImports",
@@ -30,6 +40,28 @@ return {
       }
       vim.lsp.execute_command(params)
     end
+
+    -- lspconfig.omnisharp.setup {
+    --   handlers = {
+    --     ["textDocument/definition"] = require("omnisharp_extended").handler,
+    --   },
+    --   cmd = { "dotnet", "C:/Users/sfree/AppData/Local/nvim-data/omnisharp/OmniSharp.dll" },
+    --   capabilities = capabilities,
+    --   settings = {
+    --     FormattingOptions = {
+    --       EnableEditorConfigSupport = true,
+    --       OrganizeImports = true,
+    --     },
+    --     RoslynExtensionsOptions = {
+    --       DocumentAnalysisTimeoutMs = 30000,
+    --       EnableAnalyzersSupport = true,
+    --       EnableImportCompletion = true,
+    --     },
+    --     Sdk = {
+    --       IncludePrereleases = true,
+    --     },
+    --   },
+    -- }
 
     lspconfig.gopls.setup {
       on_attach = on_attach,
@@ -58,6 +90,13 @@ return {
         preferences = {
           disableSuggestions = true,
         },
+        plugins = {
+          {
+            name = "@vue/typescript-plugin",
+            -- location = vue_language_server,
+            languages = { "vue" },
+          },
+        },
       },
       commands = {
         OrganizeImports = {
@@ -65,6 +104,7 @@ return {
           description = "Organize Imports",
         },
       },
+      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
     }
 
     lspconfig.tailwindcss.setup {
