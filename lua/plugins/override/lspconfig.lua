@@ -2,6 +2,17 @@
 
 return {
   "neovim/nvim-lspconfig",
+  dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+    { "mason-org/mason.nvim", version = "^1.0.0" },
+    { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-cmdline",
+    "jcha0713/cmp-tw2css",
+    "hrsh7th/nvim-cmp",
+  },
+
   config = function()
     dofile(vim.g.base46_cache .. "lsp")
 
@@ -64,6 +75,12 @@ return {
     lspconfig.eslint.setup {
       on_attach = on_attach,
       capabilities = capabilities,
+    }
+
+    lspconfig.pyright.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      filetypes = { "python" },
     }
 
     local servers = {
