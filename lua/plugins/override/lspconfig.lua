@@ -1,7 +1,18 @@
 ---@type NvPluginSpec
-
 return {
   "neovim/nvim-lspconfig",
+  dependencies = {
+    "hrsh7th/cmp-nvim-lsp",
+    { "mason-org/mason.nvim", version = "^1.0.0" },
+    { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
+    "hrsh7th/cmp-buffer",
+    "hrsh7th/cmp-path",
+    "hrsh7th/cmp-cmdline",
+    "jcha0713/cmp-tw2css",
+    "hrsh7th/nvim-cmp",
+    "hoffs/omnisharp-extended-lsp.nvim",
+  },
+
   config = function()
     dofile(vim.g.base46_cache .. "lsp")
 
@@ -12,6 +23,9 @@ return {
     local lsp = require "gale.lsp"
     local util = require "lspconfig/util"
 
+    local vue_language_server_path = vim.fn.stdpath "data"
+      .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+
     local function organize_imports()
       local params = {
         command = "_typescript.organizeImports",
@@ -19,6 +33,28 @@ return {
       }
       vim.lsp.execute_command(params)
     end
+
+    -- lspconfig.omnisharp.setup {
+    --   handlers = {
+    --     ["textDocument/definition"] = require("omnisharp_extended").handler,
+    --   },
+    --   cmd = { "dotnet", "C:/Users/sfree/AppData/Local/nvim-data/omnisharp/OmniSharp.dll" },
+    --   capabilities = capabilities,
+    --   settings = {
+    --     FormattingOptions = {
+    --       EnableEditorConfigSupport = true,
+    --       OrganizeImports = true,
+    --     },
+    --     RoslynExtensionsOptions = {
+    --       DocumentAnalysisTimeoutMs = 30000,
+    --       EnableAnalyzersSupport = true,
+    --       EnableImportCompletion = true,
+    --     },
+    --     Sdk = {
+    --       IncludePrereleases = true,
+    --     },
+    --   },
+    -- }
 
     lspconfig.gopls.setup {
       on_attach = on_attach,
@@ -47,6 +83,13 @@ return {
         preferences = {
           disableSuggestions = true,
         },
+        plugins = {
+          {
+            name = "@vue/typescript-plugin",
+            location = vue_language_server_path,
+            languages = { "vue" },
+          },
+        },
       },
       commands = {
         OrganizeImports = {
@@ -54,6 +97,7 @@ return {
           description = "Organize Imports",
         },
       },
+      filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
     }
 
     lspconfig.tailwindcss.setup {
@@ -64,6 +108,12 @@ return {
     lspconfig.eslint.setup {
       on_attach = on_attach,
       capabilities = capabilities,
+    }
+
+    lspconfig.pyright.setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+      filetypes = { "python" },
     }
 
     local servers = {
