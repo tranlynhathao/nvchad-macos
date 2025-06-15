@@ -146,4 +146,5 @@ return {
   { import = "plugins.override.toggleterm" },
   { import = "plugins.override.nvim-lint" },
   { import = "plugins.override.formatter" },
+  { import = "plugins.override.mason-lspconfig" },
 }

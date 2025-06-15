@@ -69,7 +69,10 @@ return {
     )
 
     -- Python (requires: black)
+    -- Python (requires: black, mypy, ruff)
     table.insert(opts.sources, null_ls.builtins.formatting.black)
+    table.insert(opts.sources, null_ls.builtins.diagnostics.mypy)
+    table.insert(opts.sources, null_ls.builtins.diagnostics.ruff)
 
     -- Swift (requires: swiftformat)
     table.insert(opts.sources, null_ls.builtins.formatting.swiftformat)
