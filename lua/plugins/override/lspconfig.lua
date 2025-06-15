@@ -24,14 +24,8 @@ return {
     local lsp = require "gale.lsp"
     local util = require "lspconfig/util"
 
-    lspconfig.volar.setup {
-      filetypes = { "typescript", "javascript", "vue" },
-      init_options = {
-        typescript = {
-          tsdk = vim.fn.stdpath "data" .. "/mason/packages/typescript-language-server/node_modules/typescript/lib",
-        },
-      },
-    }
+    local vue_language_server_path = vim.fn.stdpath "data"
+      .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 
     local function organize_imports()
       local params = {
@@ -93,7 +87,7 @@ return {
         plugins = {
           {
             name = "@vue/typescript-plugin",
-            -- location = vue_language_server,
+            location = vue_language_server_path,
             languages = { "vue" },
           },
         },
