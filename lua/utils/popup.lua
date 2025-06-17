@@ -2,7 +2,11 @@ local M = {}
 
 local popup_winid = nil
 
-local function ClosePopup()
+local function is_valid_line(line)
+  return type(line) == "number" and line >= 0 and line < vim.api.nvim_buf_line_count(0)
+end
+
+function M.close()
   if popup_winid and vim.api.nvim_win_is_valid(popup_winid) then
     vim.api.nvim_win_close(popup_winid, true)
     popup_winid = nil
@@ -12,7 +16,12 @@ local function ClosePopup()
 end
 
 function M.show_range(start_line, end_line)
-  if ClosePopup() then
+  if not (is_valid_line(start_line) and is_valid_line(end_line - 1)) or start_line >= end_line then
+    vim.notify("Invalid line range", vim.log.levels.WARN)
+    return
+  end
+
+  if M.close() then
     return
   end
 
@@ -48,35 +57,16 @@ function M.show_range(start_line, end_line)
   popup_winid = vim.api.nvim_open_win(buf, true, opts)
 
   vim.keymap.set("n", "q", function()
-    ClosePopup()
+    M.close()
   end, { buffer = buf, nowait = true })
 
-  vim.api.nvim_create_autocmd({ "BufLeave", "QuitPre" }, {
+  vim.api.nvim_create_autocmd({ "BufLeave", "QuitPre", "WinLeave" }, {
+    buffer = 0,
     once = true,
     callback = function()
-      ClosePopup()
+      M.close()
     end,
   })
-end
-
-function M.show_header()
-  M.show_range(0, 15)
-end
-
-function M.show_fold_under_cursor()
-  local lnum = vim.fn.line "."
-  local fold_start = vim.fn.foldclosed(lnum)
-  local fold_end = vim.fn.foldclosedend(lnum)
-  if fold_start == -1 then
-    return
-  end
-  M.show_range(fold_start - 1, fold_end)
-end
-
-function M.show_selection()
-  local start_pos = vim.fn.getpos("'<")[2] - 1
-  local end_pos = vim.fn.getpos("'>")[2]
-  M.show_range(start_pos, end_pos)
 end
 
 return M
