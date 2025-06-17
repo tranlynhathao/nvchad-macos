@@ -1,6 +1,7 @@
 local utils = require "gale.utils"
 local map = utils.glb_map
 local comments = require "utils.comments"
+local popup = require "utils.popup"
 
 -- #################################
 -- Naviagtion word
@@ -21,6 +22,22 @@ map("n", "E", "ge")
 
 -- n>>: indent n lines
 -- #################################
+
+vim.keymap.set("n", "<leader>pp", function()
+  local cur = vim.fn.line "."
+  popup.show_range(cur - 1, cur + 10)
+end, { desc = "Popup 10 lines from current line" })
+
+vim.keymap.set("n", "<leader>ph", popup.show_header, { desc = "Popup file header" })
+vim.keymap.set("v", "<leader>pv", popup.show_selection, { desc = "Popup visual selection" })
+vim.keymap.set("n", "<leader>pf", popup.show_fold_under_cursor, { desc = "Popup fold content" })
+
+vim.api.nvim_create_user_command("PopupLines", function(opts)
+  local args = vim.split(opts.args, " ")
+  local start_line = tonumber(args[1]) - 1
+  local end_line = tonumber(args[2])
+  popup.show_range(start_line, end_line)
+end, { nargs = "+" })
 
 -- DAP
 vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<CR>", { desc = "Toggle breakpoint" })
