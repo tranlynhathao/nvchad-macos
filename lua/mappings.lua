@@ -23,21 +23,38 @@ map("n", "E", "ge")
 -- n>>: indent n lines
 -- #################################
 
+vim.api.nvim_create_user_command("PopupLines", function(opts)
+  local args = vim.split(opts.args, " ")
+  local start_line = tonumber(args[1]) and tonumber(args[1]) - 1 or -1
+  local end_line = tonumber(args[2]) or -1
+  popup.show_range(start_line, end_line)
+end, {
+  nargs = "+",
+})
+
 vim.keymap.set("n", "<leader>pp", function()
   local cur = vim.fn.line "."
   popup.show_range(cur - 1, cur + 10)
 end, { desc = "Popup 10 lines from current line" })
 
-vim.keymap.set("n", "<leader>ph", popup.show_header, { desc = "Popup file header" })
-vim.keymap.set("v", "<leader>pv", popup.show_selection, { desc = "Popup visual selection" })
-vim.keymap.set("n", "<leader>pf", popup.show_fold_under_cursor, { desc = "Popup fold content" })
+vim.keymap.set("n", "<leader>ph", function()
+  popup.show_range(0, 15)
+end, { desc = "Popup file header" })
 
-vim.api.nvim_create_user_command("PopupLines", function(opts)
-  local args = vim.split(opts.args, " ")
-  local start_line = tonumber(args[1]) - 1
-  local end_line = tonumber(args[2])
-  popup.show_range(start_line, end_line)
-end, { nargs = "+" })
+vim.keymap.set("n", "<leader>pf", function()
+  local lnum = vim.fn.line "."
+  local fold_start = vim.fn.foldclosed(lnum)
+  local fold_end = vim.fn.foldclosedend(lnum)
+  if fold_start ~= -1 then
+    popup.show_range(fold_start - 1, fold_end)
+  end
+end, { desc = "Popup fold content" })
+
+vim.keymap.set("v", "<leader>pv", function()
+  local start_pos = vim.fn.getpos("'<")[2] - 1
+  local end_pos = vim.fn.getpos("'>")[2]
+  popup.show_range(start_pos, end_pos)
+end, { desc = "Popup visual selection" })
 
 -- DAP
 vim.keymap.set("n", "<leader>db", "<cmd>DapToggleBreakpoint<CR>", { desc = "Toggle breakpoint" })
