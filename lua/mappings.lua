@@ -10,6 +10,7 @@ local popup = require "utils.popup"
 -- e: move to next end of word
 -- ge or E: move to previous end of word
 map("n", "E", "ge")
+map("n", "yw", "yiw")
 
 -- Movement
 -- h: move to left
@@ -308,6 +309,8 @@ map("n", "x", '"6x', { desc = "Delete character" })
 -- map("v", "d", '"6d', { desc = "Delete selection" })
 map("n", "cc", '"6cc', { desc = "Change line" })
 map("v", "c", '"6c', { desc = "Change selection" })
+-- map("n", "yw", '"6yiw', { desc = "Yank inner word to custom register" })
+-- map("n", "<C-yw>", '"+yiw', { desc = "Yank word to system clipboard" })
 
 -- Use register `"0` for default yank register
 map("v", "d", '"_d"0p', { desc = "Delete selection and store in default yank register" })
