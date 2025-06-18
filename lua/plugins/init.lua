@@ -88,7 +88,6 @@ return {
   { import = "plugins.spec.friendly-snippets" },
   { import = "plugins.spec.jsdoc" },
   { import = "plugins.spec.typescript" },
-  { import = "plugins.spec.treesitter-textobjects" },
   { import = "plugins.spec.git-conflict" },
   { import = "plugins.spec.abolish" },
   { import = "plugins.spec.sandwich" },
