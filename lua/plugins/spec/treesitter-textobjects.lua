@@ -1,9 +1,14 @@
----@type NvPluginSpec
 return {
   "nvim-treesitter/nvim-treesitter-textobjects",
   lazy = true,
   config = function()
     require("nvim-treesitter.configs").setup {
+      ensure_installed = {},
+      sync_install = false,
+      auto_install = false,
+      highlight = {
+        enable = true,
+      },
       textobjects = {
         select = {
           enable = true,

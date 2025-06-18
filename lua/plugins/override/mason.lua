@@ -1,6 +1,7 @@
 ---@type NvPluginSpec
 return {
   "williamboman/mason.nvim",
+  build = ":MasonUpdate",
   opts = {
     ui = { border = "rounded" },
     ensure_installed = {
