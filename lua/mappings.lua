@@ -309,7 +309,7 @@ map("n", "x", '"6x', { desc = "Delete character" })
 -- map("v", "d", '"6d', { desc = "Delete selection" })
 map("n", "cc", '"6cc', { desc = "Change line" })
 map("v", "c", '"6c', { desc = "Change selection" })
-map("n", "yw", '"6yiw', { desc = "Yank inner word to custom register" })
+-- map("n", "yw", '"6yiw', { desc = "Yank inner word to custom register" })
 -- map("n", "<C-yw>", '"+yiw', { desc = "Yank word to system clipboard" })
 
 -- Use register `"0` for default yank register
