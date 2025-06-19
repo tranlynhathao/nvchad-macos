@@ -109,16 +109,18 @@ return {
       ["javascriptnuxt.jsx"] = { "prettier" }, -- or: "biome"
     },
     format_on_save = function(bufnr)
-      -- Disable with a global or buffer-local variable
       if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
         return
       end
-      return { timeout_ms = 500, lsp_fallback = true }
+      return { timeout_ms = 2000, lsp_fallback = true }
     end,
+
     formatters = {
       yamlfmt = {
         args = { "-formatter", "retain_line_breaks_single=true" },
+        timeout_ms = 3000,
       },
+
       sqlfluff = {
         command = "sqlfluff",
         args = { "fix", "--dialect", "postgres", "--disable-progress-bar", "-" },
@@ -130,7 +132,29 @@ return {
             return vim.fn.fnamemodify(ctx.filename, ":h")
           end
         end,
-        timeout_ms = 50000,
+        timeout_ms = 10000,
+      },
+
+      black = {
+        timeout_ms = 5000,
+      },
+
+      markdownlint = {
+        timeout_ms = 5000,
+      },
+
+      clangformat = {
+        command = "clang-format",
+        args = { "--assume-filename", "$FILENAME" },
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
+      ["dotnet-format"] = {
+        command = "dotnet",
+        args = { "format" },
+        stdin = false,
+        timeout_ms = 5000,
       },
     },
   },
