@@ -9,7 +9,7 @@ return {
         enabled = true,
         auto_trigger = true, -- Automatically display suggestions
         keymap = {
-          accept = "<leader><leader>a", -- To accept suggestions
+          accept = "||", -- To accept suggestions
           accept_word = "<localleader>l", -- Use .l to accept a word
           accept_line = "<localleader>j", -- Use .j to accept a line
           next = "<M-]>", -- Use Alt + ] to go to the next suggestion
