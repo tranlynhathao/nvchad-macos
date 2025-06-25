@@ -132,7 +132,7 @@ return {
             return vim.fn.fnamemodify(ctx.filename, ":h")
           end
         end,
-        timeout_ms = 10000,
+        timeout_ms = 50000,
       },
 
       black = {
