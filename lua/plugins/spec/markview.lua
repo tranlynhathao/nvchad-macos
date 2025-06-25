@@ -19,6 +19,17 @@ return {
       preview = {
         modes = { "i", "n", "v", "vs", "V", "Vs", "no", "c" },
         hybrid_modes = { "i" },
+
+        -- callbacks = {
+        --   on_enable = function(_, win)
+        --     if vim.api.nvim_win_is_valid(win) then
+        --       vim.wo[win].wrap = false
+        --       vim.wo[win].conceallevel = 2
+        --       vim.wo[win].concealcursor = "nivc"
+        --     end
+        --   end,
+        -- },
+
         callbacks = {
           on_enable = function(_, win)
             -- https://github.com/OXY2DEV/markview.nvim/issues/75
@@ -27,6 +38,10 @@ return {
             -- https://segmentfault.com/q/1010000000532491
             vim.wo[win].conceallevel = 2
             vim.wo[win].concealcursor = "nivc"
+
+            -- vim.wo[win].wrap = true
+            -- vim.wo[win].linebreak = true
+            -- vim.wo[win].breakindent = true
           end,
         },
       },
@@ -34,26 +49,70 @@ return {
         headings = presets.headings.arrowed,
         tables = {
           use_virt_lines = true,
+          style = "rounded",
         },
       },
       checkboxes = presets.checkboxes.nerd,
+      -- markdown_inline = {
+      --   entities = {
+      --     enable = true,
+      --     hl = nil,
+      --   },
+      --   highlight = {
+      --     enable = true,
+      --   },
+      -- },
       markdown_inline = {
         entities = {
           enable = true,
-          hl = nil,
+          hl = "SpecialComment",
         },
         highlight = {
           enable = true,
+          hl_groups = {
+            bold = "Bold",
+            italic = "Italic",
+            code = "String", -- inline `code`
+            link = "Identifier", -- [text](url)
+            strikethrough = "Comment",
+          },
         },
       },
+      -- html = {
+      --   enable = true,
+      --   tags = {
+      --     enable = true,
+      --     default = {
+      --       conceal = true,
+      --       hl = nil,
+      --     },
+      --   },
+      -- },
       html = {
         enable = true,
         tags = {
           enable = true,
           default = {
             conceal = true,
-            hl = nil,
+            hl = "Todo",
           },
+          custom = {
+            span = {
+              conceal = false,
+              hl = function(attrs)
+                if attrs.style and attrs.style:match "color:red" then
+                  return "ErrorMsg"
+                end
+              end,
+            },
+          },
+        },
+      },
+      symbols = {
+        enable = true,
+        custom = {
+          ["✅"] = { char = "✔", hl = "DiffAdd" },
+          ["❌"] = { char = "✖", hl = "DiffDelete" },
         },
       },
     }
