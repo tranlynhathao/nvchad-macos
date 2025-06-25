@@ -162,3 +162,14 @@ autocmd("FileType", {
     require "gale.vue"
   end,
 })
+
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "markdown",
+--   callback = function()
+--     vim.defer_fn(function()
+--       if vim.api.nvim_get_current_win() then
+--         vim.cmd "ZenMode"
+--       end
+--     end, 100)
+--   end,
+-- })
