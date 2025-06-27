@@ -102,6 +102,8 @@ return {
   { import = "plugins.spec.nvim-dap-go" },
   { import = "plugins.spec.gopher" },
   { import = "plugins.spec.dap-ts" },
+  { import = "plugins.spec.markdown-table-mode" },
+  { import = "plugins.spec.markdown-toc" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
