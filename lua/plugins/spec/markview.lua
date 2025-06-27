@@ -11,6 +11,7 @@ return {
     },
   },
   opts = function(_, opts)
+    -- factor leading to color of the markview
     dofile(vim.g.base46_cache .. "markview")
     local presets = require "markview.presets"
 
