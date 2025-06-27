@@ -244,9 +244,66 @@ map("v", "<leader>i", 'c*<C-r>"*<Esc>', { desc = "Italic" })
 map("v", "<leader>u", 's/<C-R>"<u>\\O</u>/', { desc = "Underline" })
 
 -- Insert Codeblock with languages
-map("n", "<leader>a", "o```python<CR><ESC>O<ESC>o```")
-map("n", "<leader>j", "o```javascript<CR><ESC>O<ESC>o```")
-map("x", "<leader>`", ":<C-u>normal! I```<CR><ESC>gv:normal! A```<ESC>")
+vim.keymap.set("n", "<leader>a", function()
+  local lines = {
+    "```python",
+    "",
+    "```",
+  }
+  vim.api.nvim_put(lines, "l", true, true)
+  vim.cmd "normal! k"
+end, { desc = "Insert python code block" })
+
+vim.keymap.set("n", "<leader>j", function()
+  local lines = {
+    "```javascript",
+    "",
+    "```",
+  }
+  vim.api.nvim_put(lines, "l", true, true)
+  vim.cmd "normal! k"
+end, { desc = "Insert javascript code block" })
+
+vim.keymap.set("x", "<leader>`", function()
+  local esc = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+  vim.api.nvim_feedkeys(esc, "x", false)
+  local start_line = vim.fn.line "'<"
+  local end_line = vim.fn.line "'>"
+
+  vim.fn.append(end_line, "```")
+  vim.fn.append(start_line - 1, "```")
+end, { desc = "Wrap selection with plain code block" })
+
+-- Normal mode: Insert code block with language prompt
+vim.keymap.set("n", "<leader>~", function()
+  local lang = vim.fn.input "Language: "
+  if lang == "" then
+    lang = "plaintext"
+  end
+  local lines = {
+    "```" .. lang,
+    "",
+    "```",
+  }
+  vim.api.nvim_put(lines, "l", true, true)
+  vim.cmd "normal! k"
+end, { desc = "Insert code block with language" })
+
+-- Visual mode: Wrap selected lines with code block
+vim.keymap.set("x", "<leader>~", function()
+  local lang = vim.fn.input "Language: "
+  if lang == "" then
+    lang = "plaintext"
+  end
+
+  local esc = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+  vim.api.nvim_feedkeys(esc, "x", false)
+  local start_line = vim.fn.line "'<"
+  local end_line = vim.fn.line "'>"
+
+  vim.fn.append(end_line, "```")
+  vim.fn.append(start_line - 1, "```" .. lang)
+end, { desc = "Wrap selection in code block with language" })
 
 map("i", "<C-c>", "<ESC>") -- Remap <C-c> into <ESC> for convenience
 
