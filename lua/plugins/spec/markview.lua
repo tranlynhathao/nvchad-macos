@@ -11,6 +11,8 @@ return {
     },
   },
   opts = function(_, opts)
+    -- factor leading to color of the markview
+    dofile(vim.g.base46_cache .. "markview")
     local presets = require "markview.presets"
 
     ---@type markview.configuration
@@ -20,16 +22,7 @@ return {
         modes = { "i", "n", "v", "vs", "V", "Vs", "no", "c" },
         hybrid_modes = { "i" },
 
-        -- callbacks = {
-        --   on_enable = function(_, win)
-        --     if vim.api.nvim_win_is_valid(win) then
-        --       vim.wo[win].wrap = false
-        --       vim.wo[win].conceallevel = 2
-        --       vim.wo[win].concealcursor = "nivc"
-        --     end
-        --   end,
-        -- },
-
+        ---@diagnostic disable-next-line
         callbacks = {
           on_enable = function(_, win)
             -- https://github.com/OXY2DEV/markview.nvim/issues/75
@@ -62,22 +55,40 @@ return {
       --     enable = true,
       --   },
       -- },
+      highlight_groups = "dynamic",
+      ---@diagnostic disable-next-line
       markdown_inline = {
-        entities = {
+        enable = true,
+        ---@diagnostic disable-next-line
+        tags = {
           enable = true,
-          hl = "SpecialComment",
-        },
-        highlight = {
-          enable = true,
-          hl_groups = {
-            bold = "Bold",
-            italic = "Italic",
-            code = "String", -- inline `code`
-            link = "Identifier", -- [text](url)
-            strikethrough = "Comment",
+          default = {
+            conceal = true,
+            ---@type string?
+            hl = nil,
           },
         },
+        entities = {
+          enable = true,
+          hl = nil,
+        },
       },
+      -- markdown_inline = {
+      --   entities = {
+      --     enable = true,
+      --     hl = "SpecialComment",
+      --   },
+      --   highlight = {
+      --     enable = true,
+      --     hl_groups = {
+      --       bold = "Bold",
+      --       italic = "Italic",
+      --       code = "String", -- inline `code`
+      --       link = "Identifier", -- [text](url)
+      --       strikethrough = "Comment",
+      --     },
+      --   },
+      -- },
       -- html = {
       --   enable = true,
       --   tags = {
