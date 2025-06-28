@@ -435,6 +435,48 @@ map("n", "<C-A-j>", "11<C-w>-", { desc = "Window decrease height by 5" })
 
 local M = {}
 
+-- #############################################
+-- Upgrade replace function to use input prompts
+-- #############################################
+
+-- local function get_search_replace_flags()
+--   local search = vim.fn.input("Search: ")
+--   if search == "" then
+--     vim.notify("Search pattern is empty!", vim.log.levels.WARN)
+--     return
+--   end
+--   local replace = vim.fn.input("Replace with: ")
+--   local ignore_case = vim.fn.input("Ignore case? (y/n): ")
+--   local flag = (ignore_case:lower() == "y") and "gi" or "g"
+--   return search, replace, flag
+-- end
+--
+-- function M.ReplaceCurrentLine()
+--   local search, replace, flag = get_search_replace_flags()
+--   if not search then return end
+--
+--   local ok, err = pcall(function()
+--     vim.cmd(string.format("s/%s/%s/%s", search, replace, flag))
+--   end)
+--
+--   if not ok then
+--     vim.notify("Error replacing: " .. err, vim.log.levels.ERROR)
+--   end
+-- end
+--
+-- function M.ReplaceInFile()
+--   local search, replace, flag = get_search_replace_flags()
+--   if not search then return end
+--
+--   local ok, err = pcall(function()
+--     vim.cmd(string.format("%%s/%s/%s/%s", search, replace, flag))
+--   end)
+--
+--   if not ok then
+--     vim.notify("Error replacing: " .. err, vim.log.levels.ERROR)
+--   end
+-- end
+
 function M.ReplaceCurrentLine()
   local search = vim.fn.input "Search: "
   if search == "" then
@@ -458,11 +500,35 @@ end
 function M.ReplaceInSelection()
   local search = vim.fn.input "Search: "
   if search == "" then
-    print "Search is empty"
+    vim.notify("Search pattern is empty!", vim.log.levels.WARN)
     return
   end
-  local replace = vim.fn.input "Replace: "
-  vim.cmd(string.format("'<,'>s/%s/%s/g", search, replace))
+
+  local replace = vim.fn.input "Replace with: "
+  local ignore_case = vim.fn.input "Ignore case? (y/n): "
+  local flag = (ignore_case:lower() == "y") and "gi" or "g"
+
+  local v_start = vim.fn.getpos("v")[2]
+  local v_end = vim.fn.getcurpos()[2]
+
+  local start_line = math.min(v_start, v_end) - 1
+  local end_line = math.max(v_start, v_end)
+
+  local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
+  local text = table.concat(lines, "\n")
+
+  if not text:find(search) then
+    vim.notify("Pattern '" .. search .. "' not found in selection!", vim.log.levels.INFO)
+    return
+  end
+
+  local ok, err = pcall(function()
+    vim.cmd(string.format("%d,%ds/%s/%s/%s", start_line + 1, end_line, search, replace, flag))
+  end)
+
+  if not ok then
+    vim.notify("Error replacing: " .. err, vim.log.levels.ERROR)
+  end
 end
 
 -- Register this table as a pseudo-module to avoid luacheck warning
