@@ -1,6 +1,10 @@
 ---@type NvPluginSpec
 return {
   "folke/noice.nvim",
+  dependencies = {
+    "MunifTanjim/nui.nvim",
+    "rcarriga/nvim-notify",
+  },
   lazy = false,
   config = function()
     require("noice").setup {
