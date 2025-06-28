@@ -96,7 +96,7 @@ return {
       php = { "phpcbf" }, -- or: "php-cs-fixer", "phpcbf"
 
       -- SQL
-      sql = { "sqlfluff" }, -- or: "sqlfluff", "pg_format", "sql-formatter", "sql-formatter-plus"
+      sql = { "sql_formatter" }, -- or: "sqlfluff", "pg_format", "sql-formatter", "sql-formatter-plus"
 
       -- Solidity
       solidity = { "prettier" }, -- or: "solhint", "solfmt"

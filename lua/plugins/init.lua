@@ -148,4 +148,5 @@ return {
   { import = "plugins.override.nvim-lint" },
   { import = "plugins.override.formatter" },
   { import = "plugins.override.mason-lspconfig" },
+  { import = "plugins.override.vim-dadbod-ui" },
 }
