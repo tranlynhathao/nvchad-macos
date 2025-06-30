@@ -104,6 +104,7 @@ return {
   { import = "plugins.spec.dap-ts" },
   { import = "plugins.spec.markdown-table-mode" },
   { import = "plugins.spec.markdown-toc" },
+  { import = "plugins.spec.highlight-undo" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
