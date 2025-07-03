@@ -37,6 +37,9 @@ return {
       }
     )
 
+    -- Nix (requires: alejandra)
+    table.insert(opts.sources, null_ls.builtins.formatting.alejandra)
+
     -- CSS/SCSS
     table.insert(
       opts.sources,
