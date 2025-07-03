@@ -297,3 +297,10 @@ autocmd("UILeave", {
 --   end,
 --   desc = "Opens the current buffer in Obsidian",
 -- })
+
+-- autocmd("BufWritePre", {
+--   pattern = "*.nix",
+--   callback = function()
+--     vim.lsp.buf.format { async = false }
+--   end,
+-- })
