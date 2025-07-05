@@ -325,37 +325,7 @@ map("n", "<leader>m", "", {
 })
 
 -- Custom configuration
-local function InsertMarkdownLink()
-  local choice = vim.fn.inputlist {
-    "Insert Markdown Link:",
-    "1. Normal link [text](url)",
-    "2. Image ![alt](url)",
-    "3. Backlink [[note-title]] (Obsidian style)",
-    "4. Raw URL <url>",
-  }
-
-  if choice == 0 then
-    return
-  end -- user cancelled
-
-  if choice == 1 then
-    local text = vim.fn.input "Link text: "
-    local url = vim.fn.input "URL: "
-    vim.api.nvim_put({ string.format("[%s](%s)", text, url) }, "c", true, true)
-  elseif choice == 2 then
-    local alt = vim.fn.input "Alt text: "
-    local url = vim.fn.input "Image URL: "
-    vim.api.nvim_put({ string.format("![%s](%s)", alt, url) }, "c", true, true)
-  elseif choice == 3 then
-    local note = vim.fn.input "Note title: "
-    vim.api.nvim_put({ string.format("[[%s]]", note) }, "c", true, true)
-  elseif choice == 4 then
-    local url = vim.fn.input "URL: "
-    vim.api.nvim_put({ string.format("<%s>", url) }, "c", true, true)
-  end
-end
-
-map("n", "<leader>l", InsertMarkdownLink, { desc = "Insert Markdown link" })
+map("n", "<leader>l", ":lua InsertBackLink()<CR>", { desc = "Insert backlink" })
 
 -- Open Lazygit
 map("n", "<leader>lg", ":LazyGit<CR>", { desc = "Open Lazygit" })
