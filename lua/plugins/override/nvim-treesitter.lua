@@ -39,7 +39,7 @@ return {
       -- "python",
       -- "query",
       -- "regex",
-      -- "sql",
+      "sql",
       -- "java",
       -- "julia",
       -- "r",
