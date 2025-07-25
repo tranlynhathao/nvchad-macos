@@ -151,4 +151,5 @@ return {
   { import = "plugins.override.formatter" },
   { import = "plugins.override.mason-lspconfig" },
   { import = "plugins.override.vim-dadbod-ui" },
+  { import = "plugins.override.claudecode" },
 }
