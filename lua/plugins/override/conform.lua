@@ -96,7 +96,7 @@ return {
       php = { "phpcbf" }, -- or: "php-cs-fixer", "phpcbf"
 
       -- SQL
-      sql = { "sql_formatter" }, -- or: "sqlfluff", "pg_format", "sql-formatter", "sql-formatter-plus"
+      sql = { "sqlfluff" }, -- or: "pg_format", "sql-formatter", "sql-formatter-plus"
 
       -- Solidity
       solidity = { "prettier" }, -- or: "solhint", "solfmt"
@@ -154,6 +154,10 @@ return {
         command = "dotnet",
         args = { "format" },
         stdin = false,
+        timeout_ms = 5000,
+      },
+
+      google_java_format = {
         timeout_ms = 5000,
       },
     },
