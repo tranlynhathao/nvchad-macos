@@ -105,6 +105,7 @@ return {
   { import = "plugins.spec.markdown-table-mode" },
   { import = "plugins.spec.markdown-toc" },
   { import = "plugins.spec.highlight-undo" },
+  { import = "plugins.spec.smearcursor" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
@@ -150,4 +151,5 @@ return {
   { import = "plugins.override.formatter" },
   { import = "plugins.override.mason-lspconfig" },
   { import = "plugins.override.vim-dadbod-ui" },
+  { import = "plugins.override.claudecode" },
 }
