@@ -157,6 +157,10 @@ return {
         stdin = false,
         timeout_ms = 5000,
       },
+
+      google_java_format = {
+        timeout_ms = 5000,
+      },
     },
   },
 }
