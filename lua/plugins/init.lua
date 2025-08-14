@@ -106,6 +106,7 @@ return {
   { import = "plugins.spec.markdown-toc" },
   { import = "plugins.spec.highlight-undo" },
   { import = "plugins.spec.smearcursor" },
+  -- { import = "plugins.spec.winsep" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },
