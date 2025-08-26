@@ -28,6 +28,12 @@ return {
           cterm_color = "140",
           name = "PrologFile",
         },
+        ["gleam"] = {
+          icon = "★",
+          color = "#ffaff3",
+          cterm_color = "213",
+          name = "Gleam",
+        },
         ["pug"] = {
           icon = "",
           color = "#a86454",
