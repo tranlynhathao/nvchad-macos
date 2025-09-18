@@ -3,6 +3,7 @@ return {
   "rcarriga/nvim-notify",
   opts = {
     timeout = 50,
+    stages = "fade_in_slide_out",
   },
   lazy = false,
   config = function()
@@ -19,6 +20,10 @@ return {
       -- background_colour = "#1c2433",
       background_colour = "#1e1e1e",
       top_down = false,
+
+      -- addition
+      fps = 60,
+      render = "minimal",
     }
   end,
 }

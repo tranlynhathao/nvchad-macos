@@ -16,12 +16,11 @@ return {
   config = function()
     dofile(vim.g.base46_cache .. "lsp")
 
-    local on_attach = require("gale.lsp").on_attach
-    local capabilities = require("gale.lsp").capabilities
+    local on_attach = require("vincent.lsp").on_attach
+    local capabilities = require("vincent.lsp").capabilities
 
-    local lspconfig = require "lspconfig"
-    local lsp = require "gale.lsp"
-    local util = require "lspconfig/util"
+    local lsp = require "vincent.lsp"
+    local util = require "lspconfig.util"
 
     local vue_language_server_path = vim.fn.stdpath "data"
       .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
@@ -56,7 +55,7 @@ return {
     --   },
     -- }
 
-    lspconfig.gopls.setup {
+    vim.lsp.config("gopls", {
       on_attach = on_attach,
       capabilities = capabilities,
       cmd = { "gopls", "serve" },
@@ -73,10 +72,10 @@ return {
           staticcheck = true,
         },
       },
-    }
+    })
 
     -- lspconfig.tsserver.setup {
-    lspconfig.ts_ls.setup {
+    vim.lsp.config("ts_ls", {
       on_attach = on_attach,
       capabilities = capabilities,
       init_options = {
@@ -98,23 +97,23 @@ return {
         },
       },
       filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-    }
+    })
 
-    lspconfig.tailwindcss.setup {
+    vim.lsp.config("tailwindcss", {
       on_attach = on_attach,
       capabilities = capabilities,
-    }
+    })
 
-    lspconfig.eslint.setup {
+    vim.lsp.config("eslint", {
       on_attach = on_attach,
       capabilities = capabilities,
-    }
+    })
 
-    lspconfig.pyright.setup {
+    vim.lsp.config("pyright", {
       on_attach = on_attach,
       capabilities = capabilities,
       filetypes = { "python" },
-    }
+    })
 
     local servers = {
       astro = {},
@@ -276,7 +275,7 @@ return {
       opts.on_init = lsp.on_init
       opts.on_attach = lsp.create_on_attach(opts.on_attach)
       opts.capabilities = lsp.capabilities
-      lspconfig[name].setup(opts)
+      vim.lsp.config(name, opts)
     end
 
     -- LSP UI
