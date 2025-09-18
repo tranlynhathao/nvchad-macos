@@ -95,33 +95,33 @@ Most formatters allow you to override the default style via config files:
 
 ## 📌 Example Configuration Snippets
 
-### `.clang-format` for C/C++/C#
+### `.clang-format` for C/C++/C #
 
 ```yaml
 IndentWidth: 2
 ```
 
-### `rustfmt.toml` for Rust
+### `rustfmt.toml` for Rust
 
 ```toml
 tab_spaces = 2
 ```
 
-### `.rubocop.yml` for Ruby
+### `.rubocop.yml` for Ruby
 
 ```yaml
 Layout/IndentationWidth:
   Width: 2
 ```
 
-### `.php_cs.dist` for PHP
+### `.php_cs.dist` for PHP
 
 ```php
 return PhpCsFixer\Config::create()
     ->setIndent("  ");
 ```
 
-### CLI for `shfmt` (Bash)
+### CLI for `shfmt` (Bash)
 
 ```bash
 shfmt -i 2 -w script.sh

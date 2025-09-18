@@ -68,7 +68,7 @@ return {
   { import = "plugins.spec.showkeys" },
   { import = "plugins.spec.smoothie" },
   -- { import = "plugins.spec.statuscol" },
-  { import = "plugins.spec.supermaven" },
+  -- { import = "plugins.spec.supermaven" },
   { import = "plugins.spec.surround" },
   { import = "plugins.spec.tiny-code-action" },
   { import = "plugins.spec.tiny-inline-diagnostic" },
@@ -93,7 +93,7 @@ return {
   { import = "plugins.spec.sandwich" },
   { import = "plugins.spec.coerce" },
   { import = "plugins.spec.prolog" },
-  { import = "plugins.spec.copilot" },
+  -- { import = "plugins.spec.copilot" },
   { import = "plugins.spec.flash" },
   { import = "plugins.spec.nvim-treehopper" },
   { import = "plugins.spec.vim-repeat" },
@@ -106,6 +106,9 @@ return {
   { import = "plugins.spec.markdown-toc" },
   { import = "plugins.spec.highlight-undo" },
   { import = "plugins.spec.smearcursor" },
+  -- { import = "plugins.spec.ollama" },
+  { import = "plugins.spec.nerdy" },
+  -- { import = "plugins.spec.winsep" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },

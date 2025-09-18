@@ -2,7 +2,7 @@
 
 ---@type ChadrcConfig
 local M = {}
-local aux = require "gale.chadrc_aux"
+local aux = require "vincent.chadrc_aux"
 local modules = aux.modules
 local themes_customs = aux.themes_customs
 

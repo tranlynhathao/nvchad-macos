@@ -4,13 +4,12 @@ return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspconfig = require "lspconfig"
-
-      lspconfig.nimls.setup {
+      local util = require "lspconfig.util"
+      vim.lsp.config("nimls", {
         cmd = { "nim", "nimlsp" },
         filetypes = { "nim" },
-        root_dir = lspconfig.util.root_pattern "nim.cfg",
-      }
+        root_dir = util.root_pattern "nim.cfg",
+      })
     end,
   },
 

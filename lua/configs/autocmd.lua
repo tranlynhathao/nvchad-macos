@@ -7,7 +7,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "angular",
   callback = function()
-    require "gale.angular"
+    require "vincent.angular"
   end,
 })
 
@@ -15,7 +15,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "csharp",
   callback = function()
-    require "gale.csharp"
+    require "vincent.csharp"
   end,
 })
 
@@ -23,7 +23,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "dockerfile",
   callback = function()
-    require "gale.docker"
+    require "vincent.docker"
   end,
 })
 
@@ -31,7 +31,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "elixir",
   callback = function()
-    require "gale.elixir"
+    require "vincent.elixir"
   end,
 })
 
@@ -39,7 +39,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "flutter",
   callback = function()
-    require "gale.flutter"
+    require "vincent.flutter"
   end,
 })
 
@@ -47,7 +47,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "go",
   callback = function()
-    require "gale.go"
+    require "vincent.go"
   end,
 })
 
@@ -55,7 +55,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "java",
   callback = function()
-    require "gale.java"
+    require "vincent.java"
   end,
 })
 
@@ -63,7 +63,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "julia",
   callback = function()
-    require "gale.julia"
+    require "vincent.julia"
   end,
 })
 
@@ -71,7 +71,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "jupyter",
   callback = function()
-    require "gale.jupyter"
+    require "vincent.jupyter"
   end,
 })
 
@@ -79,7 +79,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "kotlin",
   callback = function()
-    require "gale.kotlin"
+    require "vincent.kotlin"
   end,
 })
 
@@ -87,7 +87,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "lua",
   callback = function()
-    require "gale.lua"
+    require "vincent.lua"
   end,
 })
 
@@ -95,7 +95,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "rust",
   callback = function()
-    require "gale.rust"
+    require "vincent.rust"
   end,
 })
 
@@ -103,7 +103,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "ruby",
   callback = function()
-    require "gale.ruby"
+    require "vincent.ruby"
   end,
 })
 
@@ -111,7 +111,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "scala",
   callback = function()
-    require "gale.scala"
+    require "vincent.scala"
   end,
 })
 
@@ -119,7 +119,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "solidity",
   callback = function()
-    require "gale.solidity"
+    require "vincent.solidity"
   end,
 })
 
@@ -127,7 +127,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "svelte",
   callback = function()
-    require "gale.svelte"
+    require "vincent.svelte"
   end,
 })
 
@@ -135,7 +135,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "tailwind",
   callback = function()
-    require "gale.tailwind"
+    require "vincent.tailwind"
   end,
 })
 
@@ -143,7 +143,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "terraform",
   callback = function()
-    require "gale.terraform"
+    require "vincent.terraform"
   end,
 })
 
@@ -151,7 +151,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "typescript",
   callback = function()
-    require "gale.typescript"
+    require "vincent.typescript"
   end,
 })
 
@@ -159,7 +159,7 @@ autocmd("FileType", {
   group = language_group,
   pattern = "vue",
   callback = function()
-    require "gale.vue"
+    require "vincent.vue"
   end,
 })
 
