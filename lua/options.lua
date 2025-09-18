@@ -1,6 +1,5 @@
 require "nvchad.options"
 
--- Thiết lập cấu hình mặc định
 local g = {
   dap_virtual_text = true,
   bookmark_sign = "",
@@ -11,7 +10,7 @@ local g = {
 local opt = {
   encoding = "utf-8",
   fileencoding = "utf-8",
-  clipboard = "unnamedplus", -- extended via "gale.wsl"
+  clipboard = "unnamedplus", -- extended via "vincent.wsl"
   -- Folds
   foldmethod = "expr",
   foldexpr = "v:lua.vim.treesitter.foldexpr()",
@@ -60,34 +59,34 @@ end
 -- vim.opt.background = "dark"
 -- vim.cmd.colorscheme "solarize_osaka" -- gruvbox
 
-local filename = {
-  "filename",
-  path = 1,
-  symbols = {
-    modified = "[+]",
-    readonly = "[]",
-    unnamed = "[No Name]",
-    newfile = "[New]",
-  },
-}
+-- local filename = {
+--   "filename",
+--   path = 1,
+--   symbols = {
+--     modified = "[+]",
+--     readonly = "[]",
+--     unnamed = "[No Name]",
+--     newfile = "[New]",
+--   },
+-- }
 
-local function location()
-  local total = vim.api.nvim_buf_line_count(0)
-  local row, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return tostring(row) .. "/" .. total .. ":" .. tostring(col + 1)
-end
+-- local function location()
+--   local total = vim.api.nvim_buf_line_count(0)
+--   local row, col = unpack(vim.api.nvim_win_get_cursor(0))
+--   return tostring(row) .. "/" .. total .. ":" .. tostring(col + 1)
+-- end
 
-local function md_wordcount()
-  if vim.bo.filetype == "markdown" then
-    local wc = vim.fn.wordcount()
-    local words = "/" .. tostring(wc.words) .. " words"
-    if wc.visual_words ~= nil then
-      return tostring(wc.visual_words) .. words
-    end
-    return tostring(wc.cursor_words) .. words
-  end
-  return ""
-end
+-- local function md_wordcount()
+--   if vim.bo.filetype == "markdown" then
+--     local wc = vim.fn.wordcount()
+--     local words = "/" .. tostring(wc.words) .. " words"
+--     if wc.visual_words ~= nil then
+--       return tostring(wc.visual_words) .. words
+--     end
+--     return tostring(wc.cursor_words) .. words
+--   end
+--   return ""
+-- end
 
 require("lualine").setup {
   options = {

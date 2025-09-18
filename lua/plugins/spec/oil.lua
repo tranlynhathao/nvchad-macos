@@ -10,7 +10,7 @@ return {
     vim.g.maplocalleader = ","
 
     local util = require "oil.util"
-    local map = require("gale.utils").glb_map
+    local map = require("vincent.utils").glb_map
 
     _G.oil_details_expanded = false
     _G.get_oil_winbar = function()

@@ -106,8 +106,8 @@ return {
   { import = "plugins.spec.markdown-toc" },
   { import = "plugins.spec.highlight-undo" },
   { import = "plugins.spec.smearcursor" },
-  { import = "plugins.spec.icon-picker" },
-  { import = "plugins.spec.ollama" },
+  -- { import = "plugins.spec.ollama" },
+  { import = "plugins.spec.nerdy" },
   -- { import = "plugins.spec.winsep" },
 
   -- ### Override plugins ###

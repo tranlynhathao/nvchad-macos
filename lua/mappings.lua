@@ -1,4 +1,4 @@
-local utils = require "gale.utils"
+local utils = require "vincent.utils"
 local map = utils.glb_map
 local comments = require "utils.comments"
 local popup = require "utils.popup"
