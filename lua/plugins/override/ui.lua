@@ -4,8 +4,11 @@ return {
   dev = false,
   branch = "v3.0",
   config = function()
-    -- Ensure theme_colors is defined with fallback values
-    local theme_colors = theme_colors or { bg = "#000000", fg = "#FFFFFF" }
+    -- luacheck: globals theme_colors
+    local colors = _G.theme_colors or { bg = "#000000", fg = "#FFFFFF" }
+
+    -- apply into highlights (if needed)
+    vim.api.nvim_set_hl(0, "Normal", { bg = colors.bg, fg = colors.fg })
 
     require "nvchad"
   end,
