@@ -1,4 +1,5 @@
 local state = { floating = { buf = -1, win = -1 } }
+
 local function create_floating_window(opts)
   opts = opts or {}
   local width = math.floor(vim.o.columns * 0.8)
@@ -7,12 +8,7 @@ local function create_floating_window(opts)
   local row = math.floor((vim.o.lines - height) / 2)
   local col = math.floor((vim.o.columns - width) / 2)
 
-  local buf = nil
-  if vim.api.nvim_buf_is_valid(opts.buf) then
-    buf = opts.buf
-  else
-    buf = vim.api.nvim_create_buf(false, true)
-  end
+  local buf = (opts.buf and vim.api.nvim_buf_is_valid(opts.buf)) and opts.buf or vim.api.nvim_create_buf(false, true)
 
   local config = {
     relative = "editor",
@@ -23,6 +19,7 @@ local function create_floating_window(opts)
     style = "minimal",
     border = "rounded",
   }
+
   vim.api.nvim_set_hl(0, "MyFloatingWindow", { bg = "#1e1e1e", fg = "#ffffff", blend = 10 })
   local win = vim.api.nvim_open_win(buf, true, config)
   return { buf = buf, win = win }

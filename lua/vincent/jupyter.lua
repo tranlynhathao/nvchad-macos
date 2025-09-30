@@ -101,17 +101,22 @@ local function delete_cell()
 end
 
 local function navigate_cell(up)
-  local is_up = up or false
-  local _, _, start_line, end_line = select_cell()
-  if is_up and start_line ~= 1 then
-    vim.api.nvim_win_set_cursor(0, { start_line - 1, 0 })
-  elseif end_line then
+  local _, _, current_start, current_end = select_cell()
+
+  if up then
+    if current_start > 1 then
+      vim.api.nvim_win_set_cursor(0, { current_start - 1, 0 })
+    end
+    return
+  end
+
+  if current_end then
     local bufnr = vim.api.nvim_get_current_buf()
-    local line_count = vim.api.nvim_buf_line_count(bufnr)
-    if end_line ~= line_count then
-      vim.api.nvim_win_set_cursor(0, { end_line + 1, 0 })
-      _, _, start_line, end_line = select_cell()
-      vim.api.nvim_win_set_cursor(0, { end_line - 1, 0 })
+    local last_line = vim.api.nvim_buf_line_count(bufnr)
+    if current_end < last_line then
+      vim.api.nvim_win_set_cursor(0, { current_end + 1, 0 })
+      _, _, _, current_end = select_cell()
+      vim.api.nvim_win_set_cursor(0, { current_end - 1, 0 })
     end
   end
 end
