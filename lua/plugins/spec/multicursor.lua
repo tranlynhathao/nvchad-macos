@@ -60,10 +60,12 @@ return {
     map("n", "<esc>", function()
       if not mc.cursorsEnabled() then
         mc.enableCursors()
-      elseif mc.hasCursors() then
-        mc.clearCursors()
       else
-        -- Default <esc> handler.
+        mc.clearCursors()
+        -- elseif mc.hasCursors() then
+        --   mc.clearCursors()
+        -- else
+        --   Default <esc> handler.
       end
     end)
 

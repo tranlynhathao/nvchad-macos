@@ -11,9 +11,9 @@ local nmap = function(key, effect)
   vim.keymap.set("n", key, effect, { silent = true, noremap = true })
 end
 
-local vmap = function(key, effect)
-  vim.keymap.set("v", key, effect, { silent = true, noremap = true })
-end
+-- local vmap = function(key, effect)
+--   vim.keymap.set("v", key, effect, { silent = true, noremap = true })
+-- end
 
 local imap = function(key, effect)
   vim.keymap.set("i", key, effect, { silent = true, noremap = true })
@@ -196,7 +196,7 @@ wk.add({
   { ".", ":norm .<cr>", desc = "repat last normal mode command" },
   { "<M-j>", ":m'>+<cr>`<my`>mzgv`yo`z", desc = "move line down" },
   { "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z", desc = "move line up" },
-  { "<cr>", send_region, desc = "run code region" },
+  -- { "<cr>", send_region, desc = "run code region" },
   { "q", ":norm @q<cr>", desc = "repat q macro" },
 }, { mode = "v" })
 
@@ -264,7 +264,7 @@ vim.keymap.set("n", "<localleader>os", get_otter_symbols_lang, { desc = "otter [
 
 -- normal mode with <localleader>
 wk.add({
-  { "<localleader><cr>", send_cell, desc = "run code cell" },
+  -- { "<localleader><cr>", send_cell, desc = "run code cell" },
   { "<localleader>c", group = "[c]ode / [c]ell / [c]hunk" },
   {
     { "<localleader>cn", new_terminal_shell, desc = "[n]ew terminal with shell" },

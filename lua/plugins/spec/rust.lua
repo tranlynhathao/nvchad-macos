@@ -2,18 +2,16 @@
 return {
   "simrat39/rust-tools.nvim",
   config = function()
-    local lspconfig = require "lspconfig"
     local rust_tools = require "rust-tools"
 
     rust_tools.setup {
       server = {
         on_attach = function(_, bufnr)
-          local opts = opts
-          vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>", opts)
-          vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>", opts)
-          vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>r", ":RustRun<CR>", opts)
-          vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>t", ":RustTest<CR>", opts)
-          vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>e", ":RustExpandMacro<CR>", opts)
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "Go to definition" })
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr, desc = "Hover" })
+          vim.keymap.set("n", "<leader>r", ":RustRun<CR>", { buffer = bufnr, desc = "Rust run" })
+          vim.keymap.set("n", "<leader>t", ":RustTest<CR>", { buffer = bufnr, desc = "Rust test" })
+          vim.keymap.set("n", "<leader>e", ":RustExpandMacro<CR>", { buffer = bufnr, desc = "Rust expand macro" })
         end,
       },
     }
