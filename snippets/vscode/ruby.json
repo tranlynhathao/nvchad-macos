@@ -1,12 +1,12 @@
 {
-	"puts": {
-		"prefix": "puts",
-		"body": ["puts '$1'"],
-		"description": "Print to console"
-	},
-	"def": {
-		"prefix": "def",
-		"body": ["def $1($2)", "  $3", "end"],
-		"description": "Define a method"
-	}
+  "puts": {
+    "prefix": "puts",
+    "body": ["puts '$1'"],
+    "description": "Print to console"
+  },
+  "def": {
+    "prefix": "def",
+    "body": ["def $1($2)", "  $3", "end"],
+    "description": "Define a method"
+  }
 }
