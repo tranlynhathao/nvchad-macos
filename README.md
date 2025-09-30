@@ -84,7 +84,7 @@ This configuration uses [`pre-commit`](https://pre-commit.com/) to automatically
 
 #### Setup
 
-R**ead:** [Usage](./USAGE.md)
+**Read:** [Usage](./USAGE.md)
 
 1. **Install pre-commit:**
 
