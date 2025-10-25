@@ -97,12 +97,7 @@ map("v", "<leader>cp", function()
 end, { desc = "Toggle Pug comments (//-) in Visual mode" })
 
 -- compress code
-map(
-  "n",
-  "<leader>cf",
-  "<cmd>lua vim.lsp.buf.format({ async = true })<CR>",
-  { desc = "Compress code (all supported formats)" }
-)
+map("n", "<leader>cf", "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", { desc = "Compress code (all supported formats)" })
 
 -- Better escape using jk in insert and terminal mode
 map("i", "jk", "<ESC>")
@@ -433,8 +428,6 @@ map("n", "<C-A-j>", "11<C-w>-", { desc = "Window decrease height by 5" })
 -- map("n", "S", ":%s//g<left><left>") -- All
 -- map("v", "s", ":s//g<left><left>") -- Selection
 
-local M = {}
-
 -- #############################################
 -- Upgrade replace function to use input prompts
 -- #############################################
@@ -477,24 +470,128 @@ local M = {}
 --   end
 -- end
 
+-- function M.ReplaceCurrentLine()
+--   local search = vim.fn.input "Search: "
+--   if search == "" then
+--     print "Search is empty"
+--     return
+--   end
+--   local replace = vim.fn.input "Replace: "
+--   vim.cmd(string.format("s/%s/%s/g", search, replace))
+-- end
+--
+-- function M.ReplaceInFile()
+--   local search = vim.fn.input "Search: "
+--   if search == "" then
+--     print "Search is empty"
+--     return
+--   end
+--   local replace = vim.fn.input "Replace: "
+--   vim.cmd(string.format("%%s/%s/%s/g", search, replace))
+-- end
+--
+-- function M.ReplaceInSelection()
+--   local search = vim.fn.input "Search: "
+--   if search == "" then
+--     vim.notify("Search pattern is empty!", vim.log.levels.WARN)
+--     return
+--   end
+--
+--   local replace = vim.fn.input "Replace with: "
+--   local ignore_case = vim.fn.input "Ignore case? (y/n): "
+--   local flag = (ignore_case:lower() == "y") and "gi" or "g"
+--
+--   local v_start = vim.fn.getpos("v")[2]
+--   local v_end = vim.fn.getcurpos()[2]
+--
+--   local start_line = math.min(v_start, v_end) - 1
+--   local end_line = math.max(v_start, v_end)
+--
+--   local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
+--   local text = table.concat(lines, "\n")
+--
+--   if not text:find(search) then
+--     vim.notify("Pattern '" .. search .. "' not found in selection!", vim.log.levels.INFO)
+--     return
+--   end
+--
+--   local ok, err = pcall(function()
+--     vim.cmd(string.format("%d,%ds/%s/%s/%s", start_line + 1, end_line, search, replace, flag))
+--   end)
+--
+--   if not ok then
+--     vim.notify("Error replacing: " .. err, vim.log.levels.ERROR)
+--   end
+-- end
+--
+-- -- Register this table as a pseudo-module to avoid luacheck warning
+-- package.loaded.replace_text = M
+--
+-- -- Key mappings
+-- map("n", "<leader>r", function()
+--   require("replace_text").ReplaceCurrentLine()
+-- end, { desc = "Replace text on line" })
+-- map("n", "<leader>R", function()
+--   require("replace_text").ReplaceInFile()
+-- end, { desc = "Replace text on file" })
+-- map("v", "<leader>r", function()
+--   require("replace_text").ReplaceInSelection()
+-- end, { desc = "Replace text on selection" })
+
+local M = {}
+
+local function escape_lua_pattern(s)
+  return s:gsub("([%%%^%$%(%)%.%[%]%*%+%-%?])", "%%%1")
+end
+
+local function replace_in_range(start_line, end_line, search, replace, use_regex)
+  local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
+
+  for i, line in ipairs(lines) do
+    if use_regex then
+      local ok, new_line = pcall(function()
+        return line:gsub(search, replace)
+      end)
+      if ok then
+        lines[i] = new_line
+      else
+        vim.notify("Invalid Lua pattern: " .. search, vim.log.levels.ERROR)
+        return
+      end
+    else
+      local plain_search = escape_lua_pattern(search)
+      lines[i] = line:gsub(plain_search, replace)
+    end
+  end
+
+  vim.api.nvim_buf_set_lines(0, start_line, end_line, false, lines)
+end
+
 function M.ReplaceCurrentLine()
   local search = vim.fn.input "Search: "
   if search == "" then
-    print "Search is empty"
+    vim.notify("Search pattern is empty!", vim.log.levels.WARN)
     return
   end
-  local replace = vim.fn.input "Replace: "
-  vim.cmd(string.format("s/%s/%s/g", search, replace))
+  local replace = vim.fn.input "Replace with: "
+  local use_regex = vim.fn.input("Use regex? (y/n): "):lower() == "y"
+
+  local line_nr = vim.fn.line "." - 1
+  replace_in_range(line_nr, line_nr + 1, search, replace, use_regex)
 end
 
 function M.ReplaceInFile()
   local search = vim.fn.input "Search: "
   if search == "" then
-    print "Search is empty"
+    vim.notify("Search pattern is empty!", vim.log.levels.WARN)
     return
   end
-  local replace = vim.fn.input "Replace: "
-  vim.cmd(string.format("%%s/%s/%s/g", search, replace))
+  local replace = vim.fn.input "Replace with: "
+  local use_regex = vim.fn.input("Use regex? (y/n): "):lower() == "y"
+
+  local total_lines = vim.api.nvim_buf_line_count(0)
+  replace_in_range(0, total_lines, search, replace, use_regex)
+  vim.notify("Replaced in entire file.", vim.log.levels.INFO)
 end
 
 function M.ReplaceInSelection()
@@ -503,47 +600,30 @@ function M.ReplaceInSelection()
     vim.notify("Search pattern is empty!", vim.log.levels.WARN)
     return
   end
-
   local replace = vim.fn.input "Replace with: "
-  local ignore_case = vim.fn.input "Ignore case? (y/n): "
-  local flag = (ignore_case:lower() == "y") and "gi" or "g"
+  local use_regex = vim.fn.input("Use regex? (y/n): "):lower() == "y"
 
   local v_start = vim.fn.getpos("v")[2]
   local v_end = vim.fn.getcurpos()[2]
-
   local start_line = math.min(v_start, v_end) - 1
   local end_line = math.max(v_start, v_end)
 
-  local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
-  local text = table.concat(lines, "\n")
-
-  if not text:find(search) then
-    vim.notify("Pattern '" .. search .. "' not found in selection!", vim.log.levels.INFO)
-    return
-  end
-
-  local ok, err = pcall(function()
-    vim.cmd(string.format("%d,%ds/%s/%s/%s", start_line + 1, end_line, search, replace, flag))
-  end)
-
-  if not ok then
-    vim.notify("Error replacing: " .. err, vim.log.levels.ERROR)
-  end
+  replace_in_range(start_line, end_line, search, replace, use_regex)
+  vim.notify(string.format("Replaced in lines %d-%d", start_line + 1, end_line), vim.log.levels.INFO)
 end
 
--- Register this table as a pseudo-module to avoid luacheck warning
 package.loaded.replace_text = M
 
--- Key mappings
-map("n", "<leader>r", function()
+local map_replace = vim.keymap.set
+map_replace("n", "<leader>r", function()
   require("replace_text").ReplaceCurrentLine()
 end, { desc = "Replace text on line" })
-map("n", "<leader>R", function()
+map_replace("n", "<leader>R", function()
   require("replace_text").ReplaceInFile()
-end, { desc = "Replace text on file" })
-map("v", "<leader>r", function()
+end, { desc = "Replace text in file" })
+map_replace("v", "<leader>r", function()
   require("replace_text").ReplaceInSelection()
-end, { desc = "Replace text on selection" })
+end, { desc = "Replace text in selection" })
 
 -- Togglers
 map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "Toggle line number" })
