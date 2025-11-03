@@ -10,7 +10,7 @@ Important files and directories include:
 
 * `init.lua` or `init.vim`: The main entrypoint
 * `lua/`: Contains modular Lua-based configuration
-* `lua/vincent/`: Main module, includes components like `utils`, `mappings`, `plugins`, etc.
+* `lua/noah/`: Main module, includes components like `utils`, `mappings`, `plugins`, etc.
 
 ---
 

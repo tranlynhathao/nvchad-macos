@@ -1,4 +1,4 @@
-local utils = require "vincent.utils"
+local utils = require "noah.utils"
 local map = utils.glb_map
 local comments = require "utils.comments"
 local popup = require "utils.popup"
@@ -422,6 +422,25 @@ map("n", "<C-A-h>", "11<C-w>>", { desc = "Window increase width by 5" })
 map("n", "<C-A-l>", "11<C-w><", { desc = "Window decrease width by 5" })
 map("n", "<C-A-k>", "11<C-w>+", { desc = "Window increase height by 5" })
 map("n", "<C-A-j>", "11<C-w>-", { desc = "Window decrease height by 5" })
+
+vim.keymap.set("n", "<leader>ra", function()
+  local old = vim.fn.input "Replace: "
+  if old == "" then
+    return
+  end
+  local new = vim.fn.input "With: "
+  if new == "" then
+    return
+  end
+
+  vim.cmd("vimgrep /" .. old .. "/gj **/*")
+
+  vim.cmd "copen"
+
+  vim.cmd([[cfdo %s/]] .. old .. [[/]] .. new .. [[/g | update]])
+
+  print("✓ Replaced '" .. old .. "' → '" .. new .. "' in all files.")
+end, { desc = "Replace string in all files of project" })
 
 -- -- Replace text
 -- map("n", "s", ":s//g<left><left>") -- Line

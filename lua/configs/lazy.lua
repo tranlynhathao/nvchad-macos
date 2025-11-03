@@ -1,6 +1,6 @@
 return {
   dev = {
-    path = "/home/vincent/workspace/neovim/",
+    path = "/home/noah/workspace/neovim/",
     fallback = true,
   },
   change_detection = {

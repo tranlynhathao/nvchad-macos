@@ -20,7 +20,7 @@ return {
   },
   opts = function(_, opts)
     local map = vim.keymap.set
-    local pickers = require("vincent.telescope").pickers
+    local pickers = require("noah.telescope").pickers
     local SIZES = {
       HEIGHT = 0.9,
       WIDTH = 0.9,
