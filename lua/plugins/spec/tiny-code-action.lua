@@ -6,7 +6,7 @@ return {
     { "nvim-telescope/telescope.nvim" },
   },
   config = function()
-    local map = require("vincent.utils").glb_map
+    local map = require("noah.utils").glb_map
 
     map({ "n", "v" }, "<leader>ca", function()
       require("tiny-code-action").code_action()

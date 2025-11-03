@@ -13,7 +13,7 @@ The **pre-commit hooks** executed successfully, and **no errors** were found. Ho
 - `lua/plugins/override/ui.lua:8:11: unused variable theme_colors`
 - `lua/mappings.lua:52:3: accessing undefined variable toggle_pug_comment`
 - `lua/functions.lua:4:10: setting non-standard global variable InsertBackLink`
-- `lua/vincent/csharp.lua:52:121: line is too long (206 > 120)`
+- `lua/noah/csharp.lua:52:121: line is too long (206 > 120)`
 
 ### Summary
 
