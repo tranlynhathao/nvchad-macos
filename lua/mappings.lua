@@ -423,7 +423,7 @@ map("n", "<C-A-l>", "11<C-w><", { desc = "Window decrease width by 5" })
 map("n", "<C-A-k>", "11<C-w>+", { desc = "Window increase height by 5" })
 map("n", "<C-A-j>", "11<C-w>-", { desc = "Window decrease height by 5" })
 
-vim.keymap.set("n", "<leader>ra", function()
+vim.keymap.set("n", "<leader>raa", function()
   local old = vim.fn.input "Replace: "
   if old == "" then
     return
