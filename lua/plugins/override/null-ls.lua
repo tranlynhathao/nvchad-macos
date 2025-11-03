@@ -7,6 +7,8 @@ return {
 
     opts.sources = opts.sources or {}
 
+    vim.filetype.add { extension = { sage = "python" } }
+
     -- JS/TS/JSX/TSX
     table.insert(
       opts.sources,

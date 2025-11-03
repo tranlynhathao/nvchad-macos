@@ -109,6 +109,7 @@ return {
   -- { import = "plugins.spec.ollama" },
   { import = "plugins.spec.nerdy" },
   -- { import = "plugins.spec.winsep" },
+  { import = "plugins.spec.llama" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },

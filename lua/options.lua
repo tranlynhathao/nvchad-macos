@@ -123,14 +123,12 @@ require("lualine").setup {
     icons_enabled = true,
   },
   sections = {
-    lualine_a = { "mode" },
-    -- lualine_a = {
-    --   {
-    --     "mode",
-    --     icon = "",
-    --                                                             
-    --   },
-    -- },
+    lualine_a = {
+      {
+        "mode",
+        icon = " ",
+      },
+    },
     lualine_b = { "branch", "diff", "diagnostics" },
     lualine_c = {
       {
@@ -145,7 +143,7 @@ require("lualine").setup {
         "fileformat",
         icons_enabled = false, -- disable default icons
         fmt = function()
-          return "%#MyIconColor#%#Normal#"
+          return "%#MyIconColor# %#Normal#"
         end,
       },
       "filetype",
