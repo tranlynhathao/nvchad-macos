@@ -19,7 +19,6 @@ return {
       "pyright",
       "mypy",
       "ruff",
-      "black",
     },
   },
 }
