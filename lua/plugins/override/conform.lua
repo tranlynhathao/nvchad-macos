@@ -62,9 +62,6 @@ return {
       -- OCaml
       ocaml = { "ocamlformat" }, -- or: "refmt"
 
-      -- Python
-      python = { "black" }, -- or: "isort", "ruff_format", "autopep8", "yapf"
-
       -- Lua
       lua = { "stylua" }, -- or: "lua-format"
 
@@ -135,9 +132,9 @@ return {
         timeout_ms = 50000,
       },
 
-      black = {
-        timeout_ms = 5000,
-      },
+      -- black = {
+      --   timeout_ms = 5000,
+      -- },
 
       markdownlint = {
         timeout_ms = 5000,

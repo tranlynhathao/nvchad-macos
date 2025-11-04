@@ -10,6 +10,11 @@ return {
           cterm_color = "65",
           name = "Zsh",
         },
+        sage = {
+          icon = "λ", -- ""
+          color = "#519aba",
+          name = "SageMath",
+        },
         -- ["pl"] = {
         --   icon = "🐪",
         --   color = "#3178c6",

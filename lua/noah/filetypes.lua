@@ -1,6 +1,8 @@
+-- Existing JSONL setup
 vim.filetype.add {
   extension = {
     jsonl = "json",
+    sage = "python",
   },
 }
 
@@ -25,5 +27,13 @@ vim.api.nvim_create_autocmd("FileType", {
         end)
       end
     end)
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "Custom settings for SageMath files",
+  pattern = "sage",
+  callback = function()
+    vim.bo.commentstring = "# %s"
   end,
 })
