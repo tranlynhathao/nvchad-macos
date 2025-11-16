@@ -17,18 +17,8 @@ return {
         on_attach = function(_, bufnr)
           local map = vim.keymap.set
           map("n", "K", "<cmd>lua vim.cmd.RustLsp({ 'hover', 'actions' })<CR>", { buffer = bufnr, desc = "Rust Hover" })
-          map(
-            "n",
-            "<C-Space>",
-            "<cmd>lua vim.cmd.RustLsp({ 'completion' })<CR>",
-            { buffer = bufnr, desc = "Rust Completion" }
-          )
-          map(
-            "n",
-            "<leader>ca",
-            "<cmd>lua vim.cmd.RustLsp('codeAction')<CR>",
-            { buffer = bufnr, desc = "Rust Code actions" }
-          )
+          map("n", "<C-Space>", "<cmd>lua vim.cmd.RustLsp({ 'completion' })<CR>", { buffer = bufnr, desc = "Rust Completion" })
+          map("n", "<leader>ca", "<cmd>lua vim.cmd.RustLsp('codeAction')<CR>", { buffer = bufnr, desc = "Rust Code actions" })
         end,
         default_settings = {
           -- rust-analyzer language server configuration

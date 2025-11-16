@@ -10,12 +10,7 @@ return {
     vim.keymap.set("n", "<leader>gsy", "<cmd>GoTagAdd yaml<CR>", { desc = "Add yaml struct tags" })
     vim.keymap.set("n", "<leader>gss", "<cmd>GoTagAdd sql<CR>", { desc = "Add sql struct tags" })
     vim.keymap.set("n", "<leader>gsv", "<cmd>GoTagAdd validate<CR>", { desc = "Add validate struct tags" })
-    vim.keymap.set(
-      "n",
-      "<leader>gst",
-      "<cmd>GoTagAdd json,yaml,sql,validate<CR>",
-      { desc = "Add all common struct tags" }
-    )
+    vim.keymap.set("n", "<leader>gst", "<cmd>GoTagAdd json,yaml,sql,validate<CR>", { desc = "Add all common struct tags" })
 
     -- Keymaps for removing struct tags
     vim.keymap.set("n", "<leader>grj", "<cmd>GoTagRm json<CR>", { desc = "Remove json struct tags" })
