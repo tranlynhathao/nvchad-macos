@@ -54,7 +54,8 @@ return {
       svelte = { "prettier" }, -- or: "svelte-preprocess"
 
       -- JSON
-      json = { "biome" }, -- or: "prettier", "jq"
+      -- Use prettier as primary, biome as fallback (biome needs --write flag)
+      json = { "prettier", "biome" }, -- or: "jq"
 
       -- Markdown
       markdown = { "markdownlint" }, -- or: "prettier", "mdformat"
@@ -69,7 +70,8 @@ return {
       toml = { "taplo" }, -- or: "prettier"
 
       -- YAML
-      yaml = { "yamlfmt" }, -- or: "prettier", "yamlfix"
+      -- Use yamlfmt first, prettier as fallback (for complex YAML like pre-commit configs)
+      yaml = { "yamlfmt", "prettier" }, -- or: "yamlfix"
 
       -- Zig
       zig = { "zigfmt" }, -- available in the Zig langauge server
@@ -93,10 +95,13 @@ return {
       php = { "phpcbf" }, -- or: "php-cs-fixer", "phpcbf"
 
       -- SQL
-      sql = { "sqlfluff" }, -- or: "pg_format", "sql-formatter", "sql-formatter-plus"
+      -- SQLFluff first (for standard SQL), prettier as fallback (handles templated SQL better)
+      sql = { "sqlfluff", "prettier" }, -- or: "pg_format", "sql-formatter", "sql-formatter-plus"
 
       -- Solidity
-      solidity = { "prettier" }, -- or: "solhint", "solfmt"
+      -- Try forge_fmt first (for Foundry), fallback to prettier
+      -- Conform will try formatters in order until one succeeds
+      solidity = { "forge_fmt", "prettier" },
 
       -- Java
       java = { "google-java-format" }, -- or: "clangformat", "eclipse formatter"
@@ -118,6 +123,16 @@ return {
         timeout_ms = 3000,
       },
 
+      -- Biome formatter
+      -- Biome format outputs to stdout when using stdin (no --write needed)
+      -- Prettier is the primary formatter for JSON, biome is fallback
+      biome = {
+        command = "biome",
+        args = { "format", "--stdin-file-path", "$FILENAME", "-" },
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
       sqlfluff = {
         command = "sqlfluff",
         args = { "fix", "--dialect", "postgres", "--disable-progress-bar", "-" },
@@ -129,7 +144,36 @@ return {
             return vim.fn.fnamemodify(ctx.filename, ":h")
           end
         end,
-        timeout_ms = 50000,
+        timeout_ms = 8000, -- Reduced timeout, fail faster
+        -- Skip files with templating (common in dbt, jinja, etc.)
+        -- This prevents errors on templated SQL files
+        condition = function(ctx)
+          local filename = ctx.filename or ""
+          if filename == "" then
+            return true
+          end
+
+          -- Check file path for common templating indicators
+          local path_lower = filename:lower()
+          if path_lower:match "models/" or path_lower:match "dbt/" or path_lower:match "jinja" then
+            return false -- Skip dbt/jinja files
+          end
+
+          -- Quick check: read first 100 lines for templating syntax
+          local ok, lines = pcall(vim.fn.readfile, filename, "", 100)
+          if not ok or not lines then
+            return true -- If we can't read, let sqlfluff try
+          end
+
+          for _, line in ipairs(lines) do
+            -- Skip files with common templating syntax (dbt, jinja, etc.)
+            -- Check for: {{ }}, {% %}, ${ }, {%- -%}, {{- -}}
+            if line:match "{{" or line:match "{%" or line:match "${" or line:match "jinja" or line:match "dbt" then
+              return false
+            end
+          end
+          return true
+        end,
       },
 
       -- black = {
@@ -155,6 +199,27 @@ return {
       },
 
       google_java_format = {
+        timeout_ms = 5000,
+      },
+
+      -- Forge fmt formatter for Solidity
+      -- Automatically finds project root (where foundry.toml is)
+      forge_fmt = {
+        command = "forge",
+        args = { "fmt", "$FILENAME" },
+        stdin = false,
+        cwd = function(ctx)
+          local filename = ctx.filename or ""
+          local dir = filename ~= "" and vim.fn.fnamemodify(filename, ":h") or vim.loop.cwd()
+
+          -- Find project root by looking for foundry.toml
+          local found = vim.fn.findfile("foundry.toml", dir .. ";")
+          if found ~= "" then
+            return vim.fn.fnamemodify(found, ":h")
+          end
+
+          return dir
+        end,
         timeout_ms = 5000,
       },
     },

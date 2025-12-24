@@ -8,6 +8,11 @@ return {
   },
   defaults = { lazy = true },
   install = { colorscheme = { "nvchad" } },
+  -- Git configuration to handle fetch failures better
+  git = {
+    -- Increase timeout for slow networks (in seconds)
+    timeout = 300, -- 5 minutes (default is 120)
+  },
   ui = {
     border = "rounded",
     icons = {

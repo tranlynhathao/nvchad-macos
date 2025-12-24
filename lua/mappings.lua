@@ -2,6 +2,13 @@ local utils = require "noah.utils"
 local map = utils.glb_map
 local comments = require "utils.comments"
 local popup = require "utils.popup"
+local wk = require "which-key"
+local ms = vim.lsp.protocol.Methods
+
+P = vim.print
+
+vim.g["quarto_is_r_mode"] = vim.g["quarto_is_r_mode"] or nil
+vim.g["reticulate_running"] = vim.g["reticulate_running"] or false
 
 -- #################################
 -- Naviagtion word
@@ -107,10 +114,13 @@ map("t", "<C-j>", "<C-\\><C-n><C-w>j")
 map("t", "<C-k>", "<C-\\><C-n><C-w>k")
 map("t", "<C-l>", "<C-\\><C-n><C-w>l")
 
--- Add undo break-points
--- map("i", ",", ",<c-g>u")
--- map("i", ".", ".<c-g>u")
--- map("i", ";", ";<c-g>u")
+-- Add undo break-points (from configs/keymaps.lua)
+vim.keymap.set("i", ",", ",<c-g>u", { silent = true, noremap = true })
+vim.keymap.set("i", ".", ".<c-g>u", { silent = true, noremap = true })
+vim.keymap.set("i", ";", ";<c-g>u", { silent = true, noremap = true })
+
+-- Command mode mappings (from configs/keymaps.lua)
+vim.keymap.set("c", "<C-a>", "<Home>", { silent = true, noremap = true })
 
 vim.keymap.set("n", "<C-g>", function()
   vim.notify(vim.fn.expand "%:p", vim.log.levels.INFO, { title = "Current File" })
@@ -767,6 +777,367 @@ map("n", "<A-|>", "<cmd>TabuflineToggle<CR>", { desc = "Tabufline toggle visibil
 map("n", "gh", function()
   utils.go_to_github_link()
 end, { desc = "Go to GitHub link generated from string" })
+
+-- ============================================================================
+-- Helper Functions from configs/keymaps.lua
+-- ============================================================================
+
+local function show_r_table()
+  local node = vim.treesitter.get_node { ignore_injections = false }
+  assert(node, "no symbol found under cursor")
+  local text = vim.treesitter.get_node_text(node, 0)
+  local cmd = [[call slime#send("DT::datatable(]] .. text .. [[)" . "\r")]]
+  vim.cmd(cmd)
+end
+
+local function toggle_light_dark_theme()
+  if vim.o.background == "light" then
+    vim.o.background = "dark"
+  else
+    vim.o.background = "light"
+  end
+end
+
+local is_code_chunk = function()
+  local current, _ = require("otter.keeper").get_current_language_context()
+  if current then
+    return true
+  else
+    return false
+  end
+end
+
+local insert_code_chunk = function(lang)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, false, true), "n", true)
+  local keys
+  if is_code_chunk() then
+    keys = [[o```<cr><cr>```{]] .. lang .. [[}<esc>o]]
+  else
+    keys = [[o```{]] .. lang .. [[}<cr>```<esc>O]]
+  end
+  keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
+  vim.api.nvim_feedkeys(keys, "n", false)
+end
+
+local insert_r_chunk = function()
+  insert_code_chunk "r"
+end
+
+local insert_py_chunk = function()
+  insert_code_chunk "python"
+end
+
+local insert_lua_chunk = function()
+  insert_code_chunk "lua"
+end
+
+local insert_julia_chunk = function()
+  insert_code_chunk "julia"
+end
+
+local insert_bash_chunk = function()
+  insert_code_chunk "bash"
+end
+
+local insert_ojs_chunk = function()
+  insert_code_chunk "ojs"
+end
+
+local function new_terminal(lang)
+  vim.cmd("vsplit term://" .. lang)
+end
+
+local function new_terminal_python()
+  new_terminal "python"
+end
+
+local function new_terminal_r()
+  new_terminal "R --no-save"
+end
+
+local function new_terminal_ipython()
+  new_terminal "ipython --no-confirm-exit"
+end
+
+local function new_terminal_julia()
+  new_terminal "julia"
+end
+
+local function new_terminal_shell()
+  new_terminal "$SHELL"
+end
+
+local function get_otter_symbols_lang()
+  local otterkeeper = require "otter.keeper"
+  local main_nr = vim.api.nvim_get_current_buf()
+  local langs = {}
+  for i, l in ipairs(otterkeeper.rafts[main_nr].languages) do
+    langs[i] = i .. ": " .. l
+  end
+  local i = vim.fn.inputlist(langs)
+  local lang = otterkeeper.rafts[main_nr].languages[i]
+  local params = {
+    textDocument = vim.lsp.util.make_text_document_params(),
+    otter = {
+      lang = lang,
+    },
+  }
+  vim.lsp.buf_request(main_nr, ms.textDocument_documentSymbol, params, nil)
+end
+
+-- ============================================================================
+-- Which-Key Mappings from configs/keymaps.lua
+-- ============================================================================
+
+-- Normal mode which-key mappings
+wk.add({
+  { "<c-LeftMouse>", "<cmd>lua vim.lsp.buf.definition()<CR>", desc = "go to definition" },
+  { "<c-q>", "<cmd>q<cr>", desc = "close buffer" },
+  { "<esc>", "<cmd>noh<cr>", desc = "remove search highlight" },
+  { "<cm-i>", insert_py_chunk, desc = "python code chunk" },
+  { "<m-I>", insert_py_chunk, desc = "python code chunk" },
+  { "<m-i>", insert_r_chunk, desc = "r code chunk" },
+  { "[q", ":silent cprev<cr>", desc = "[q]uickfix prev" },
+  { "]q", ":silent cnext<cr>", desc = "[q]uickfix next" },
+  { "gN", "Nzzzv", desc = "center search" },
+  { "gf", ":e <cfile><CR>", desc = "edit file" },
+  { "gl", "<c-]>", desc = "open help link" },
+  { "n", "nzzzv", desc = "center search" },
+  { "z?", ":setlocal spell!<cr>", desc = "toggle [z]pellcheck" },
+  { "zl", ":Telescope spell_suggest<cr>", desc = "[l]ist spelling suggestions" },
+}, { mode = "n", silent = true })
+
+-- Visual mode which-key mappings
+wk.add({
+  { ".", ":norm .<cr>", desc = "repat last normal mode command" },
+  { "<M-j>", ":m'>+<cr>`<my`>mzgv`yo`z", desc = "move line down" },
+  { "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z", desc = "move line up" },
+  { "q", ":norm @q<cr>", desc = "repat q macro" },
+}, { mode = "v" })
+
+-- Visual mode with localleader
+wk.add({
+  { "<localleader>p", '"_dP', desc = "replace without overwriting reg" },
+  { "<localleader>d", '"_d', desc = "delete without overwriting reg" },
+}, { mode = "v" })
+
+-- Insert mode which-key mappings
+wk.add({
+  { "<m-->", " <- ", desc = "assign" },
+  { "<m-m>", " |>", desc = "pipe" },
+  { "<m-i>", insert_r_chunk, desc = "r code chunk" },
+  { "<cm-i>", insert_py_chunk, desc = "python code chunk" },
+  { "<m-I>", insert_py_chunk, desc = "python code chunk" },
+  { "<c-x><c-x>", "<c-x><c-o>", desc = "omnifunc completion" },
+}, { mode = "i" })
+
+-- Otter symbols
+vim.keymap.set("n", "<localleader>os", get_otter_symbols_lang, { desc = "otter [s]ymbols" })
+
+-- Normal mode with <localleader> - Which-Key Groups
+wk.add({
+  { "<localleader>c", group = "[c]ode / [c]ell / [c]hunk" },
+  {
+    { "<localleader>cn", new_terminal_shell, desc = "[n]ew terminal with shell" },
+    {
+      "cr",
+      function()
+        vim.b["quarto_is_r_mode"] = true
+        new_terminal_r()
+      end,
+      desc = "new [R] terminal",
+    },
+    { "<localleader>cp", new_terminal_python, desc = "new [p]ython terminal" },
+    { "<localleader>ci", new_terminal_ipython, desc = "new [i]python terminal" },
+    { "<localleader>cj", new_terminal_julia, desc = "new [j]ulia terminal" },
+  },
+  { "<localleader>e", group = "[e]dit" },
+  { "<localleader>d", group = "[d]ebug" },
+  {
+    { "<localleader>dt", desc = "[t]est" },
+  },
+  { "<localleader>f", group = "[f]ind (telescope)" },
+  {
+    { "<localleader>ff", "<cmd>Telescope find_files<cr>", desc = "[f]iles" },
+    { "<localleader>fh", "<cmd>Telescope help_tags<cr>", desc = "[h]elp" },
+    { "<localleader>fk", "<cmd>Telescope keymaps<cr>", desc = "[k]eymaps" },
+    { "<localleader>fg", "<cmd>Telescope live_grep<cr>", desc = "[g]rep" },
+    { "<localleader>fb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "[b]uffer fuzzy find" },
+    { "<localleader>fm", "<cmd>Telescope marks<cr>", desc = "[m]arks" },
+    { "<localleader>fM", "<cmd>Telescope man_pages<cr>", desc = "[M]an pages" },
+    { "<localleader>fc", "<cmd>Telescope git_commits<cr>", desc = "git [c]ommits" },
+    { "<localleader>f<space>", "<cmd>Telescope buffers<cr>", desc = "[ ] buffers" },
+    { "<localleader>fd", "<cmd>Telescope buffers<cr>", desc = "[d] buffers" },
+    { "<localleader>fq", "<cmd>Telescope quickfix<cr>", desc = "[q]uickfix" },
+    { "<localleader>fl", "<cmd>Telescope loclist<cr>", desc = "[l]oclist" },
+    { "<localleader>fj", "<cmd>Telescope jumplist<cr>", desc = "[j]umplist" },
+  },
+  { "<localleader>g", group = "[g]it" },
+  {
+    { "<localleader>gc", ":GitConflictRefresh<cr>", desc = "[c]onflict" },
+    { "<localleader>gs", ":Gitsigns<cr>", desc = "git [s]igns" },
+    {
+      "<localleader>gwc",
+      ":lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
+      desc = "worktree create",
+    },
+    {
+      "<localleader>gws",
+      ":lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
+      desc = "worktree switch",
+    },
+    { "<localleader>gd", group = "[d]iff" },
+    {
+      { "<localleader>gdo", ":DiffviewOpen<cr>", desc = "[o]pen" },
+      { "<localleader>gdc", ":DiffviewClose<cr>", desc = "[c]lose" },
+    },
+    { "<localleader>gb", group = "[b]lame" },
+    {
+      { "<localleader>gbb", ":GitBlameToggle<cr>", desc = "[b]lame toggle virtual text" },
+      { "<localleader>gbo", ":GitBlameOpenCommitURL<cr>", desc = "[o]pen" },
+      { "<localleader>gbc", ":GitBlameCopyCommitURL<cr>", desc = "[c]opy" },
+    },
+  },
+  { "<localleader>h", group = "[h]elp / [h]ide / debug" },
+  {
+    { "<localleader>hc", group = "[c]onceal" },
+    { "<localleader>hh", ":set conceallevel=1<cr>", desc = "[h]ide/conceal" },
+    { "<localleader>hs", ":set conceallevel=0<cr>", desc = "[s]how/unconceal" },
+  },
+  { "<localleader>t", group = "[t]reesitter" },
+  {
+    { "<localleader>tt", vim.treesitter.inspect_tree, desc = "show [t]ree" },
+  },
+  { "<localleader>i", group = "[i]mage" },
+  { "<localleader>l", group = "[l]anguage/lsp" },
+  {
+    { "<localleader>lr", vim.lsp.buf.references, desc = "[r]eferences" },
+    { "<localleader>R", desc = "[R]ename" },
+    { "<localleader>lD", vim.lsp.buf.type_definition, desc = "type [D]efinition" },
+    { "<localleader>la", vim.lsp.buf.code_action, desc = "code [a]ction" },
+    { "<localleader>le", vim.diagnostic.open_float, desc = "diagnostics (show hover [e]rror)" },
+    { "<localleader>ld", group = "[d]iagnostics" },
+    {
+      {
+        "<localleader>ldd",
+        function()
+          vim.diagnostic.enable(false)
+        end,
+        desc = "[d]isable",
+      },
+      { "<localleader>lde", vim.diagnostic.enable, desc = "[e]nable" },
+    },
+    { "<localleader>lg", ":Neogen<cr>", desc = "neo[g]en docstring" },
+  },
+  { "<localleader>o", group = "[o]tter & c[o]de" },
+  {
+    { "<localleader>oa", require("otter").activate, desc = "otter [a]ctivate" },
+    { "<localleader>od", require("otter").deactivate, desc = "otter [d]eactivate" },
+    { "<localleader>oc", "O# %%<cr>", desc = "magic [c]omment code chunk # %%" },
+    { "<localleader>or", insert_r_chunk, desc = "[r] code chunk" },
+    { "<localleader>op", insert_py_chunk, desc = "[p]ython code chunk" },
+    { "<localleader>oj", insert_julia_chunk, desc = "[j]ulia code chunk" },
+    { "<localleader>ob", insert_bash_chunk, desc = "[b]ash code chunk" },
+    { "<localleader>oo", insert_ojs_chunk, desc = "[o]bservable js code chunk" },
+    { "<localleader>ol", insert_lua_chunk, desc = "[l]lua code chunk" },
+  },
+  { "<localleader>q", group = "[q]uarto" },
+  {
+    { "<localleader>qa", ":QuartoActivate<cr>", desc = "[a]ctivate" },
+    { "<localleader>qp", ":lua require'quarto'.quartoPreview()<cr>", desc = "[p]review" },
+    { "<localleader>qq", ":lua require'quarto'.quartoClosePreview()<cr>", desc = "[q]uiet preview" },
+    { "<localleader>qh", ":QuartoHelp ", desc = "[h]elp" },
+    { "<localleader>qr", group = "[r]un" },
+    {
+      { "<localleader>qrr", ":QuartoSendAbove<cr>", desc = "to cu[r]sor" },
+      { "<localleader>qra", ":QuartoSendAll<cr>", desc = "run [a]ll" },
+      { "<localleader>qrb", ":QuartoSendBelow<cr>", desc = "run [b]elow" },
+    },
+    { "<localleader>qe", require("otter").export, desc = "[e]xport" },
+    {
+      "<localleader>qE",
+      function()
+        require("otter").export(true)
+      end,
+      desc = "[E]xport with overwrite",
+    },
+  },
+  { "<localleader>r", group = "[r] R specific tools" },
+  {
+    { "<localleader>rt", show_r_table, desc = "show [t]able" },
+  },
+  { "<localleader>v", group = "[v]im" },
+  {
+    { "<localleader>vt", toggle_light_dark_theme, desc = "[t]oggle light/dark theme" },
+    { "<localleader>vc", ":Telescope colorscheme<cr>", desc = "[c]olortheme" },
+    { "<localleader>vl", ":Lazy<cr>", desc = "[l]azy package manager" },
+    { "<localleader>vm", ":Mason<cr>", desc = "[m]ason software installer" },
+    { "<localleader>vs", ":e $MYVIMRC | :cd %:p:h | split . | wincmd k<cr>", desc = "[s]ettings, edit vimrc" },
+    { "<localleader>vh", ':execute "h " . expand("<cword>")<cr>', desc = "vim [h]elp for current word" },
+  },
+  { "<localleader>x", group = "e[x]ecute" },
+  {
+    { "<localleader>xx", ":w<cr>:source %<cr>", desc = "[x] source %" },
+  },
+  { "<localleader>w", group = "[w]eb3 / blockchain" },
+  {
+    {
+      "<localleader>wi",
+      function()
+        require("noah.web3").show_project_info()
+      end,
+      desc = "project [i]nfo",
+    },
+    { "<localleader>wt", group = "[t]est" },
+    {
+      {
+        "<localleader>wtt",
+        function()
+          require("noah.web3").run_foundry_test()
+        end,
+        desc = "[t]est (Foundry)",
+      },
+      {
+        "<localleader>wtv",
+        function()
+          require("noah.web3").run_foundry_test_verbose(2)
+        end,
+        desc = "test [v]erbose",
+      },
+      {
+        "<localleader>wth",
+        function()
+          require("noah.web3").run_hardhat_test()
+        end,
+        desc = "test [h]ardhat",
+      },
+    },
+    { "<localleader>wc", group = "[c]ompile" },
+    {
+      {
+        "<localleader>wcf",
+        function()
+          require("noah.web3").compile_foundry()
+        end,
+        desc = "[f]oundry compile",
+      },
+      {
+        "<localleader>wch",
+        function()
+          require("noah.web3").compile_hardhat()
+        end,
+        desc = "[h]ardhat compile",
+      },
+    },
+    {
+      "<localleader>wf",
+      function()
+        require("noah.web3").format_solidity_forge()
+      end,
+      desc = "[f]ormat (forge fmt)",
+    },
+  },
+}, { mode = "n" })
 
 -- Utils
 -- map(

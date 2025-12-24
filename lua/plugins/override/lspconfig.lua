@@ -260,7 +260,16 @@ return {
           },
         },
       },
-      -- TODO: add rust_analyzer
+      -- Solidity LSP (solidity-ls)
+      solidity_ls = {
+        root_dir = util.root_pattern("foundry.toml", "hardhat.config.js", "hardhat.config.ts", "truffle-config.js", ".git"),
+        settings = {
+          solidity = {
+            includePath = "",
+            remapping = {},
+          },
+        },
+      },
       solargraph = {
         settings = {
           solargraph = {
