@@ -17,7 +17,7 @@ return {
 
     on_attach = function(bufnr)
       local gs = require "gitsigns"
-      local map = require("vincent.utils").buf_map
+      local map = require("noah.utils").buf_map
 
       map(bufnr, "n", "<leader>td", gs.toggle_deleted, { desc = "Gitsigns toggle deleted" })
       map(bufnr, "n", "<leader>hr", gs.reset_hunk, { desc = "Gitsigns reset hunk" })

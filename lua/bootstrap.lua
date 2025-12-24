@@ -21,8 +21,8 @@ vim.opt.rtp:prepend(lazypath)
 
 local lazy_config = require "configs.lazy"
 require("lazy").setup({
-  { import = "vincent.wezterm" },
-  { import = "vincent.types" },
+  { import = "noah.wezterm" },
+  { import = "noah.types" },
   {
     "NvChad/NvChad",
     dev = false,

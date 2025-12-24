@@ -6,7 +6,7 @@ return {
     local mc = require "multicursor-nvim"
     mc.setup(opts)
 
-    local map = require("vincent.utils").glb_map
+    local map = require("noah.utils").glb_map
 
     map({ "n", "v" }, "<up>", function()
       mc.lineAddCursor(-1)

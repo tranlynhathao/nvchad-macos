@@ -7,7 +7,46 @@ return {
 
     opts.sources = opts.sources or {}
 
-    vim.filetype.add { extension = { sage = "python" } }
+    ----------------------------------------------------------------
+    -- 🧮 SAGE SUPPORT
+    ----------------------------------------------------------------
+    vim.filetype.add { extension = { sage = "sage" } }
+
+    vim.treesitter.language.register("python", "sage")
+
+    -- Diagnostics (ruff + mypy)
+    table.insert(
+      opts.sources,
+      null_ls.builtins.diagnostics.ruff.with {
+        filetypes = { "python", "sage" },
+      }
+    )
+    table.insert(
+      opts.sources,
+      null_ls.builtins.diagnostics.mypy.with {
+        filetypes = { "python", "sage" },
+      }
+    )
+
+    -- Formatter cho Sage (tùy chọn, rất nhẹ, không đụng layout)
+    -- Có thể comment khối này nếu bạn không muốn auto-format luôn.
+    table.insert(
+      opts.sources,
+      null_ls.builtins.formatting.custom {
+        name = "sagefmt",
+        method = null_ls.methods.FORMATTING,
+        filetypes = { "sage" },
+        generator_opts = {
+          command = "bash",
+          args = {
+            "-c",
+            [[sage --preparse /dev/stdin 2>/dev/null || cat /dev/stdin]],
+          },
+          to_stdin = true,
+        },
+      }
+    )
+    ----------------------------------------------------------------
 
     -- JS/TS/JSX/TSX
     table.insert(
@@ -73,9 +112,6 @@ return {
       }
     )
 
-    -- Python (requires: black)
-    -- Python (requires: black, mypy, ruff)
-    table.insert(opts.sources, null_ls.builtins.formatting.black)
     table.insert(opts.sources, null_ls.builtins.diagnostics.mypy)
     table.insert(opts.sources, null_ls.builtins.diagnostics.ruff)
 
