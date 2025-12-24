@@ -409,4 +409,62 @@ wk.add({
   {
     { "<localleader>xx", ":w<cr>:source %<cr>", desc = "[x] source %" },
   },
+  { "<localleader>w", group = "[w]eb3 / blockchain" },
+  {
+    {
+      "<localleader>wi",
+      function()
+        require("noah.web3").show_project_info()
+      end,
+      desc = "project [i]nfo",
+    },
+    { "<localleader>wt", group = "[t]est" },
+    {
+      {
+        "<localleader>wtt",
+        function()
+          require("noah.web3").run_foundry_test()
+        end,
+        desc = "[t]est (Foundry)",
+      },
+      {
+        "<localleader>wtv",
+        function()
+          require("noah.web3").run_foundry_test_verbose(2)
+        end,
+        desc = "test [v]erbose",
+      },
+      {
+        "<localleader>wth",
+        function()
+          require("noah.web3").run_hardhat_test()
+        end,
+        desc = "test [h]ardhat",
+      },
+    },
+    { "<localleader>wc", group = "[c]ompile" },
+    {
+      {
+        "<localleader>wcf",
+        function()
+          require("noah.web3").compile_foundry()
+        end,
+        desc = "[f]oundry compile",
+      },
+      {
+        "<localleader>wch",
+        function()
+          require("noah.web3").compile_hardhat()
+        end,
+        desc = "[h]ardhat compile",
+      },
+    },
+    {
+      "<localleader>wf",
+      function()
+        require("noah.web3").format_solidity_forge()
+      end,
+      desc = "[f]ormat (forge fmt)",
+    },
+  },
 }, { mode = "n" })

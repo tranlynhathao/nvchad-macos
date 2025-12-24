@@ -16,14 +16,13 @@ return {
   config = function()
     dofile(vim.g.base46_cache .. "lsp")
 
-    local on_attach = require("vincent.lsp").on_attach
-    local capabilities = require("vincent.lsp").capabilities
+    local on_attach = require("noah.lsp").on_attach
+    local capabilities = require("noah.lsp").capabilities
 
-    local lsp = require "vincent.lsp"
+    local lsp = require "noah.lsp"
     local util = require "lspconfig.util"
 
-    local vue_language_server_path = vim.fn.stdpath "data"
-      .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+    local vue_language_server_path = vim.fn.stdpath "data" .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
 
     local function organize_imports()
       local params = {
@@ -261,7 +260,16 @@ return {
           },
         },
       },
-      -- TODO: add rust_analyzer
+      -- Solidity LSP (solidity-ls)
+      solidity_ls = {
+        root_dir = util.root_pattern("foundry.toml", "hardhat.config.js", "hardhat.config.ts", "truffle-config.js", ".git"),
+        settings = {
+          solidity = {
+            includePath = "",
+            remapping = {},
+          },
+        },
+      },
       solargraph = {
         settings = {
           solargraph = {

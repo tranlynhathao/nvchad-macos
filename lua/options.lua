@@ -10,7 +10,7 @@ local g = {
 local opt = {
   encoding = "utf-8",
   fileencoding = "utf-8",
-  clipboard = "unnamedplus", -- extended via "vincent.wsl"
+  clipboard = "unnamedplus", -- extended via "noah.wsl"
   -- Folds
   foldmethod = "expr",
   foldexpr = "v:lua.vim.treesitter.foldexpr()",

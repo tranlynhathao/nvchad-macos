@@ -10,7 +10,7 @@ return {
     vim.g.maplocalleader = ","
 
     local util = require "oil.util"
-    local map = require("vincent.utils").glb_map
+    local map = require("noah.utils").glb_map
 
     _G.oil_details_expanded = false
     _G.get_oil_winbar = function()
@@ -51,13 +51,10 @@ return {
     local function new_git_status()
       return setmetatable({}, {
         __index = function(self, key)
-          local ignore_proc = vim.system(
-            { "git", "ls-files", "--ignored", "--exclude-standard", "--others", "--directory" },
-            {
-              cwd = key,
-              text = true,
-            }
-          )
+          local ignore_proc = vim.system({ "git", "ls-files", "--ignored", "--exclude-standard", "--others", "--directory" }, {
+            cwd = key,
+            text = true,
+          })
           local tracked_proc = vim.system({ "git", "ls-tree", "HEAD", "--name-only" }, {
             cwd = key,
             text = true,
