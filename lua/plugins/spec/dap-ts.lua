@@ -2,8 +2,12 @@
 return {
   "mfussenegger/nvim-dap",
   dependencies = {
-    "microsoft/vscode-js-debug",
-    build = "npm install --legacy-peer-deps && npm run compile",
+    -- Disabled due to Node.js v25 incompatibility
+    -- Use Mason's js-debug-adapter instead: :MasonInstall js-debug-adapter
+    -- {
+    --   "microsoft/vscode-js-debug",
+    --   build = "npm install --legacy-peer-deps && npm run compile",
+    -- },
   },
   config = function()
     local dap = require "dap"

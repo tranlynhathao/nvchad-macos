@@ -1,0 +1,38 @@
+---
+# Clang-Tidy configuration for memory safety and blockchain development
+# Place this file in your C/C++ project root
+
+Checks: >
+  bugprone-*,
+  cert-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  performance-*,
+  portability-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+  -readability-identifier-length,
+  -readability-magic-numbers,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+  -cppcoreguidelines-pro-type-reinterpret-cast
+
+# Memory safety specific checks
+CheckOptions:
+  - key: bugprone-use-after-move.IgnoreUnnamedParams
+    value: 'true'
+  - key: cppcoreguidelines-avoid-non-const-global-variables.IgnoreMain
+    value: 'true'
+  - key: cppcoreguidelines-owning-memory.LegacyResourceProducers
+    value: '::malloc;::aligned_alloc;::realloc;::calloc;::fopen;::freopen;::tmpfile'
+  - key: cppcoreguidelines-owning-memory.LegacyResourceConsumers
+    value: '::free;::realloc;::freopen;::fclose'
+  - key: modernize-make-unique.IgnoreMacros
+    value: 'false'
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '25'
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: llvm

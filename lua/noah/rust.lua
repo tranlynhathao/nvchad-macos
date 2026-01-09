@@ -33,11 +33,43 @@ return {
                 loadOutDirsFromCheck = true,
                 runBuildScripts = true,
               },
-              -- Add clippy lints for Rust.
+              -- Add clippy lints for Rust with pedantic warnings
               checkOnSave = {
                 allFeatures = true,
                 command = "clippy",
-                extraArgs = { "--no-deps" },
+                extraArgs = {
+                  "--no-deps",
+                  "--",
+                  "-W",
+                  "clippy::pedantic",
+                  "-W",
+                  "clippy::nursery",
+                  "-W",
+                  "clippy::unwrap_used",
+                  "-W",
+                  "clippy::expect_used",
+                },
+              },
+              -- Memory safety diagnostics
+              diagnostics = {
+                enable = true,
+                experimental = {
+                  enable = true,
+                },
+              },
+              -- Inlay hints for types and lifetimes (critical for memory safety)
+              inlayHints = {
+                enable = true,
+                lifetimeElisionHints = {
+                  enable = "always",
+                  useParameterNames = true,
+                },
+                typeHints = {
+                  enable = true,
+                },
+                chainingHints = {
+                  enable = true,
+                },
               },
               procMacro = {
                 enable = true,

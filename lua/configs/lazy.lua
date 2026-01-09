@@ -12,7 +12,12 @@ return {
   git = {
     -- Increase timeout for slow networks (in seconds)
     timeout = 300, -- 5 minutes (default is 120)
+    -- Explicitly set git executable path
+    cmd = "/opt/homebrew/bin/git",
+    -- Reduce concurrent git operations to avoid spawning too many processes
+    cooldown = 1000, -- milliseconds between operations
   },
+  concurrency = 5, -- Limit concurrent operations (default is 50)
   ui = {
     border = "rounded",
     icons = {
