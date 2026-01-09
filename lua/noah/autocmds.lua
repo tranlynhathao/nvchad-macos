@@ -278,9 +278,10 @@ autocmd({ "UIEnter", "ColorScheme" }, {
 })
 
 autocmd("UILeave", {
-  desc = "Reset background color for nvim.",
+  desc = "Reset background color to terminal default.",
   callback = function()
-    io.write "\027]11;#1e1e2e\007"
+    io.write "\027]111\007"
+    -- io.write "\027]11;#1e1e2e\007"
   end,
 })
 
