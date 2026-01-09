@@ -98,3 +98,9 @@ require "floating_term"
 require "configs.autocmd"
 require "configs.keymaps"
 require "functions"
+
+-- Blockchain development tools
+local ok, blockchain = pcall(require, "noah.blockchain")
+if ok then
+  blockchain.setup()
+end

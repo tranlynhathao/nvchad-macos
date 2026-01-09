@@ -85,6 +85,9 @@ return {
       -- Erlang
       erlang = { "erlfmt" }, -- or: "rebar3", "erlange formatter", available in the Erlang lanhguage server
 
+      -- Python
+      python = { "ruff_format" }, -- or: "black", "yapf", "autopep8"
+
       -- Rust
       rust = { "rustfmt" }, -- or: "rust-analyzer", "cargo fmt", relase in the Rust language server
 
@@ -184,13 +187,6 @@ return {
         timeout_ms = 5000,
       },
 
-      clangformat = {
-        command = "clang-format",
-        args = { "--assume-filename", "$FILENAME" },
-        stdin = true,
-        timeout_ms = 3000,
-      },
-
       ["dotnet-format"] = {
         command = "dotnet",
         args = { "format" },
@@ -200,6 +196,49 @@ return {
 
       google_java_format = {
         timeout_ms = 5000,
+      },
+
+      -- Ruff formatter for Python (fast, simple formatting)
+      ruff_format = {
+        command = "ruff",
+        args = { "format", "--stdin-filename", "$FILENAME", "-" },
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
+      -- Rustfmt with max_width to keep arrays more compact
+      rustfmt = {
+        command = "rustfmt",
+        args = { "--edition", "2021" },
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
+      -- clang-format with compact array style
+      clangformat = {
+        command = "clang-format",
+        args = {
+          "--assume-filename",
+          "$FILENAME",
+          "--style={BasedOnStyle: LLVM, ColumnLimit: 120, BinPackArguments: true, BinPackParameters: true, AllowShortFunctionsOnASingleLine: All}",
+        },
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
+      -- Prettier with compact arrays
+      prettier = {
+        command = "prettier",
+        args = { "--stdin-filepath", "$FILENAME", "--print-width", "120", "--bracket-same-line" },
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
+      -- gofmt (Go's standard formatter keeps things compact)
+      gofmt = {
+        command = "gofmt",
+        stdin = true,
+        timeout_ms = 3000,
       },
 
       -- Forge fmt formatter for Solidity
