@@ -19,6 +19,7 @@ return {
       opts.sources,
       null_ls.builtins.diagnostics.ruff.with {
         filetypes = { "python", "sage" },
+        extra_args = { "--ignore", "E501" },
       }
     )
     table.insert(
@@ -28,8 +29,6 @@ return {
       }
     )
 
-    -- Formatter cho Sage (tùy chọn, rất nhẹ, không đụng layout)
-    -- Có thể comment khối này nếu bạn không muốn auto-format luôn.
     table.insert(
       opts.sources,
       null_ls.builtins.formatting.custom {
@@ -113,7 +112,12 @@ return {
     )
 
     table.insert(opts.sources, null_ls.builtins.diagnostics.mypy)
-    table.insert(opts.sources, null_ls.builtins.diagnostics.ruff)
+    table.insert(
+      opts.sources,
+      null_ls.builtins.diagnostics.ruff.with {
+        extra_args = { "--ignore", "E501" },
+      }
+    )
 
     -- Swift (requires: swiftformat)
     table.insert(opts.sources, null_ls.builtins.formatting.swiftformat)
