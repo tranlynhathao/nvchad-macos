@@ -85,8 +85,9 @@ return {
       -- Erlang
       erlang = { "erlfmt" }, -- or: "rebar3", "erlange formatter", available in the Erlang lanhguage server
 
-      -- Python
-      python = { "ruff_format" }, -- or: "black", "yapf", "autopep8"
+      -- Python - formatter disabled to preserve manual array/matrix formatting
+      -- Use :FormatDisable to skip format, linter will still work
+      -- python = {},
 
       -- Rust
       rust = { "rustfmt" }, -- or: "rust-analyzer", "cargo fmt", relase in the Rust language server
@@ -199,9 +200,18 @@ return {
       },
 
       -- Ruff formatter for Python (fast, simple formatting)
+      -- With skip-magic-trailing-comma to keep arrays compact
       ruff_format = {
         command = "ruff",
-        args = { "format", "--stdin-filename", "$FILENAME", "-" },
+        args = {
+          "format",
+          "--line-length",
+          "120",
+          "--config",
+          "format.skip-magic-trailing-comma=true",
+          "--stdin-filename",
+          "$FILENAME",
+        },
         stdin = true,
         timeout_ms = 3000,
       },
@@ -239,6 +249,20 @@ return {
         command = "gofmt",
         stdin = true,
         timeout_ms = 3000,
+      },
+
+      -- autopep8 with minimal fixes - only fix indent/whitespace, preserve arrays
+      autopep8 = {
+        command = "autopep8",
+        args = {
+          "-",
+          "--max-line-length",
+          "120",
+          "--ignore",
+          "E501", -- Ignore line too long
+        },
+        stdin = true,
+        timeout_ms = 5000,
       },
 
       -- Forge fmt formatter for Solidity
