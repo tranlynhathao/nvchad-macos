@@ -85,9 +85,8 @@ return {
       -- Erlang
       erlang = { "erlfmt" }, -- or: "rebar3", "erlange formatter", available in the Erlang lanhguage server
 
-      -- Python - formatter disabled to preserve manual array/matrix formatting
-      -- Use :FormatDisable to skip format, linter will still work
-      -- python = {},
+      -- Python
+      python = { "ruff_format" }, -- or: "black", "yapf", "autopep8"
 
       -- Rust
       rust = { "rustfmt" }, -- or: "rust-analyzer", "cargo fmt", relase in the Rust language server
