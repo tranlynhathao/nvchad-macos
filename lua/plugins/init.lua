@@ -148,7 +148,7 @@ return {
   { import = "plugins.override.nvim-spectre" },
   { import = "plugins.override.quickfix" },
   { import = "plugins.override.mini-files" },
-  { import = "plugins.override.symbol-usage" },
+  -- { import = "plugins.override.symbol-usage" },
   { import = "plugins.override.arial" },
   { import = "plugins.override.toggleterm" },
   { import = "plugins.override.nvim-lint" },
