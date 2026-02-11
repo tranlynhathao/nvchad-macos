@@ -52,19 +52,19 @@ return {
 -- ---@type NvPluginSpec
 -- return {
 --   "rmagatti/goto-preview",
---   event = "LspAttach", -- load khi có LSP, tiết kiệm tài nguyên
+--   event = "LspAttach", -- load when LSP is attached, saves resources
 --   config = function()
 --     local goto_preview = require("goto-preview")
 --
 --     goto_preview.setup({
---       width = 100,             -- Chiều rộng của popup
---       height = 25,             -- Chiều cao của popup
---       border = "rounded",      -- Bo viền: single | double | rounded | none
---       default_mappings = false,-- Chúng ta tự gán keymap
+--       width = 100,             -- Popup width
+--       height = 25,             -- Popup height
+--       border = "rounded",      -- single | double | rounded | none
+--       default_mappings = false,-- We assign keymaps ourselves
 --       resizing_mappings = false,
 --       debug = false,
---       opacity = nil,           -- Bạn có thể thử 85 nếu muốn transparency (nếu terminal hỗ trợ)
---       post_open_hook = nil,    -- Có thể dùng để highlight gì đó sau khi mở
+--       opacity = nil,           -- Try 85 for transparency if terminal supports it
+--       post_open_hook = nil,    -- Optional hook to run after opening (e.g. highlight)
 --     })
 --
 --   end,

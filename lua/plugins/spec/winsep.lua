@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "nvim-zh/colorful-winsep.nvim",
-  event = { "VeryLazy" }, -- hoặc "WinNew"
+  event = { "VeryLazy" }, -- or "WinNew"
   config = function()
     require("colorful-winsep").setup {
       -- choose between "signle", "rounded", "bold" and "double".

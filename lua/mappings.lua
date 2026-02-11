@@ -660,9 +660,25 @@ map("n", "<leader>rn", "<cmd>set rnu!<CR>", { desc = "Toggle relative number" })
 map("n", "<leader>ih", "<cmd>ToggleInlayHints<CR>", { desc = "Toggle inlay hints" })
 map("n", "<leader>ch", "<cmd>NvCheatsheet<CR>", { desc = "Toggle nvcheatsheet" })
 
--- LSP
+-- LSP & Diagnostics
 map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic loclist" })
-map("n", "<leader>de", vim.diagnostic.open_float)
+map("n", "<leader>de", vim.diagnostic.open_float, { desc = "LSP show diagnostic float" })
+
+-- Diagnostic navigation
+map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+map("n", "[e", function()
+  vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
+end, { desc = "Go to previous error" })
+map("n", "]e", function()
+  vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
+end, { desc = "Go to next error" })
+map("n", "[w", function()
+  vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.WARN }
+end, { desc = "Go to previous warning" })
+map("n", "]w", function()
+  vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN }
+end, { desc = "Go to next warning" })
 
 -- Minty
 map("n", "<leader>cp", function()

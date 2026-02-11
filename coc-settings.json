@@ -1,34 +1,34 @@
 {
-  "suggest.autoTrigger": "always",
-  "coc.preferences.formatOnSaveFiletypes": [
-    "ruby",
-    "go",
-    "rust",
-    "kotlin",
-    "dart",
-    "php",
-    "java"
-  ],
-  "coc.globalExtensions": [
-    "coc-ruby",
-    "coc-go",
-    "coc-rust-analyzer",
-    "coc-kotlin",
-    "coc-dart",
-    "coc-phpls",
-    "coc-java"
-  ],
+	"suggest.autoTrigger": "always",
+	"coc.preferences.formatOnSaveFiletypes": [
+		"ruby",
+		"go",
+		"rust",
+		"kotlin",
+		"dart",
+		"php",
+		"java"
+	],
+	"coc.globalExtensions": [
+		"coc-ruby",
+		"coc-go",
+		"coc-rust-analyzer",
+		"coc-kotlin",
+		"coc-dart",
+		"coc-phpls",
+		"coc-java"
+	],
 
-  "coc.node_path": "/Users/tranlynhathao/.nvm/versions/node/v23.5.0/bin/node",
+	"coc.node_path": "/Users/tranlynhathao/.nvm/versions/node/v23.5.0/bin/node",
 
-  "coc.preferences.formatOnSave": true,
+	"coc.preferences.formatOnSave": true,
 
-  "diagnostic.enable": true,
-  "diagnostic.virtualText": true,
+	"diagnostic.enable": true,
+	"diagnostic.virtualText": true,
 
-  "snippets.ultisnips.directories": ["UltiSnips", "my-snippets"],
+	"snippets.ultisnips.directories": ["UltiSnips", "my-snippets"],
 
-  "suggest.timeout": 500,
+	"suggest.timeout": 500,
 
-  "diagnostic.level": "hint"
+	"diagnostic.level": "hint"
 }

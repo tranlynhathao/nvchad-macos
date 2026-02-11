@@ -25,15 +25,15 @@ return {
   },
 
   --[[
-  📁 mini.files – Default keybindings inside the popup:
+  mini.files - Default keybindings inside the popup:
 
-  - `a`            → Create a new file or folder
-  - `r`            → Rename file or folder
-  - `d`            → Delete file or folder
-  - `l` or `Enter` → Open file or enter folder
-  - `h`            → Go back to the parent directory
-  - `q`            → Close the popup
-  - `g?`           → Show help with all keybindings
+  - `a`            : Create a new file or folder
+  - `r`            : Rename file or folder
+  - `d`            : Delete file or folder
+  - `l` or `Enter` : Open file or enter folder
+  - `h`            : Go back to the parent directory
+  - `q`            : Close the popup
+  - `g?`           : Show help with all keybindings
 
   Notes:
   - To create a folder, add a trailing slash (e.g., `myfolder/`)

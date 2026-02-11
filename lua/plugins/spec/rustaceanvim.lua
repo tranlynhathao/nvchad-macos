@@ -11,7 +11,7 @@ return {
           border = "rounded",
         },
       },
-      -- LSP configuration
+      -- LSP configuration (optimized for fast load and early diagnostics)
       server = {
         capabilities = require("nvchad.configs.lspconfig").capabilities,
         on_attach = function(_, bufnr)
@@ -21,8 +21,23 @@ return {
           map("n", "<leader>ca", "<cmd>lua vim.cmd.RustLsp('codeAction')<CR>", { buffer = bufnr, desc = "Rust Code actions" })
         end,
         default_settings = {
-          -- rust-analyzer language server configuration
-          ["rust-analyzer"] = {},
+          ["rust-analyzer"] = {
+            -- Use "check" instead of "clippy" for faster diagnostics; run clippy manually when needed
+            checkOnSave = {
+              command = "check",
+              extraArgs = {},
+            },
+            -- Reduce load time: do not run check just for out dirs (set true if using complex proc-macros)
+            cargo = {
+              loadOutDirsFromCheck = false,
+              buildScripts = { enable = true },
+            },
+            -- Prioritize fast diagnostics
+            diagnostics = {
+              enable = true,
+              experimental = { enable = true },
+            },
+          },
         },
       },
       -- DAP configuration

@@ -8,7 +8,7 @@ return {
     opts.sources = opts.sources or {}
 
     ----------------------------------------------------------------
-    -- 🧮 SAGE SUPPORT
+    -- SAGE SUPPORT
     ----------------------------------------------------------------
     vim.filetype.add { extension = { sage = "sage" } }
 
@@ -47,20 +47,21 @@ return {
     )
     ----------------------------------------------------------------
 
-    -- JS/TS/JSX/TSX
+    -- JS/TS/JSX/TSX: formatting only; diagnostics via ESLint LSP in lspconfig
     table.insert(
       opts.sources,
       null_ls.builtins.formatting.prettier.with {
         filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
       }
     )
-    table.insert(
-      opts.sources,
-      null_ls.builtins.diagnostics.eslint.with {
-        filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
-      }
-    )
-    table.insert(opts.sources, null_ls.builtins.code_actions.eslint)
+    -- ESLint via null-ls disabled to avoid ENOENT when eslint CLI is not installed; use ESLint LSP instead.
+    -- table.insert(
+    --   opts.sources,
+    --   null_ls.builtins.diagnostics.eslint.with {
+    --     filetypes = { "javascript", "typescript", "javascriptreact", "typescriptreact" },
+    --   }
+    -- )
+    -- table.insert(opts.sources, null_ls.builtins.code_actions.eslint)
 
     -- HTML
     table.insert(

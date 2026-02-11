@@ -1,7 +1,7 @@
 ---@type NvPluginSpec[]
 return {
 
-  -- 📦 Plugin QuickFix open: preview, filter, jump mượt
+  -- QuickFix: preview, filter, smooth jump
   {
     "kevinhwang91/nvim-bqf",
     ft = "qf",
@@ -46,7 +46,7 @@ return {
     end,
   },
 
-  -- 🔧 Plugin toggle quickfix
+  -- Toggle quickfix list
   {
     "wsdjeg/quickfix.nvim",
     event = "VeryLazy",
