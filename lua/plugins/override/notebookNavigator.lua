@@ -24,6 +24,6 @@ return {
   },
   event = "VeryLazy",
   config = function()
-    require("notebook-navigator").setup() -- KHÔNG truyền activate_hydra_keys vào
+    require("notebook-navigator").setup() -- Do not pass activate_hydra_keys
   end,
 }

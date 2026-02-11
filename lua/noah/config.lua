@@ -1,6 +1,6 @@
 local M = {}
 
--- Autocmd reload lua on save
+-- Reload lua on save
 vim.api.nvim_create_autocmd("BufWritePost", {
   pattern = "*",
   callback = function()
@@ -10,14 +10,14 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end,
 })
 
--- Cursor highlight
+-- Cursor highlight settings
 vim.opt.guicursor = "n-v-c:block-Cursor/lCursor-blinkwait700-blinkoff400-blinkon250,i-ci-ve:ver25,r-cr:hor20,o:hor50"
 vim.cmd [[
   highlight Cursor guibg=#ffcc00 guifg=black
   highlight lCursor guibg=#ffcc00 guifg=black
 ]]
 
--- Notify override
+-- Notify wrapper (filter certain messages)
 local original_notify = vim.notify or function() end
 vim.notify = function(msg, level, opts)
   if not msg:match "Re-sourcing your config is not supported with lazy.nvim" then
@@ -27,6 +27,10 @@ end
 
 vim.notify = function(msg, ...)
   if msg:match "nvchad.stl.default" then
+    return
+  end
+  -- Suppress "Client zls quit..." notification (diagnostics still disappear when zls exits)
+  if type(msg) == "string" and msg:match "Client zls quit with exit code" then
     return
   end
   return require "notify"(msg, ...)

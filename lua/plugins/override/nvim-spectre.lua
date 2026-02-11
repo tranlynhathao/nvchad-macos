@@ -89,12 +89,12 @@ return {
 --   init = function()
 --     local map = vim.keymap.set
 --
---     -- Mở Spectre toàn repo
+--     -- Open Spectre for whole repo
 --     map("n", "<leader>sp", function()
 --       require("spectre").open()
 --     end, { desc = "Spectre: Search and Replace" })
 --
---     -- Tìm từ hiện tại (normal/visual)
+--     -- Search current word (normal/visual)
 --     map("n", "<leader>sw", function()
 --       require("spectre").open_visual { select_word = true }
 --     end, { desc = "Spectre: Search current word" })
@@ -103,17 +103,17 @@ return {
 --       require("spectre").open_visual()
 --     end, { desc = "Spectre: Search selection" })
 --
---     -- Tìm trong file hiện tại
+--     -- Search in current file
 --     map("n", "<leader>sf", function()
 --       require("spectre").open_file_search { select_word = true }
 --     end, { desc = "Spectre: Search in current file" })
 --
---     -- Gửi kết quả Spectre sang quickfix
+--     -- Send Spectre results to quickfix
 --     map("n", "<leader>sq", function()
 --       require("spectre.actions").send_to_qf()
 --     end, { desc = "Spectre: Send to quickfix" })
 --
---     -- Tìm TODO toàn repo
+--     -- Search TODOs in whole repo
 --     map("n", "<leader>st", function()
 --       require("spectre").open { search_text = "TODO" }
 --     end, { desc = "Spectre: Search TODOs" })

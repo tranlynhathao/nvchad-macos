@@ -107,34 +107,35 @@ capabilities.textDocument.completion.completionItem = {
 M.capabilities = capabilities
 
 -- Rust Analyzer configuration
-vim.lsp.config("rust_analyzer", {
-  on_attach = function(client, bufnr)
-    on_attach(client, bufnr) -- Use shared on_attach
-    vim.api.nvim_create_autocmd("BufWritePre", {
-      pattern = "*.rs",
-      callback = function()
-        if client.server_capabilities.documentFormattingProvider then
-          vim.lsp.buf.format { async = true }
-        end
-      end,
-    })
-  end,
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = {
-        allFeatures = true,
-        loadOutDirsFromCheck = true,
-        runBuildScripts = true,
-      },
-      checkOnSave = {
-        command = "clippy",
-      },
-      rustfmt = {
-        enable = true,
-        extraArgs = { "--edition=2021" },
-      },
-    },
-  },
-})
+-- COMMENTED OUT: rustaceanvim plugin handles this
+-- vim.lsp.config("rust_analyzer", {
+--   on_attach = function(client, bufnr)
+--     on_attach(client, bufnr) -- Use shared on_attach
+--     vim.api.nvim_create_autocmd("BufWritePre", {
+--       pattern = "*.rs",
+--       callback = function()
+--         if client.server_capabilities.documentFormattingProvider then
+--           vim.lsp.buf.format { async = true }
+--         end
+--       end,
+--     })
+--   end,
+--   settings = {
+--     ["rust-analyzer"] = {
+--       cargo = {
+--         allFeatures = true,
+--         loadOutDirsFromCheck = true,
+--         runBuildScripts = true,
+--       },
+--       checkOnSave = {
+--         command = "clippy",
+--       },
+--       rustfmt = {
+--         enable = true,
+--         extraArgs = { "--edition=2021" },
+--       },
+--     },
+--   },
+-- })
 
 return M

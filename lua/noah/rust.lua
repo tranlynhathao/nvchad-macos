@@ -30,25 +30,14 @@ return {
             ["rust-analyzer"] = {
               cargo = {
                 allFeatures = true,
-                loadOutDirsFromCheck = true,
+                loadOutDirsFromCheck = false,
                 runBuildScripts = true,
               },
-              -- Add clippy lints for Rust with pedantic warnings
+              -- Use "check" for faster diagnostics; run clippy manually when needed (e.g. cargo clippy)
               checkOnSave = {
                 allFeatures = true,
-                command = "clippy",
-                extraArgs = {
-                  "--no-deps",
-                  "--",
-                  "-W",
-                  "clippy::pedantic",
-                  "-W",
-                  "clippy::nursery",
-                  "-W",
-                  "clippy::unwrap_used",
-                  "-W",
-                  "clippy::expect_used",
-                },
+                command = "check",
+                extraArgs = {},
               },
               -- Memory safety diagnostics
               diagnostics = {
