@@ -23,6 +23,7 @@ return {
       "luadoc",
       "markdown",
       "markdown_inline",
+      "latex", -- for render-markdown.nvim LaTeX blocks ($$ ... $$)
       "ocaml",
       "rust",
       "pug",
