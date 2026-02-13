@@ -12,20 +12,21 @@ return {
     "nvim-telescope/telescope.nvim",
     "nvim-treesitter/nvim-treesitter",
   },
-  opts = {
-    workspaces = {
-      {
-        name = "learning",
-        path = "~/vault/learning",
-      },
-      {
-        name = "personal",
-        path = "~/vault/personal",
-      },
-      {
-        name = "work",
-        path = "~/vault/work",
-      },
-    },
-  },
+  opts = function()
+    local workspaces = {
+      { name = "learning", path = "~/vault/learning" },
+      { name = "personal", path = "~/vault/personal" },
+      { name = "work", path = "~/vault/work" },
+    }
+    for _, ws in ipairs(workspaces) do
+      local path = vim.fn.fnamemodify(ws.path, ":p")
+      if vim.fn.isdirectory(path) == 0 then
+        vim.fn.mkdir(path, "p")
+      end
+    end
+    return {
+      workspaces = workspaces,
+      ui = { enable = false },
+    }
+  end,
 }

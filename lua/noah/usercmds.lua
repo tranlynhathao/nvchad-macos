@@ -89,6 +89,13 @@ create_cmd("UpdateAll", function()
   vim.cmd "Lazy sync"
 end, { desc = "Batch update" })
 
+create_cmd("RenderMarkdownHealth", function()
+  require("lazy").load { plugins = { "render-markdown.nvim" } }
+  vim.defer_fn(function()
+    vim.cmd "checkhealth render-markdown"
+  end, 100)
+end, { desc = "Check health render-markdown.nvim (loads plugin first)" })
+
 create_cmd("FormatToggle", function(args)
   local is_global = not args.bang
   if is_global then
