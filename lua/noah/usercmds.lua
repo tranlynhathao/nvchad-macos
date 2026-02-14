@@ -89,6 +89,10 @@ create_cmd("UpdateAll", function()
   vim.cmd "Lazy sync"
 end, { desc = "Batch update" })
 
+create_cmd("FileInfo", function()
+  require("noah.fileinfo").show()
+end, { desc = "Show file info (path, size, dates) in popup" })
+
 create_cmd("RenderMarkdownHealth", function()
   require("lazy").load { plugins = { "render-markdown.nvim" } }
   vim.defer_fn(function()

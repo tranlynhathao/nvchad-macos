@@ -1,8 +1,8 @@
--- Existing JSONL setup
 vim.filetype.add {
   extension = {
     jsonl = "json",
     sage = "python",
+    cafe = "cafeobj",
   },
 }
 
@@ -35,5 +35,16 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "sage",
   callback = function()
     vim.bo.commentstring = "# %s"
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  desc = "CafeOBJ buffer options",
+  pattern = "cafeobj",
+  callback = function()
+    vim.opt_local.commentstring = "-- %s"
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+    vim.opt_local.expandtab = true
   end,
 })
