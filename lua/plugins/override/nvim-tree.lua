@@ -20,6 +20,15 @@ return {
 
       api.config.mappings.default_on_attach(bufnr)
       local map = vim.keymap.set
+      -- <C-k>: use noah.fileinfo (UI) instead of the default "fullpath:/size:" popup in nvim-tree
+      map("n", "<C-k>", function()
+        local node = api.tree.get_node_under_cursor()
+        if node and node.absolute_path and node.name ~= ".." then
+          require("noah.fileinfo").show(node.absolute_path)
+        else
+          vim.notify("No file under cursor", vim.log.levels.WARN)
+        end
+      end, opts "File info (popup)")
       map("n", "+", api.tree.change_root_to_node, opts "CD")
       map("n", "?", api.tree.toggle_help, opts "Help")
       map("n", "<ESC>", api.tree.close, opts "Close")
@@ -111,6 +120,16 @@ return {
       HEIGHT = 0.8,
       WIDTH = 0.3,
     }
+
+    -- Monkey-patch: replace the default “fullpath:/size:” popup with noah.fileinfo (toggle)
+    local file_popup = require "nvim-tree.actions.node.file-popup"
+    file_popup.toggle_file_info = function(node)
+      if node and node.absolute_path and node.name ~= ".." then
+        require("noah.fileinfo").toggle(node.absolute_path)
+      else
+        require("noah.fileinfo").close()
+      end
+    end
 
     nvtree.setup {
       update_focused_file = {

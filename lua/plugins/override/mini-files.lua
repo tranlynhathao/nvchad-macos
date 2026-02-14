@@ -40,6 +40,24 @@ return {
   - If `use_as_default_explorer = true`, it replaces netrw as default
   ]]
 
+  config = function(_, opts)
+    require("mini.files").setup(opts)
+    -- Hiển thị thông tin file đẹp (float có viền) khi bấm <C-k> trong explorer
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "MiniFilesBufferCreate",
+      callback = function(args)
+        local buf = args.data.buf_id
+        vim.keymap.set("n", "<C-k>", function()
+          local entry = require("mini.files").get_fs_entry()
+          if entry and entry.path then
+            require("noah.fileinfo").show(entry.path)
+          else
+            vim.notify("No file under cursor", vim.log.levels.WARN)
+          end
+        end, { buffer = buf, desc = "Show file info (popup)" })
+      end,
+    })
+  end,
   opts = {
     use_as_default_explorer = true,
     windows = {

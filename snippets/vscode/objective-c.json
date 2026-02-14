@@ -1,17 +1,17 @@
 {
-  "NSLog": {
-    "prefix": "nslog",
-    "body": ["NSLog(@\"$1\");"],
-    "description": "Objective-C NSLog"
-  },
-  "Method": {
-    "prefix": "method",
-    "body": ["- (${1:void})${2:methodName} {", "    $0", "}"],
-    "description": "Objective-C instance method"
-  },
-  "Property": {
-    "prefix": "property",
-    "body": ["@property (nonatomic, strong) ${1:Type} *${2:name};"],
-    "description": "Objective-C property"
-  }
+	"NSLog": {
+		"prefix": "nslog",
+		"body": ["NSLog(@\"$1\");"],
+		"description": "Objective-C NSLog"
+	},
+	"Method": {
+		"prefix": "method",
+		"body": ["- (${1:void})${2:methodName} {", "    $0", "}"],
+		"description": "Objective-C instance method"
+	},
+	"Property": {
+		"prefix": "property",
+		"body": ["@property (nonatomic, strong) ${1:Type} *${2:name};"],
+		"description": "Objective-C property"
+	}
 }

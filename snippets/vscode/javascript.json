@@ -1,12 +1,12 @@
 {
-  "log": {
-    "prefix": "log",
-    "body": ["console.log('$1');"],
-    "description": "Log to console"
-  },
-  "function": {
-    "prefix": "func",
-    "body": ["function $1($2) {", "\t$3", "}"],
-    "description": "Create a function"
-  }
+	"log": {
+		"prefix": "log",
+		"body": ["console.log('$1');"],
+		"description": "Log to console"
+	},
+	"function": {
+		"prefix": "func",
+		"body": ["function $1($2) {", "\t$3", "}"],
+		"description": "Create a function"
+	}
 }
