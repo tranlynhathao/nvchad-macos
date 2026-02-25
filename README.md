@@ -84,8 +84,6 @@ This configuration uses [`pre-commit`](https://pre-commit.com/) to automatically
 
 #### Setup
 
-**Read:** [Usage](./USAGE.md)
-
 1. **Install pre-commit:**
 
    ```bash

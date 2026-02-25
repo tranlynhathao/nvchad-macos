@@ -110,7 +110,6 @@ return {
   { import = "plugins.spec.nerdy" },
   -- { import = "plugins.spec.winsep" },
   { import = "plugins.spec.llama" },
-  -- { import = "plugins.spec.render-markdown" },
 
   -- ### Override plugins ###
   { import = "plugins.override.base46" },

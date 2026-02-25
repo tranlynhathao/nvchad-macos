@@ -104,3 +104,6 @@ local ok, blockchain = pcall(require, "noah.blockchain")
 if ok then
   blockchain.setup()
 end
+
+vim.o.timeoutlen = 300
+vim.o.ttimeoutlen = 10
