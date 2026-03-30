@@ -3,6 +3,7 @@ return {
   "nvim-tree/nvim-tree.lua",
   enabled = true, -- disable by default
   auto_close = false,
+  cmd = { "NvimTreeToggle", "NvimTreeFocus", "NvimTreeOpen", "NvimTreeClose" },
   init = function()
     vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
   end,

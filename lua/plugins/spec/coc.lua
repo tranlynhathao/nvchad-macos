@@ -1,6 +1,7 @@
 ---@type NvPluginSpec
 return {
   "neoclide/coc.nvim",
+  enabled = false,
   branch = "release",
   config = function()
     vim.g.coc_global_extensions = {
