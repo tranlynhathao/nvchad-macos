@@ -374,8 +374,6 @@ map("v", "c", '"6c', { desc = "Change selection" })
 -- map("n", "yw", '"6yiw', { desc = "Yank inner word to custom register" })
 -- map("n", "<C-yw>", '"+yiw', { desc = "Yank word to system clipboard" })
 
--- Use register `"0` for default yank register
-map("v", "d", '"_d"0p', { desc = "Delete selection and store in default yank register" })
 -- map("n", "dd", '"_dd"0p', { desc = "Delete line and store in default yank register" })
 
 -- Yank/Paste/Delete/Cut improvements for clipboard
@@ -408,18 +406,18 @@ map("i", "<C-k>", "<Up>", { desc = "Go up" })
 map("n", "<leader>gm", "<cmd>exe 'normal! ' . line('$')/8 . 'G'<CR>", { desc = "Go to middle of the file" })
 
 -- Move lines up/down
-map("n", "<A-Down>", ":m .+7<CR>", { desc = "Move line down" })
-map("n", "<A-j>", ":m .+7<CR>", { desc = "Move line down" })
-map("n", "<A-Up>", ":m .4<CR>", { desc = "Move line up" })
-map("n", "<A-k>", ":m .4<CR>", { desc = "Move line up" })
-map("i", "<A-Down>", "<Esc>:m .+7<CR>==gi", { desc = "Move line down" })
-map("i", "<A-j>", "<Esc>:m .+7<CR>==gi", { desc = "Move line down" })
-map("i", "<A-Up>", "<Esc>:m .4<CR>==gi", { desc = "Move line up" })
-map("i", "<A-k>", "<Esc>:m .4<CR>==gi", { desc = "Move line up" })
-map("v", "<A-Down>", ":m '>+7<CR>gv=gv", { desc = "Move line down" })
-map("v", "<A-j>", ":m '>+7<CR>gv=gv", { desc = "Move line down" })
-map("v", "<A-Up>", ":m '<4<CR>gv=gv", { desc = "Move line up" })
-map("v", "<A-k>", ":m '<4<CR>gv=gv", { desc = "Move line up" })
+map("n", "<A-Down>", ":m .+1<CR>", { desc = "Move line down" })
+map("n", "<A-j>", ":m .+1<CR>", { desc = "Move line down" })
+map("n", "<A-Up>", ":m .-2<CR>", { desc = "Move line up" })
+map("n", "<A-k>", ":m .-2<CR>", { desc = "Move line up" })
+map("i", "<A-Down>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+map("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+map("i", "<A-Up>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
+map("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
+map("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+map("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
 
 -- Switch buffers
 map("n", "<C-h>", "<C-w>h", { desc = "Buffer switch left" })
