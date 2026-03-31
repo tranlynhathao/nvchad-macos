@@ -5,35 +5,63 @@ return {
   opts = {
     ui = { border = "rounded" },
     ensure_installed = {
-      -- Web3/Blockchain
-      "solidity-ls", -- Solidity language server
-      "js-debug-adapter", -- For TypeScript/Node debugging
-      "codelldb", -- For Rust debugging
+      -- ── Blockchain / Solidity ──────────────────────────────────────────────
+      "nomicfoundation-solidity-language-server", -- better diagnostics, Foundry root detection
+      "solidity-ls", -- legacy fallback
+      "solhint", -- Solidity linter (security + style)
+      "js-debug-adapter",
+      "codelldb", -- Rust / C/C++ debugger
 
-      -- TypeScript/JavaScript
+      -- ── TypeScript / JavaScript ───────────────────────────────────────────
       "eslint-lsp",
       "typescript-language-server",
       "prettier",
       "tailwindcss-language-server",
 
-      -- Go
+      -- ── Go ────────────────────────────────────────────────────────────────
       "goimports",
       "gopls",
 
-      -- Rust
+      -- ── Rust ──────────────────────────────────────────────────────────────
       "rust-analyzer",
 
-      -- Lua
+      -- ── Lua ───────────────────────────────────────────────────────────────
       "lua-language-server",
       "stylua",
 
-      -- Other
+      -- ── Data formats (foundry.toml, Cargo.toml, Anchor.toml) ──────────────
+      "taplo", -- TOML LSP + formatter
       "json-lsp",
       "yaml-language-server",
+
+      -- ── Docker ────────────────────────────────────────────────────────────
+      "dockerfile-language-server",
+      "docker-compose-language-service",
+
+      -- ── Shell / scripting ─────────────────────────────────────────────────
       "bash-language-server",
+      "shfmt",
+
+      -- ── Python / other ────────────────────────────────────────────────────
       "pyright",
       "mypy",
       "ruff",
+
+      -- ── Zig ───────────────────────────────────────────────────────────
+      "zls",
+
+      -- ── Kotlin ────────────────────────────────────────────────────────
+      "kotlin-language-server",
+      "kotlin-debug-adapter",
+
+      -- ── C# / .NET ─────────────────────────────────────────────────────
+      "omnisharp",
+
+      -- ── Ruby ──────────────────────────────────────────────────────────
+      "solargraph",
+
+      -- ── Terraform / HCL ───────────────────────────────────────────────
+      "terraform-ls",
     },
   },
 }

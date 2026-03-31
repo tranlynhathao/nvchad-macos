@@ -39,6 +39,8 @@ return {
       })
     end, { desc = "Telescope find files" })
 
+    map("n", "<leader>fg", "<cmd>Telescope git_files<CR>", { desc = "Telescope git files (tracked only)" })
+
     map("n", "<leader>fo", function()
       pickers.files("old", {
         layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
@@ -109,11 +111,17 @@ return {
     -- Command history — fuzzy-search commands you've run before
     map("n", "<leader>f:", "<cmd>Telescope command_history<CR>", { desc = "Telescope command history" })
 
+    -- Search history — browse past / patterns
+    map("n", "<leader>f/", "<cmd>Telescope search_history<CR>", { desc = "Telescope search history" })
+
     -- ── Help / meta ───────────────────────────────────────────────────────
     map("n", "<leader>f?", "<cmd>Telescope help_tags<CR>", { desc = "Telescope help tags" })
 
     -- Keymaps — discover any binding without :verbose map
     map("n", "<leader>fk", "<cmd>Telescope keymaps<CR>", { desc = "Telescope keymaps" })
+
+    -- Commands — fuzzy-pick any Ex command
+    map("n", "<leader>f;", "<cmd>Telescope commands<CR>", { desc = "Telescope commands" })
 
     map("n", "<leader>fp", "<cmd>Telescope builtin<CR>", { desc = "Telescope all pickers" })
     map("n", "<leader>ft", "<cmd>Telescope terms<CR>", { desc = "Telescope terms" })
@@ -121,6 +129,9 @@ return {
     map("n", "<leader>fh", "<cmd>Telescope highlights<CR>", { desc = "Telescope highlights" })
     map("n", "<leader>ma", "<cmd>Telescope marks<CR>", { desc = "Telescope marks" })
     map("n", "<leader>ts", "<cmd>Telescope treesitter<CR>", { desc = "Telescope TreeSitter" })
+
+    -- Spell suggest — replace z= popup with Telescope picker
+    map("n", "z=", "<cmd>Telescope spell_suggest<CR>", { desc = "Telescope spell suggest" })
 
     -- ── LSP ───────────────────────────────────────────────────────────────
     -- References — browse all usages instead of jumping to first hit
@@ -142,9 +153,12 @@ return {
     -- Buffer commits — file history for current buffer
     map("n", "<leader>gB", "<cmd>Telescope git_bcommits<CR>", { desc = "Telescope git buffer commits" })
 
-    -- ── GitHub (telescope-github.nvim, install separately if needed) ───────
-    map("n", "<leader>gh", "<cmd>Telescope github issues<CR>", { desc = "Telescope GitHub issues" })
-    map("n", "<leader>gp", "<cmd>Telescope github pull_requests<CR>", { desc = "Telescope GitHub PRs" })
+    -- -- ── GitHub (telescope-github.nvim, install separately if needed) ───────
+    -- map("n", "<leader>gh", "<cmd>Telescope github issues<CR>", { desc = "Telescope GitHub issues" })
+    -- map("n", "<leader>gp", "<cmd>Telescope github pull_requests<CR>", { desc = "Telescope GitHub PRs" })
+
+    -- Stash list — browse and apply git stashes
+    map("n", "<leader>gS", "<cmd>Telescope git_stash<CR>", { desc = "Telescope git stash" })
 
     -- ── Load extensions ───────────────────────────────────────────────────
     -- Scheduled so it runs after telescope.setup() (lazy calls setup after opts returns).
@@ -266,6 +280,25 @@ return {
           theme = "ivy",
           previewer = true,
           layout_config = { bottom_pane = { height = 0.40 } },
+        },
+        -- Dropdown for stash: names are short, no preview needed
+        git_stash = {
+          theme = "dropdown",
+          previewer = false,
+        },
+        -- Dropdown for commands: just pick and run
+        commands = {
+          theme = "dropdown",
+        },
+        -- Dropdown for search history: compact list
+        search_history = {
+          theme = "dropdown",
+          previewer = false,
+        },
+        -- Dropdown for spell suggest: compact list of suggestions
+        spell_suggest = {
+          theme = "dropdown",
+          previewer = false,
         },
       },
     })
