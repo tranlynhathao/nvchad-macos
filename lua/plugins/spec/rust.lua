@@ -1,6 +1,7 @@
 ---@type NvPluginSpec
 return {
   "simrat39/rust-tools.nvim",
+  enabled = false, -- rustaceanvim handles rust-analyzer; having both conflicts
   config = function()
     local rust_tools = require "rust-tools"
 

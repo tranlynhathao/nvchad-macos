@@ -8,6 +8,7 @@ return {
 
   -- ### Spec plugins ###
   -- { import = "plugins.spec.solarized-osaka" },
+  { import = "plugins.spec.blockchain" },
   { import = "plugins.spec.nim" },
   { import = "plugins.spec.autopairs" },
   { import = "plugins.spec.better-escape" },
@@ -100,6 +101,7 @@ return {
   { import = "plugins.spec.dial" },
   { import = "plugins.spec.glance" },
   { import = "plugins.spec.nvim-dap-go" },
+  { import = "plugins.spec.dap-clang" },
   { import = "plugins.spec.gopher" },
   { import = "plugins.spec.dap-ts" },
   { import = "plugins.spec.markdown-table-mode" },

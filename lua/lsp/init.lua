@@ -43,23 +43,33 @@ return {
       end, "[W]orkspace [L]ist Folders")
     end
 
-    -- Enable the following language servers
-    --  Feel free to add/remove any LSPs that you want here.
-    --
-    --  Add any additional override configuration in the following tables. They will be passed to
-    --  the `settings` field of the server config. You must look up that documentation yourself.
+    -- Language servers.
+    -- Entries may be either:
+    --   flat table  → passed directly as `settings` (legacy style, e.g. lua_ls)
+    --   structured  → table with { settings, filetypes, root_dir } keys
     local servers = {
       -- C/C++
       clangd = {},
 
-      -- Rust
-      rust_analyzer = {},
-
       -- Assembly
       asm_lsp = {},
 
-      -- Solidity
-      solidity_ls = {},
+      -- Solidity — NomicFoundation server (better diagnostics, Foundry-aware root detection)
+      -- rust_analyzer is intentionally absent: rustaceanvim manages it exclusively.
+      solidity_ls_nomicfoundation = {
+        settings = {
+          solidity = {
+            formatter = "forge",
+            telemetry = false,
+            validation = { onChange = true, onOpen = true, onSave = true },
+          },
+        },
+        filetypes = { "solidity" },
+        root_dir = function(fname)
+          local util = require "lspconfig.util"
+          return util.root_pattern("foundry.toml", "hardhat.config.js", "hardhat.config.ts", ".git")(fname) or util.path.dirname(fname)
+        end,
+      },
 
       -- Lua
       lua_ls = {
@@ -68,30 +78,107 @@ return {
           telemetry = { enable = false },
         },
       },
+
+      -- TOML — essential for foundry.toml, Cargo.toml, Anchor.toml
+      taplo = {},
+
+      -- Docker
+      dockerls = {},
+      docker_compose_language_service = {},
+
+      -- Web / TypeScript / Node (from mason-lspconfig override — merged here)
+      ts_ls = {},
+      eslint = {},
+      tailwindcss = {},
+
+      -- Data formats
+      jsonls = {},
+      yamlls = {},
+
+      -- Shell
+      bashls = {},
+
+      -- Go / Python
+      gopls = {},
+      pyright = {},
+
+      -- Zig
+      zls = {},
+
+      -- Kotlin
+      kotlin_language_server = {},
+
+      -- C# (.NET)
+      omnisharp = {},
+
+      -- Ruby
+      solargraph = {},
+
+      -- Terraform / HCL
+      terraformls = {},
+
+      -- Deno — scoped to deno.json/deno.jsonc roots to avoid conflict with ts_ls
+      denols = {
+        root_dir = function(fname)
+          local util = require "lspconfig.util"
+          return util.root_pattern("deno.json", "deno.jsonc", "deno.lock")(fname)
+        end,
+        single_file_support = false,
+      },
     }
 
-    -- Setup neovim lua configuration
     require("neodev").setup()
 
-    -- nvim-cmp supports additional completion capabilities, so broadcast that to servers
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
-    -- Ensure the servers above are installed
     local mason_lspconfig = require "mason-lspconfig"
 
+    -- Single authoritative setup call — supersedes the mason-lspconfig.lua override.
     mason_lspconfig.setup {
       ensure_installed = vim.tbl_keys(servers),
     }
 
     mason_lspconfig.setup_handlers {
       function(server_name)
+        -- rustaceanvim configures rust-analyzer exclusively; skip it here.
+        if server_name == "rust_analyzer" then
+          return
+        end
+
+        local cfg = servers[server_name] or {}
+        -- A "structured" entry has explicit meta-keys (settings, filetypes, root_dir, …).
+        -- A "flat" entry IS the settings table directly (legacy lua_ls style).
+        local has_meta = cfg.settings ~= nil
+          or cfg.filetypes ~= nil
+          or cfg.root_dir ~= nil
+          or cfg.single_file_support ~= nil
+          or cfg.init_options ~= nil
+        local settings = has_meta and (cfg.settings or {}) or cfg
         require("lspconfig")[server_name].setup {
           capabilities = capabilities,
           on_attach = on_attach,
-          settings = servers[server_name],
+          settings = settings,
+          filetypes = cfg.filetypes,
+          root_dir = cfg.root_dir,
+          single_file_support = cfg.single_file_support,
+          init_options = cfg.init_options,
         }
       end,
     }
+
+    -- System-installed LSPs (not Mason-managed).
+    -- dartls ships inside the Dart SDK binary, not as a standalone Mason package.
+    local system_servers = {
+      dartls = {},
+    }
+    for server_name, cfg in pairs(system_servers) do
+      local has_meta = cfg.settings ~= nil or cfg.filetypes ~= nil or cfg.root_dir ~= nil
+      require("lspconfig")[server_name].setup {
+        capabilities = capabilities,
+        on_attach = on_attach,
+        settings = has_meta and (cfg.settings or {}) or cfg,
+      }
+    end
   end,
 }
