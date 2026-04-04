@@ -40,7 +40,8 @@ end, {
   nargs = "+",
 })
 
-vim.keymap.set("n", "<leader>pp", function()
+-- <leader>pP to avoid conflict with plugins.local.popurri which owns <leader>pp
+vim.keymap.set("n", "<leader>pP", function()
   local cur = vim.fn.line "."
   popup.show_range(cur - 1, cur + 10)
 end, { desc = "Popup 10 lines from current line" })
@@ -106,6 +107,9 @@ end, { desc = "Toggle Pug comments (//-) in Visual mode" })
 -- compress code
 map("n", "<leader>cf", "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", { desc = "Compress code (all supported formats)" })
 
+-- Save file (restored from gale era; standard muscle memory across editors)
+map({ "n", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
+
 -- Better escape using jk in insert and terminal mode
 map("i", "jk", "<ESC>")
 map("t", "jk", "<C-\\><C-n>")
@@ -141,14 +145,16 @@ map("n", "<C-z>", "<C-d>zz")
 map("n", "<C-p>", "<C-u>zz")
 
 -- Move line up and down
-map("n", "<ESC>j", ":m .+1<CR>==")
-map("n", "<ESC>k", ":m .-2<CR>==")
-map("i", "<ESC>j", "<ESC>:m .+1<CR>==gi")
-map("i", "<ESC>k", "<ESC>:m .-2<CR>==gi")
+-- <A-j/k> (Option+j/k on macOS) is the community standard; <ESC>j/k conflicts with
+-- terminal escape sequences in some emulators. Restored from the earlier "gale" config.
+map("n", "<A-j>", ":m .+1<CR>==")
+map("n", "<A-k>", ":m .-2<CR>==")
+map("i", "<A-j>", "<ESC>:m .+1<CR>==gi")
+map("i", "<A-k>", "<ESC>:m .-2<CR>==gi")
 
 -- Move section up and down
-map("v", "<ESC>j", ":move '>+1<CR>gv")
-map("v", "<ESC>k", ":move '<-2<CR>gv")
+map("v", "<A-j>", ":move '>+1<CR>gv")
+map("v", "<A-k>", ":move '<-2<CR>gv")
 
 -- ## Command: <ESC>nj/k (n is character)
 local function move_line_or_block(direction)

@@ -13,5 +13,24 @@ return {
       rules = false,
     },
     notify = false,
+    spec = {
+      -- top-level namespaces
+      { "<leader>f", group = "Find / Telescope" },
+      { "<leader>g", group = "Git" },
+      { "<leader>d", group = "Debug / DAP" },
+      { "<leader>b", group = "Blockchain / Build" },
+      { "<leader>r", group = "Run / Rust" },
+      { "<leader>m", group = "Marks" },
+      { "<leader>p", group = "Popup / Preview" },
+      { "<leader>n", group = "Navigate / Next" },
+      { "<leader>w", group = "Workspace / Window" },
+      { "<leader>t", group = "Toggle / Theme" },
+      { "<leader>c", group = "Code" },
+      { "<leader>s", group = "Surround / Snippet" },
+      { "<leader>o", group = "Open / Oil" },
+      { "<leader>z", group = "Zen / Fold" },
+      -- git sub-namespaces
+      { "<leader>gc", group = "Git commits" },
+    },
   },
 }
