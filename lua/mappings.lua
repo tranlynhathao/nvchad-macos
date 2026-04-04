@@ -145,16 +145,14 @@ map("n", "<C-z>", "<C-d>zz")
 map("n", "<C-p>", "<C-u>zz")
 
 -- Move line up and down
--- <A-j/k> (Option+j/k on macOS) is the community standard; <ESC>j/k conflicts with
--- terminal escape sequences in some emulators. Restored from the earlier "gale" config.
-map("n", "<A-j>", ":m .+1<CR>==")
-map("n", "<A-k>", ":m .-2<CR>==")
-map("i", "<A-j>", "<ESC>:m .+1<CR>==gi")
-map("i", "<A-k>", "<ESC>:m .-2<CR>==gi")
+map("n", "<ESC>j", ":m .+1<CR>==")
+map("n", "<ESC>k", ":m .-2<CR>==")
+map("i", "<ESC>j", "<ESC>:m .+1<CR>==gi")
+map("i", "<ESC>k", "<ESC>:m .-2<CR>==gi")
 
 -- Move section up and down
-map("v", "<A-j>", ":move '>+1<CR>gv")
-map("v", "<A-k>", ":move '<-2<CR>gv")
+map("v", "<ESC>j", ":move '>+1<CR>gv")
+map("v", "<ESC>k", ":move '<-2<CR>gv")
 
 -- ## Command: <ESC>nj/k (n is character)
 local function move_line_or_block(direction)
@@ -411,19 +409,19 @@ map("i", "<C-j>", "<Down>", { desc = "Go down" })
 map("i", "<C-k>", "<Up>", { desc = "Go up" })
 map("n", "<leader>gm", "<cmd>exe 'normal! ' . line('$')/8 . 'G'<CR>", { desc = "Go to middle of the file" })
 
--- Move lines up/down
-map("n", "<A-Down>", ":m .+1<CR>", { desc = "Move line down" })
-map("n", "<A-j>", ":m .+1<CR>", { desc = "Move line down" })
-map("n", "<A-Up>", ":m .-2<CR>", { desc = "Move line up" })
-map("n", "<A-k>", ":m .-2<CR>", { desc = "Move line up" })
-map("i", "<A-Down>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
-map("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
-map("i", "<A-Up>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
-map("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
-map("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
-map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
-map("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
-map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
+-- -- Move lines up/down
+-- map("n", "<A-Down>", ":m .+1<CR>", { desc = "Move line down" })
+-- map("n", "<A-j>", ":m .+1<CR>", { desc = "Move line down" })
+-- map("n", "<A-Up>", ":m .-2<CR>", { desc = "Move line up" })
+-- map("n", "<A-k>", ":m .-2<CR>", { desc = "Move line up" })
+-- map("i", "<A-Down>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+-- map("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+-- map("i", "<A-Up>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
+-- map("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
+-- map("v", "<A-Down>", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+-- map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move line down" })
+-- map("v", "<A-Up>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
+-- map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
 
 -- Switch buffers
 map("n", "<C-h>", "<C-w>h", { desc = "Buffer switch left" })
@@ -1190,6 +1188,5 @@ end
 -- pass to setup along with your other options
 -- ###########################################
 require("nvim-tree").setup {
-  ---
   on_attach = my_on_attach,
 }
