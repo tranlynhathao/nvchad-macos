@@ -9,7 +9,7 @@ local themes_customs = aux.themes_customs
 M.base46 = {
   transparency = true,
   theme = "gruvbox",
-  theme_toggle = { "gruvbox", "gruvbox" },
+  theme_toggle = { "gruvbox", "one_light" },
   integrations = {
     "blankline",
     "cmp",
@@ -39,7 +39,7 @@ M.base46.hl_override = {
   CmpDocBorder = { link = "FloatBorder" },
   TelescopeBorder = { link = "FloatBorder" },
   TelescopePromptBorder = { link = "FloatBorder" },
-  NeogitDiffContext = { bg = "#171B21" },
+  NeogitDiffContext = { bg = "black" },
   NeogitDiffContextCursor = { bg = "black2" },
   NeogitDiffContextHighlight = { link = "NeogitDiffContext" },
   TbBufOffModified = { fg = { "green", "black", 50 } },
@@ -59,7 +59,7 @@ M.base46.hl_add = {
   St_GitBranch = { fg = "baby_pink", bg = M.base46.transparency and "NONE" or "statusline_bg" },
   St_Oil = { fg = "grey_fg", bg = M.base46.transparency and "NONE" or "statusline_bg" },
   GitSignsCurrentLineBlame = { link = "Comment" },
-  MarkviewLayer2 = { bg = "#171B21" },
+  MarkviewLayer2 = { bg = "black2" },
   MarkviewCode = { link = "MarkviewLayer2" },
   HelpviewCode = { link = "MarkviewLayer2" },
   HelpviewInlineCode = { link = "MarkviewInlineCode" },

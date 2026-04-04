@@ -75,7 +75,7 @@ return {
       --   },
       -- },
 
-      background_colour = "#1e1e2e",
+      background_colour = "NONE",
       notify = {
         enabled = false, -- notify of noice: disable
       },

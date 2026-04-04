@@ -88,82 +88,83 @@ end
 --   return ""
 -- end
 
-require("lualine").setup {
-  options = {
-    theme = "gruvbox",
-    -- - `16color`
-    -- - `auto` (default theme)
-    -- - `ayu_dark`
-    -- - `ayu_light`
-    -- - `ayu_mirage`
-    -- - `catppuccin` *(Catpucin was set up)*
-    -- - `dracula`
-    -- - `everforest`
-    -- - `gruvbox`
-    -- - `gruvbox_material`
-    -- - `horizon`
-    -- - `iceberg`
-    -- - `material`
-    -- - `molokai`
-    -- - `nightfly`
-    -- - `nord`
-    -- - `onedark`
-    -- - `palenight`
-    -- - `powerline`
-    -- - `powerline_dark`
-    -- - `rose-pine`
-    -- - `solarized`
-    -- - `solarized_dark`
-    -- - `solarized_light`
-    -- - `tokyonight`
-    -- - `wombat`
-
-    component_separators = { left = "|", right = "|" },
-    section_separators = { left = "", right = "" },
-    icons_enabled = true,
-  },
-  sections = {
-    lualine_a = {
-      {
-        "mode",
-        icon = " ",
-      },
-    },
-    lualine_b = { "branch", "diff", "diagnostics" },
-    lualine_c = {
-      {
-        "filename",
-        file_status = true, -- Displays file status (readonly, modified)
-        path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
-      },
-    },
-    lualine_x = {
-      "encoding",
-      {
-        "fileformat",
-        icons_enabled = false, -- disable default icons
-        fmt = function()
-          return "%#MyIconColor# %#Normal#"
-        end,
-      },
-      "filetype",
-    },
-    lualine_y = { "progress" },
-    lualine_z = { "location" },
-  },
-  inactive_sections = {
-    lualine_a = {},
-    lualine_b = {},
-    lualine_c = { "filename" },
-    lualine_x = { "location" },
-    lualine_y = {},
-    lualine_z = {},
-  },
-  tabline = {},
-  extensions = {},
-}
-
-vim.cmd "highlight MyIconColor guifg=#FF5733"
+-- NOTE: lualine setup moved to lua/plugins/override/lualine.lua (ran before lazy, was overwritten by plugin anyway)
+-- require("lualine").setup {
+--   options = {
+--     theme = "gruvbox",
+--     -- - `16color`
+--     -- - `auto` (default theme)
+--     -- - `ayu_dark`
+--     -- - `ayu_light`
+--     -- - `ayu_mirage`
+--     -- - `catppuccin` *(Catpucin was set up)*
+--     -- - `dracula`
+--     -- - `everforest`
+--     -- - `gruvbox`
+--     -- - `gruvbox_material`
+--     -- - `horizon`
+--     -- - `iceberg`
+--     -- - `material`
+--     -- - `molokai`
+--     -- - `nightfly`
+--     -- - `nord`
+--     -- - `onedark`
+--     -- - `palenight`
+--     -- - `powerline`
+--     -- - `powerline_dark`
+--     -- - `rose-pine`
+--     -- - `solarized`
+--     -- - `solarized_dark`
+--     -- - `solarized_light`
+--     -- - `tokyonight`
+--     -- - `wombat`
+--
+--     component_separators = { left = "|", right = "|" },
+--     section_separators = { left = "", right = "" },
+--     icons_enabled = true,
+--   },
+--   sections = {
+--     lualine_a = {
+--       {
+--         "mode",
+--         icon = " ",
+--       },
+--     },
+--     lualine_b = { "branch", "diff", "diagnostics" },
+--     lualine_c = {
+--       {
+--         "filename",
+--         file_status = true, -- Displays file status (readonly, modified)
+--         path = 1, -- 0 = just filename, 1 = relative path, 2 = absolute path
+--       },
+--     },
+--     lualine_x = {
+--       "encoding",
+--       {
+--         "fileformat",
+--         icons_enabled = false, -- disable default icons
+--         fmt = function()
+--           return "%#MyIconColor# %#Normal#"
+--         end,
+--       },
+--       "filetype",
+--     },
+--     lualine_y = { "progress" },
+--     lualine_z = { "location" },
+--   },
+--   inactive_sections = {
+--     lualine_a = {},
+--     lualine_b = {},
+--     lualine_c = { "filename" },
+--     lualine_x = { "location" },
+--     lualine_y = {},
+--     lualine_z = {},
+--   },
+--   tabline = {},
+--   extensions = {},
+-- }
+--
+-- vim.cmd "highlight MyIconColor guifg=#FF5733"
 
 -- New config
 

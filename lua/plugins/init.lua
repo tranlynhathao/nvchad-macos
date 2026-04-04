@@ -40,7 +40,8 @@ return {
   { import = "plugins.spec.iron" },
   { import = "plugins.spec.jupyter" },
   { import = "plugins.spec.lazygit" },
-  { import = "plugins.spec.leap" },
+  -- leap.nvim removed: leap.add_default_mappings() maps s/S, conflicting with flash.nvim which also owns s/S
+  -- flash.nvim (event="VeryLazy") subsumes leap's functionality with the same keys.
   { import = "plugins.spec.lsp-endhints" },
   { import = "plugins.spec.lsp-signature" },
   { import = "plugins.spec.markdown" },
