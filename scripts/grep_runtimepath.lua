@@ -2,7 +2,7 @@ local runtimepath = vim.o.runtimepath
 local paths = vim.split(runtimepath, ",")
 local search_paths = table.concat(paths, " ")
 
--- HERE: 
+-- HERE:
 local search_term = "prepend"
 local cmd = "rg --vimgrep " .. search_term .. " " .. search_paths
 

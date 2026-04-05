@@ -3,7 +3,6 @@
 ---@type ChadrcConfig
 local M = {}
 local aux = require "noah.chadrc_aux"
-local modules = aux.modules
 local themes_customs = aux.themes_customs
 
 M.base46 = {
@@ -79,39 +78,7 @@ M.ui = {
     style = "default",
   },
   statusline = {
-    theme = "vscode_colored",
-    order = {
-      "mode",
-      "tint",
-      "filename",
-      "modified",
-      "tint",
-      "git_custom",
-      "%=",
-      "lsp_msg",
-      "%=",
-      "diagnostics",
-      "lspx",
-      "harpoon",
-      "word_count",
-      "separator",
-      "oil_dir_cwd",
-      "cwd",
-      "stop",
-    },
-    modules = {
-      hack = modules.statusline.hack,
-      filename = modules.statusline.filename,
-      harpoon = modules.statusline.harpoon,
-      git_custom = modules.statusline.git_custom,
-      modified = modules.statusline.modified,
-      separator = modules.statusline.separator,
-      word_count = modules.statusline.word_count,
-      oil_dir_cwd = modules.statusline.oil_dir_cwd,
-      stop = modules.statusline.force_stop,
-      tint = modules.statusline.tint,
-      lspx = modules.lspx,
-    },
+    theme = "noah_premium",
   },
 
   tabufline = {
