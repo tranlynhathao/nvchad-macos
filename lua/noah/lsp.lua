@@ -56,15 +56,6 @@ local on_attach = function(client, bufnr)
     local symbols = symbols_map[filetype] or "function"
     require("telescope.builtin").lsp_document_symbols { symbols = symbols }
   end, {})
-
-  -- UI tweaks
-  local border = "rounded"
-  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-    border = border,
-  })
-  vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-    border = border,
-  })
 end
 
 ---@param custom_on_attach? OnAttach
@@ -80,7 +71,7 @@ end
 
 ---@type OnInit
 M.on_init = function(client, _)
-  if client.supports_method "textDocument/semanticTokens" then
+  if client:supports_method "textDocument/semanticTokens" then
     client.server_capabilities.semanticTokensProvider = nil
   end
 end

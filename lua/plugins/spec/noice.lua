@@ -18,8 +18,9 @@ return {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
+          ["cmp.entry.get_documentation"] = true,
         },
-        signature = { enabled = false },
+        signature = { enabled = true, opts = { border = "rounded" } },
       },
       presets = {
         bottom_search = false,
@@ -34,6 +35,18 @@ return {
           },
           opts = { skip = true },
           view = "mini",
+        },
+        {
+          filter = { event = "notify", find = "nvchad%.stl%.default" },
+          opts = { skip = true },
+        },
+        {
+          filter = { event = "notify", find = "Client zls quit with exit code" },
+          opts = { skip = true },
+        },
+        {
+          filter = { event = "notify", find = "Re%-sourcing your config is not supported with lazy%.nvim" },
+          opts = { skip = true },
         },
       },
       -- routes = {
@@ -77,7 +90,7 @@ return {
 
       background_colour = "NONE",
       notify = {
-        enabled = false, -- notify of noice: disable
+        enabled = true,
       },
       cmdline_popup = {
         enabled = true,

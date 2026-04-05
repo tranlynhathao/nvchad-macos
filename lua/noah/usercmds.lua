@@ -39,10 +39,10 @@ end, { desc = "Update plugins imports" })
 create_cmd("SrcFile", function()
   if vim.bo.filetype ~= "" then
     vim.cmd "so %"
-    vim.notify.dismiss() ---@diagnostic disable-line
+    require("notify").dismiss()
     vim.notify(vim.fn.expand "%" .. " sourced!", vim.log.levels.INFO)
   else
-    vim.notify.dismiss() ---@diagnostic disable-line
+    require("notify").dismiss()
     vim.notify("No file to source", vim.log.levels.ERROR)
   end
 end, { desc = "Source current file" })

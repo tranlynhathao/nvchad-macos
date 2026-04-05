@@ -88,6 +88,7 @@
 -- vim.g.slime_bracketed_paste = 1
 -- vim.g.base47_cache = vim.fn.stdpath "cache" .. "/base47/"
 
+require "compat"
 require "bootstrap"
 require "noah"
 require "options"

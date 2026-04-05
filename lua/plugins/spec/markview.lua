@@ -128,12 +128,6 @@ return {
       },
     }
 
-    -- Treesitter setup
-    require("nvim-treesitter.configs").setup {
-      ensure_installed = { "java", "markdown", "markdown_inline" },
-      highlight = { enable = true },
-    }
-
     opts = vim.tbl_deep_extend("force", new_opts, opts or {})
     return opts
   end,

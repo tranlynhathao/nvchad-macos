@@ -12,11 +12,11 @@ return {
       return
     end
 
+    local notify = require "notify"
+
     dofile(vim.g.base46_cache .. "notify")
 
-    vim.notify = require "notify"
-    ---@diagnostic disable-next-line
-    vim.notify.setup {
+    notify.setup {
       -- background_colour = "#1c2433",
       background_colour = "#1e1e1e",
       top_down = false,
