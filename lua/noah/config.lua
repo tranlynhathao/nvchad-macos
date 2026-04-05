@@ -17,23 +17,4 @@ vim.cmd [[
   highlight lCursor guibg=#ffcc00 guifg=black
 ]]
 
--- Notify wrapper (filter certain messages)
-local original_notify = vim.notify or function() end
-vim.notify = function(msg, level, opts)
-  if not msg:match "Re-sourcing your config is not supported with lazy.nvim" then
-    original_notify(msg, level, opts)
-  end
-end
-
-vim.notify = function(msg, ...)
-  if msg:match "nvchad.stl.default" then
-    return
-  end
-  -- Suppress "Client zls quit..." notification (diagnostics still disappear when zls exits)
-  if type(msg) == "string" and msg:match "Client zls quit with exit code" then
-    return
-  end
-  return require "notify"(msg, ...)
-end
-
 return M
