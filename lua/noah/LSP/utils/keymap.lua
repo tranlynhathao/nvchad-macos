@@ -7,8 +7,8 @@ local mapping = function(bufnr)
   vim.cmd "command! LspRefs lua vim.lsp.buf.references()"
   vim.cmd "command! LspTypeDef lua vim.lsp.buf.type_definition()"
   vim.cmd "command! LspImplementation lua vim.lsp.buf.implementation()"
-  vim.cmd "command! LspDiagPrev lua vim.diagnostic.goto_prev()"
-  vim.cmd "command! LspDiagNext lua vim.diagnostic.goto_next()"
+  vim.cmd "command! LspDiagPrev lua vim.diagnostic.jump({ count = -1 })"
+  vim.cmd "command! LspDiagNext lua vim.diagnostic.jump({ count = 1 })"
   vim.cmd "command! LspDiagLine lua vim.diagnostic.open_float()"
   vim.cmd "command! LspSignatureHelp lua vim.lsp.buf.signature_help()"
 

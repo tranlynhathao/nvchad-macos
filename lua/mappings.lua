@@ -40,6 +40,98 @@ end, {
   nargs = "+",
 })
 
+local popup_codeblock_filetypes = {
+  markdown = true,
+  quarto = true,
+  rmd = true,
+}
+
+local function get_visual_popup_range()
+  local start_line = vim.fn.line "v"
+  local end_line = vim.fn.line "."
+
+  if start_line == 0 or end_line == 0 then
+    start_line = vim.fn.getpos("'<")[2]
+    end_line = vim.fn.getpos("'>")[2]
+  end
+
+  if start_line == 0 or end_line == 0 then
+    return nil
+  end
+
+  return math.min(start_line, end_line) - 1, math.max(start_line, end_line)
+end
+
+local function get_line(bufnr, lnum)
+  return vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, false)[1] or ""
+end
+
+local function parse_open_fence(line)
+  local marker = line:match "^%s*([`~][`~][`~]+)"
+  if not marker then
+    return nil
+  end
+
+  return marker:sub(1, 1), #marker
+end
+
+local function is_closing_fence(line, fence_char, fence_len)
+  return line:match("^%s*" .. vim.pesc(string.rep(fence_char, fence_len)) .. "+%s*$") ~= nil
+end
+
+local function get_fenced_codeblock_range()
+  if not popup_codeblock_filetypes[vim.bo.filetype] then
+    return nil
+  end
+
+  local bufnr = vim.api.nvim_get_current_buf()
+  local cursor = vim.api.nvim_win_get_cursor(0)[1]
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+  local open_line, fence_char, fence_len
+
+  for lnum = 1, line_count do
+    local line = get_line(bufnr, lnum)
+
+    if not open_line then
+      local char, len = parse_open_fence(line)
+      if char then
+        open_line = lnum
+        fence_char = char
+        fence_len = len
+      end
+    elseif is_closing_fence(line, fence_char, fence_len) then
+      if cursor >= open_line and cursor <= lnum then
+        return open_line - 1, lnum
+      end
+
+      open_line = nil
+      fence_char = nil
+      fence_len = nil
+    end
+  end
+
+  return nil
+end
+
+local function show_popup_for_context()
+  local lnum = vim.fn.line "."
+  local fold_start = vim.fn.foldclosed(lnum)
+  local fold_end = vim.fn.foldclosedend(lnum)
+
+  if fold_start ~= -1 then
+    popup.show_range(fold_start - 1, fold_end)
+    return
+  end
+
+  local start_line, end_line = get_fenced_codeblock_range()
+  if start_line and end_line then
+    popup.show_range(start_line, end_line)
+    return
+  end
+
+  vim.notify("No closed fold or fenced code block under cursor", vim.log.levels.INFO)
+end
+
 -- <leader>pP to avoid conflict with plugins.local.popurri which owns <leader>pp
 vim.keymap.set("n", "<leader>pP", function()
   local cur = vim.fn.line "."
@@ -50,19 +142,20 @@ vim.keymap.set("n", "<leader>ph", function()
   popup.show_range(0, 15)
 end, { desc = "Popup file header" })
 
-vim.keymap.set("n", "<leader>pf", function()
-  local lnum = vim.fn.line "."
-  local fold_start = vim.fn.foldclosed(lnum)
-  local fold_end = vim.fn.foldclosedend(lnum)
-  if fold_start ~= -1 then
-    popup.show_range(fold_start - 1, fold_end)
-  end
-end, { desc = "Popup fold content" })
+vim.keymap.set("n", "<leader>pf", show_popup_for_context, { desc = "Popup fold/code block content" })
 
-vim.keymap.set("v", "<leader>pv", function()
-  local start_pos = vim.fn.getpos("'<")[2] - 1
-  local end_pos = vim.fn.getpos("'>")[2]
-  popup.show_range(start_pos, end_pos)
+vim.keymap.set("x", "<leader>pv", function()
+  local start_line, end_line = get_visual_popup_range()
+  if not start_line or not end_line then
+    vim.notify("No visual selection found", vim.log.levels.WARN)
+    return
+  end
+
+  local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
+  vim.api.nvim_feedkeys(esc, "nx", false)
+  vim.schedule(function()
+    popup.show_range(start_line, end_line)
+  end)
 end, { desc = "Popup visual selection" })
 
 -- DAP
@@ -144,61 +237,64 @@ map("n", "<C-a>", "gg<S-v>G", { desc = "Select all" })
 map("n", "<C-z>", "<C-d>zz")
 map("n", "<C-p>", "<C-u>zz")
 
--- Move line up and down
-map("n", "<ESC>j", ":m .+1<CR>==")
-map("n", "<ESC>k", ":m .-2<CR>==")
-map("i", "<ESC>j", "<ESC>:m .+1<CR>==gi")
-map("i", "<ESC>k", "<ESC>:m .-2<CR>==gi")
+local function move_line_or_block(direction, count)
+  count = math.max(count or 1, 1)
+  local mode = vim.fn.mode()
+  local is_visual = mode == "v" or mode == "V" or mode == "\22"
 
--- Move section up and down
-map("v", "<ESC>j", ":move '>+1<CR>gv")
-map("v", "<ESC>k", ":move '<-2<CR>gv")
-
--- ## Command: <ESC>nj/k (n is character)
-local function move_line_or_block(direction)
-  local n = tonumber(vim.fn.input("Move by how many lines? ", "1")) or 1
-  if n < 1 then
-    n = 1
-  end
-  local line = vim.fn.line "."
-
-  if vim.fn.mode() == "v" or vim.fn.mode() == "V" then
+  if is_visual then
     if direction == "down" then
-      vim.cmd(string.format(":'<,'>move '>+%d", n))
-    elseif direction == "up" then
-      vim.cmd(string.format(":'<,'>move '<-%d", n))
+      vim.cmd(string.format(":'<,'>move '>+%d", count))
+    else
+      vim.cmd(string.format(":'<,'>move '<-%d", count + 1))
     end
+    vim.cmd "normal! gv=gv"
+    return
+  end
+
+  if direction == "down" then
+    vim.cmd(string.format(":move .+%d", count))
   else
-    if direction == "down" then
-      vim.cmd(string.format(":move %d", line + n))
-    elseif direction == "up" then
-      vim.cmd(string.format(":move %d", line - n - 1))
-    end
+    vim.cmd(string.format(":move .-%d", count + 1))
   end
+  vim.cmd "normal! =="
 end
 
--- local function map(mode, lhs, rhs, opts)
---   opts = opts or {}
---   vim.keymap.set(mode, lhs, rhs, opts)
--- end
+local function move_line_or_block_with_count(direction)
+  move_line_or_block(direction, vim.v.count1)
+end
 
-map("n", "<ESC>nj", function()
-  move_line_or_block "down"
-end, { silent = true })
-map("n", "<ESC>nk", function()
-  move_line_or_block "up"
-end, { silent = true })
+local function move_line_or_block_from_insert(direction)
+  local count = vim.v.count1
+  vim.cmd "stopinsert"
+  move_line_or_block(direction, count)
+  vim.cmd "startinsert"
+end
 
-map("v", "<ESC>nj", function()
-  move_line_or_block "down"
-end, { silent = true })
-map("v", "<ESC>nk", function()
-  move_line_or_block "up"
-end, { silent = true })
+map("n", "<leader>j", function()
+  move_line_or_block_with_count "down"
+end, { desc = "Move line down" })
+map("n", "<leader>k", function()
+  move_line_or_block_with_count "up"
+end, { desc = "Move line up" })
+
+map("i", "<C-g>j", function()
+  move_line_or_block_from_insert "down"
+end, { desc = "Move line down" })
+map("i", "<C-g>k", function()
+  move_line_or_block_from_insert "up"
+end, { desc = "Move line up" })
+
+map("v", "<leader>j", function()
+  move_line_or_block_with_count "down"
+end, { desc = "Move selection down" })
+map("v", "<leader>k", function()
+  move_line_or_block_with_count "up"
+end, { desc = "Move selection up" })
 
 -- OR
 
--- ## Command: n<ESC>j/k (n is a number) -- Ex: 5<ESC>j/k
+-- -- ## Command: n<ESC>j/k (n is a number) -- Ex: 5<ESC>j/k
 -- local function move_line_or_block(direction, count)
 --   count = count or 1
 --
@@ -217,10 +313,10 @@ end, { silent = true })
 --   end
 -- end
 --
--- local function map(mode, lhs, rhs, opts)
---   opts = opts or {}
---   vim.keymap.set(mode, lhs, rhs, opts)
--- end
+-- -- local function map(mode, lhs, rhs, opts)
+-- --   opts = opts or {}
+-- --   vim.keymap.set(mode, lhs, rhs, opts)
+-- -- end
 --
 -- -- Keymap support `n` lines
 -- map("n", "<ESC>j", function()
@@ -253,7 +349,7 @@ map("v", "<leader>i", 'c*<C-r>"*<Esc>', { desc = "Italic" })
 map("v", "<leader>u", 's/<C-R>"<u>\\O</u>/', { desc = "Underline" })
 
 -- Insert Codeblock with languages
-vim.keymap.set("n", "<leader>a", function()
+vim.keymap.set("n", "<leader>P", function()
   local lines = {
     "```python",
     "",
@@ -263,7 +359,7 @@ vim.keymap.set("n", "<leader>a", function()
   vim.cmd "normal! k"
 end, { desc = "Insert python code block" })
 
-vim.keymap.set("n", "<leader>j", function()
+vim.keymap.set("n", "<leader>J", function()
   local lines = {
     "```javascript",
     "",
@@ -667,19 +763,23 @@ map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic locli
 map("n", "<leader>de", vim.diagnostic.open_float, { desc = "LSP show diagnostic float" })
 
 -- Diagnostic navigation
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+map("n", "[d", function()
+  vim.diagnostic.jump { count = -1 }
+end, { desc = "Go to previous diagnostic" })
+map("n", "]d", function()
+  vim.diagnostic.jump { count = 1 }
+end, { desc = "Go to next diagnostic" })
 map("n", "[e", function()
-  vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.ERROR }
+  vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR }
 end, { desc = "Go to previous error" })
 map("n", "]e", function()
-  vim.diagnostic.goto_next { severity = vim.diagnostic.severity.ERROR }
+  vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
 end, { desc = "Go to next error" })
 map("n", "[w", function()
-  vim.diagnostic.goto_prev { severity = vim.diagnostic.severity.WARN }
+  vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.WARN }
 end, { desc = "Go to previous warning" })
 map("n", "]w", function()
-  vim.diagnostic.goto_next { severity = vim.diagnostic.severity.WARN }
+  vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.WARN }
 end, { desc = "Go to next warning" })
 
 -- Minty

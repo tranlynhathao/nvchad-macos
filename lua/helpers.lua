@@ -11,8 +11,12 @@ vim.keymap.set("n", "<leader>ce", function()
 end, { noremap = true, silent = true })
 
 -- go to errors in a file
-vim.keymap.set("n", "<leader>ne", vim.diagnostic.goto_next) -- next err
-vim.keymap.set("n", "<leader>pe", vim.diagnostic.goto_prev) -- previous err
+vim.keymap.set("n", "<leader>ne", function()
+  vim.diagnostic.jump { count = 1 }
+end) -- next err
+vim.keymap.set("n", "<leader>pe", function()
+  vim.diagnostic.jump { count = -1 }
+end) -- previous err
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
