@@ -144,8 +144,8 @@ return {
     map("n", "<leader>fS", "<cmd>Telescope lsp_dynamic_workspace_symbols<CR>", { desc = "Telescope LSP workspace symbols" })
 
     -- ── Git ───────────────────────────────────────────────────────────────
-    map("n", "<leader>gs", "<cmd>Telescope git_status<CR>", { desc = "Telescope git status" })
-    map("n", "<leader>gcm", "<cmd>Telescope git_commits<CR>", { desc = "Telescope git commits" })
+    map("n", "<leader>ge", "<cmd>Telescope git_status<CR>", { desc = "Telescope git status" })
+    map("n", "<leader>gC", "<cmd>Telescope git_commits<CR>", { desc = "Telescope git commits" })
 
     -- Branches — checkout/create without leaving Neovim
     map("n", "<leader>gb", "<cmd>Telescope git_branches<CR>", { desc = "Telescope git branches" })

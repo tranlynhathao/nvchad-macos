@@ -17,6 +17,8 @@ return {
       -- top-level namespaces
       { "<leader>f", group = "Find / Telescope" },
       { "<leader>g", group = "Git" },
+      { "<leader>gh", group = "Git hunks" },
+      { "<leader>gm", group = "Git merge / conflicts" },
       { "<leader>d", group = "Debug / DAP" },
       { "<leader>b", group = "Blockchain / Build" },
       { "<leader>r", group = "Run / Rust" },
@@ -29,8 +31,6 @@ return {
       { "<leader>s", group = "Surround / Snippet" },
       { "<leader>o", group = "Open / Oil" },
       { "<leader>z", group = "Zen / Fold" },
-      -- git sub-namespaces
-      { "<leader>gc", group = "Git commits" },
     },
   },
 }

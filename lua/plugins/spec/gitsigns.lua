@@ -1,9 +1,18 @@
 ---@type NvPluginSpec
 return {
   "lewis6991/gitsigns.nvim",
+  lazy = false,
   dependencies = "sindrets/diffview.nvim",
   ---@class Gitsigns.Config
   opts = {
+    signs = {
+      add = { text = "▎" },
+      change = { text = "▎" },
+      delete = { text = "" },
+      topdelete = { text = "" },
+      changedelete = { text = "▎" },
+      untracked = { text = "▎" },
+    },
     preview_config = {
       border = "rounded",
     },
@@ -18,35 +27,54 @@ return {
     on_attach = function(bufnr)
       local gs = require "gitsigns"
       local map = require("noah.utils").buf_map
+      local function visual_range()
+        local start_line = vim.fn.line "."
+        local end_line = vim.fn.line "v"
+        if start_line > end_line then
+          start_line, end_line = end_line, start_line
+        end
+        return { start_line, end_line }
+      end
 
-      map(bufnr, "n", "<leader>td", gs.toggle_deleted, { desc = "Gitsigns toggle deleted" })
-      map(bufnr, "n", "<leader>hr", gs.reset_hunk, { desc = "Gitsigns reset hunk" })
-      map(bufnr, "n", "<leader>hs", gs.stage_hunk, { desc = "Gitsigns stage hunk" })
-      map(bufnr, "n", "<leader>hu", gs.undo_stage_hunk, { desc = "Gitsigns undo stage hunk" })
-      map(bufnr, "n", "<leader>hS", gs.stage_buffer, { desc = "Gitsigns stage buffer" })
-      map(bufnr, "n", "<leader>hR", gs.reset_buffer, { desc = "Gitsigns reset buffer" })
-      map(bufnr, "n", "<leader>hh", gs.preview_hunk, { desc = "Gitsigns preview hunk" })
+      map(bufnr, "n", "<leader>ghs", gs.stage_hunk, { desc = "Git stage hunk" })
+      map(bufnr, "x", "<leader>ghs", function()
+        gs.stage_hunk(visual_range())
+      end, { desc = "Git stage selected hunk" })
+      map(bufnr, "n", "<leader>ghr", gs.reset_hunk, { desc = "Git reset hunk" })
+      map(bufnr, "x", "<leader>ghr", function()
+        gs.reset_hunk(visual_range())
+      end, { desc = "Git reset selected hunk" })
+      map(bufnr, "n", "<leader>ghu", gs.undo_stage_hunk, { desc = "Git undo stage hunk" })
+      map(bufnr, "n", "<leader>ghS", gs.stage_buffer, { desc = "Git stage buffer" })
+      map(bufnr, "n", "<leader>ghU", gs.reset_buffer_index, { desc = "Git unstage buffer" })
+      map(bufnr, "n", "<leader>ghR", gs.reset_buffer, { desc = "Git reset buffer" })
+      map(bufnr, "n", "<leader>ghp", gs.preview_hunk, { desc = "Git preview hunk" })
+      map(bufnr, "n", "<leader>ghd", gs.diffthis, { desc = "Git diff this buffer" })
+      map(bufnr, "n", "<leader>ghD", function()
+        gs.diffthis "~"
+      end, { desc = "Git diff against previous revision" })
+      map(bufnr, "n", "<leader>ghb", function()
+        gs.blame_line { full = true }
+      end, { desc = "Git blame line" })
+      map(bufnr, "n", "<leader>ght", gs.toggle_current_line_blame, { desc = "Git toggle line blame" })
+      map(bufnr, "n", "<leader>ghx", gs.toggle_deleted, { desc = "Git toggle deleted lines" })
       map(bufnr, { "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Gitsigns select hunk" })
 
-      map(bufnr, "n", "<leader>hn", function()
+      map(bufnr, "n", "]h", function()
         if vim.wo.diff then
-          vim.cmd.normal { "<leader>hn", bang = true }
+          vim.cmd.normal { "]c", bang = true }
         else
           gs.nav_hunk "next"
         end
-      end, { desc = "Gitsigns next hunk" })
+      end, { desc = "Git next hunk" })
 
-      map(bufnr, "n", "<leader>hb", function()
+      map(bufnr, "n", "[h", function()
         if vim.wo.diff then
-          vim.cmd.normal { "<leader>hp", bang = true }
+          vim.cmd.normal { "[c", bang = true }
         else
           gs.nav_hunk "prev"
         end
-      end, { desc = "Gitsigns previous hunk" })
-
-      map(bufnr, "n", "<leader>bl", function()
-        gs.blame_line { full = true }
-      end, { desc = "Gitsigns blame line" })
+      end, { desc = "Git previous hunk" })
     end,
   },
 }

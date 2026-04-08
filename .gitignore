@@ -13,6 +13,5 @@ pack/
 
 mappings_backup.lua
 markdown-nvim.lua
-docs/*
 
 *.log

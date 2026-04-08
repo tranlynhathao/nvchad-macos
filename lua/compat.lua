@@ -24,6 +24,14 @@ if vim.fn.has "nvim-0.12" == 1 then
   local original_is_ancestor = ts.is_ancestor
   local original_node_contains = ts.node_contains
   local original_is_in_node_range = ts.is_in_node_range
+  local legacy_validators = {
+    n = "number",
+    s = "string",
+    t = "table",
+    b = "boolean",
+    f = "function",
+    c = vim.is_callable,
+  }
 
   local function unwrap_ts_node(value)
     if type(value) ~= "table" then
@@ -54,6 +62,10 @@ if vim.fn.has "nvim-0.12" == 1 then
       local spec = name[param_name]
       if type(spec) ~= "table" then
         error(string.format("opt[%s]: expected table, got %s", param_name, type(spec)), 2)
+      end
+
+      if type(spec[2]) == "string" and legacy_validators[spec[2]] ~= nil then
+        spec[2] = legacy_validators[spec[2]]
       end
 
       original_validate(param_name, spec[1], spec[2], spec[3], spec[4])
