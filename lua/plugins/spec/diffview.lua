@@ -1,15 +1,16 @@
 ---@type NvPluginSpec
 return {
   "sindrets/diffview.nvim",
-  cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles" },
+  cmd = { "DiffviewOpen", "DiffviewClose", "DiffviewToggleFiles", "DiffviewFocusFiles", "DiffviewFileHistory", "DiffviewRefresh" },
   init = function()
     local map = vim.keymap.set
-    map("n", "<leader>df", "<cmd>DiffviewOpen<CR>", { desc = "Diffview open" })
-    map("n", "<leader>dc", "<cmd>DiffviewClose<CR>", { desc = "Diffview close" })
-    map("n", "<leader>dt", "<cmd>DiffviewToggleFiles<CR>", { desc = "Diffview toggle files" })
-    map("n", "<leader>dF", "<cmd>DiffviewFocusFiles<CR>", { desc = "Diffview focus files" })
+    map("n", "<leader>gv", "<cmd>DiffviewOpen --imply-local<CR>", { desc = "Git diff view" })
+    map("n", "<leader>gV", "<cmd>DiffviewClose<CR>", { desc = "Git close diff view" })
+    map("n", "<leader>gl", "<cmd>DiffviewFileHistory<CR>", { desc = "Git repository history" })
+    map("n", "<leader>gf", "<cmd>DiffviewFileHistory %<CR>", { desc = "Git current file history" })
   end,
   config = function()
+    local actions = require "diffview.actions"
     require("diffview").setup {
       view = {
         merge_tool = {
@@ -23,17 +24,25 @@ return {
       enhanced_diff_hl = true,
       keymaps = {
         view = {
-          ["<tab>"] = require("diffview.actions").select_next_entry,
-          ["<s-tab>"] = require("diffview.actions").select_prev_entry,
-          ["gf"] = require("diffview.actions").goto_file,
-          ["<leader>e"] = require("diffview.actions").focus_files,
-          ["<leader>b"] = require("diffview.actions").toggle_files,
+          ["<tab>"] = actions.select_next_entry,
+          ["<s-tab>"] = actions.select_prev_entry,
+          ["gf"] = actions.goto_file,
+          ["<leader>ge"] = actions.focus_files,
+          ["<leader>gt"] = actions.toggle_files,
+          ["<leader>gmo"] = actions.conflict_choose "ours",
+          ["<leader>gmt"] = actions.conflict_choose "theirs",
+          ["<leader>gm0"] = actions.conflict_choose "none",
+          ["<leader>gma"] = actions.conflict_choose "all",
         },
         file_panel = {
-          ["j"] = require("diffview.actions").next_entry,
-          ["k"] = require("diffview.actions").prev_entry,
-          ["<cr>"] = require("diffview.actions").select_entry,
-          ["-"] = require("diffview.actions").toggle_stage_entry,
+          ["j"] = actions.next_entry,
+          ["k"] = actions.prev_entry,
+          ["<cr>"] = actions.select_entry,
+          ["-"] = actions.toggle_stage_entry,
+          ["<leader>gmo"] = actions.conflict_choose_all "ours",
+          ["<leader>gmt"] = actions.conflict_choose_all "theirs",
+          ["<leader>gm0"] = actions.conflict_choose_all "none",
+          ["<leader>gma"] = actions.conflict_choose_all "all",
         },
       },
     }

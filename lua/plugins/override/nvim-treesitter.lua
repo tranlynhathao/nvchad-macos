@@ -3,6 +3,130 @@ return {
   "nvim-treesitter/nvim-treesitter",
   dependencies = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/playground" },
   config = function(_, opts)
+    local function patch_playground_query_linter()
+      local ok, linter = pcall(require, "nvim-treesitter-playground.query_linter")
+      if not ok or linter._noah_symbols_patch then
+        return
+      end
+
+      local api = vim.api
+      local ts = require "nvim-treesitter.compat"
+      local queries = require "nvim-treesitter.query"
+      local utils = require "nvim-treesitter.utils"
+      local ts_compat = require "nvim-treesitter.compat"
+
+      local namespace = api.nvim_create_namespace "nvim-playground-lints"
+      local MAGIC_NODE_NAMES = { "_", "ERROR" }
+
+      local function show_lints(buf, lints)
+        if linter.use_diagnostics then
+          local diagnostics = vim.tbl_map(function(lint)
+            return {
+              lnum = lint.range[1],
+              end_lnum = lint.range[3],
+              col = lint.range[2],
+              end_col = lint.range[4],
+              severity = vim.diagnostic.ERROR,
+              message = lint.message,
+            }
+          end, lints)
+          vim.diagnostic.set(namespace, buf, diagnostics)
+        end
+      end
+
+      local function add_lint_for_node(node, buf, error_type, complete_message)
+        local node_text = ts_compat.get_node_text(node, buf):gsub("\n", " ")
+        local error_text = complete_message or error_type .. ": " .. node_text
+        local error_range = { node:range() }
+        table.insert(linter.lints[buf], {
+          type = error_type,
+          range = error_range,
+          message = error_text,
+          node_text = node_text,
+        })
+      end
+
+      local function symbols_contain(symbols, node_type, is_named)
+        if type(symbols) ~= "table" then
+          return false
+        end
+
+        if vim.islist(symbols) then
+          for _, entry in ipairs(symbols) do
+            if type(entry) == "table" and node_type == entry[1] and is_named == entry[2] then
+              return true
+            end
+          end
+          return false
+        end
+
+        return symbols[node_type] == is_named
+      end
+
+      function linter.lint(query_buf)
+        query_buf = query_buf or api.nvim_get_current_buf()
+        linter.clear_virtual_text(query_buf)
+        linter.lints[query_buf] = {}
+
+        local query_lang = linter.guess_query_lang(query_buf)
+        local ok_inspect, parser_info = pcall(vim.treesitter.language.inspect, query_lang)
+        if not ok_inspect then
+          return
+        end
+
+        local matches = queries.get_matches(query_buf, "query-linter-queries")
+
+        for _, m in pairs(matches) do
+          local error_node = utils.get_at_path(m, "error.node")
+          if error_node then
+            add_lint_for_node(error_node, query_buf, "Syntax Error")
+          end
+
+          local toplevel_node = utils.get_at_path(m, "toplevel-query.node")
+          if toplevel_node and query_lang then
+            local query_text = ts_compat.get_node_text(toplevel_node, query_buf)
+            local ok_query, err = pcall(ts.parse_query, query_lang, query_text)
+            if not ok_query then
+              add_lint_for_node(toplevel_node, query_buf, "Invalid Query", err)
+            end
+          end
+
+          if parser_info and parser_info.symbols then
+            local named_node = utils.get_at_path(m, "named_node.node")
+            local anonymous_node = utils.get_at_path(m, "anonymous_node.node")
+            local node = named_node or anonymous_node
+            if node then
+              local node_type = ts_compat.get_node_text(node, query_buf)
+
+              if anonymous_node then
+                node_type = node_type:gsub('"(.*)".*$', "%1"):gsub("\\(.)", "%1")
+              end
+
+              local is_named = named_node ~= nil
+              local found = vim.tbl_contains(MAGIC_NODE_NAMES, node_type) or symbols_contain(parser_info.symbols, node_type, is_named)
+
+              if not found then
+                add_lint_for_node(node, query_buf, "Invalid Node Type")
+              end
+            end
+
+            local field_node = utils.get_at_path(m, "field.node")
+            if field_node then
+              local field_name = ts_compat.get_node_text(field_node, query_buf)
+              if not vim.tbl_contains(parser_info.fields, field_name) then
+                add_lint_for_node(field_node, query_buf, "Invalid Field")
+              end
+            end
+          end
+        end
+
+        show_lints(query_buf, linter.lints[query_buf])
+        return linter.lints[query_buf]
+      end
+
+      linter._noah_symbols_patch = true
+    end
+
     local function parse_version(version)
       local major, minor, patch = version:match "(%d+)%.(%d+)%.?(%d*)"
       return tonumber(major) or 0, tonumber(minor) or 0, tonumber(patch) or 0
@@ -31,6 +155,7 @@ return {
     end
 
     require("nvim-treesitter.configs").setup(opts)
+    patch_playground_query_linter()
 
     -- Neovim 0.12 changed iter_matches() so each capture returns TSNode[] instead of TSNode.
     -- nvim-treesitter/master's directive handlers expect a single node and crash calling :range().

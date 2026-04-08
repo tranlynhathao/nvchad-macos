@@ -294,38 +294,11 @@ wk.add({
     { "<localleader>fb", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "[b]uffer fuzzy find" },
     { "<localleader>fm", "<cmd>Telescope marks<cr>", desc = "[m]arks" },
     { "<localleader>fM", "<cmd>Telescope man_pages<cr>", desc = "[M]an pages" },
-    { "<localleader>fc", "<cmd>Telescope git_commits<cr>", desc = "git [c]ommits" },
     { "<localleader>f<space>", "<cmd>Telescope buffers<cr>", desc = "[ ] buffers" },
     { "<localleader>fd", "<cmd>Telescope buffers<cr>", desc = "[d] buffers" },
     { "<localleader>fq", "<cmd>Telescope quickfix<cr>", desc = "[q]uickfix" },
     { "<localleader>fl", "<cmd>Telescope loclist<cr>", desc = "[l]oclist" },
     { "<localleader>fj", "<cmd>Telescope jumplist<cr>", desc = "[j]umplist" },
-  },
-  { "<localleader>g", group = "[g]it" },
-  {
-    { "<localleader>gc", ":GitConflictRefresh<cr>", desc = "[c]onflict" },
-    { "<localleader>gs", ":Gitsigns<cr>", desc = "git [s]igns" },
-    {
-      "<localleader>gwc",
-      ":lua require('telescope').extensions.git_worktree.create_git_worktree()<cr>",
-      desc = "worktree create",
-    },
-    {
-      "<localleader>gws",
-      ":lua require('telescope').extensions.git_worktree.git_worktrees()<cr>",
-      desc = "worktree switch",
-    },
-    { "<localleader>gd", group = "[d]iff" },
-    {
-      { "<localleader>gdo", ":DiffviewOpen<cr>", desc = "[o]pen" },
-      { "<localleader>gdc", ":DiffviewClose<cr>", desc = "[c]lose" },
-    },
-    { "<localleader>gb", group = "[b]lame" },
-    {
-      { "<localleader>gbb", ":GitBlameToggle<cr>", desc = "[b]lame toggle virtual text" },
-      { "<localleader>gbo", ":GitBlameOpenCommitURL<cr>", desc = "[o]pen" },
-      { "<localleader>gbc", ":GitBlameCopyCommitURL<cr>", desc = "[c]opy" },
-    },
   },
   { "<localleader>h", group = "[h]elp / [h]ide / debug" },
   {

@@ -16,7 +16,7 @@ vim.cmd [[
 
 vim.cmd [[
   function! RunNeogit(...)
-    lua require("neogit").open()
+    Neogit kind=split
   endfunction
 ]]
 
