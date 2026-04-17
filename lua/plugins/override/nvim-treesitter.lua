@@ -12,6 +12,7 @@ return {
       local api = vim.api
       local ts = require "nvim-treesitter.compat"
       local queries = require "nvim-treesitter.query"
+      -- local parsers = require "nvim-treesitter.parsers"
       local utils = require "nvim-treesitter.utils"
       local ts_compat = require "nvim-treesitter.compat"
 
