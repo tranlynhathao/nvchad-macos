@@ -24,6 +24,7 @@ if vim.fn.has "nvim-0.12" == 1 then
   local original_is_ancestor = ts.is_ancestor
   local original_node_contains = ts.node_contains
   local original_is_in_node_range = ts.is_in_node_range
+  local original_diagnostic_enable = vim.diagnostic.enable
   local legacy_validators = {
     n = "number",
     s = "string",
@@ -44,6 +45,25 @@ if vim.fn.has "nvim-0.12" == 1 then
     end
     if type(first) == "table" and type(first.range) == "function" then
       return first
+    end
+
+    return value
+  end
+
+  local function normalize_diagnostic_filter(value, namespace)
+    if type(value) == "number" then
+      return namespace and { bufnr = value, ns_id = namespace } or { bufnr = value }
+    end
+
+    if value == nil then
+      return namespace and { ns_id = namespace } or nil
+    end
+
+    if type(value) == "table" then
+      if namespace ~= nil and value.ns_id == nil then
+        return vim.tbl_extend("keep", value, { ns_id = namespace })
+      end
+      return value
     end
 
     return value
@@ -70,6 +90,24 @@ if vim.fn.has "nvim-0.12" == 1 then
 
       original_validate(param_name, spec[1], spec[2], spec[3], spec[4])
     end
+  end
+
+  if not vim.g.noah_diagnostic_compat then
+    vim.diagnostic.enable = function(enable, filter)
+      if type(enable) == "boolean" then
+        return original_diagnostic_enable(enable, filter)
+      end
+
+      return original_diagnostic_enable(true, normalize_diagnostic_filter(enable, filter))
+    end
+
+    if type(vim.diagnostic.disable) ~= "function" then
+      vim.diagnostic.disable = function(filter, namespace)
+        return original_diagnostic_enable(false, normalize_diagnostic_filter(filter, namespace))
+      end
+    end
+
+    vim.g.noah_diagnostic_compat = true
   end
 
   vim.str_utfindex = function(s, encoding, index, strict_indexing)
