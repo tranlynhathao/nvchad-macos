@@ -170,4 +170,84 @@ if not vim.g.noah_lsp_float_defaults then
   end
 end
 
+if not vim.g.noah_tsdk_compat then
+  vim.g.noah_tsdk_compat = true
+
+  local mason_tsdk = vim.fn.stdpath "data" .. "/mason/packages/typescript-language-server/node_modules/typescript/lib"
+  local original_lsp_start = vim.lsp.start
+  local original_lsp_start_client = vim.lsp.start_client
+
+  local function valid_tsdk(path)
+    if type(path) ~= "string" or path == "" or vim.fn.isdirectory(path) ~= 1 then
+      return false
+    end
+
+    local typescript_js = vim.fs.joinpath(path, "typescript.js")
+    local tsserverlibrary_js = vim.fs.joinpath(path, "tsserverlibrary.js")
+    return vim.uv.fs_stat(typescript_js) ~= nil or vim.uv.fs_stat(tsserverlibrary_js) ~= nil
+  end
+
+  local function resolve_typescript_tsdk(root_dir)
+    if valid_tsdk(vim.g.tsdk) then
+      return vim.g.tsdk
+    end
+
+    local ok, util = pcall(require, "lspconfig.util")
+    if ok then
+      local candidate = util.get_typescript_server_path(type(root_dir) == "string" and root_dir or vim.uv.cwd())
+      if valid_tsdk(candidate) then
+        return candidate
+      end
+    end
+
+    if valid_tsdk(mason_tsdk) then
+      return mason_tsdk
+    end
+  end
+
+  local function ensure_typescript_tsdk(config)
+    if type(config) ~= "table" then
+      return config
+    end
+
+    local init_options = config.init_options
+    if type(init_options) ~= "table" or type(init_options.typescript) ~= "table" then
+      return config
+    end
+
+    if valid_tsdk(init_options.typescript.tsdk) then
+      return config
+    end
+
+    init_options.typescript.tsdk = resolve_typescript_tsdk(config.root_dir)
+    return config
+  end
+
+  local function wrap_before_init(config)
+    if type(config) ~= "table" or type(config.before_init) ~= "function" or config._noah_tsdk_before_init_wrapped then
+      return config
+    end
+
+    local before_init = config.before_init
+    config.before_init = function(init_params, cfg)
+      ensure_typescript_tsdk(cfg)
+      return before_init(init_params, cfg)
+    end
+    config._noah_tsdk_before_init_wrapped = true
+    return config
+  end
+
+  vim.lsp.start = function(config, opts)
+    wrap_before_init(ensure_typescript_tsdk(config))
+    return original_lsp_start(config, opts)
+  end
+
+  if type(original_lsp_start_client) == "function" then
+    vim.lsp.start_client = function(config)
+      wrap_before_init(ensure_typescript_tsdk(config))
+      return original_lsp_start_client(config)
+    end
+  end
+end
+
 return M
