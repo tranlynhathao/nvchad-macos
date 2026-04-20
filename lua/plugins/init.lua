@@ -159,4 +159,5 @@ return {
   { import = "plugins.override.mason-lspconfig" },
   { import = "plugins.override.vim-dadbod-ui" },
   { import = "plugins.override.claudecode" },
+  { import = "plugins.override.luapad" },
 }

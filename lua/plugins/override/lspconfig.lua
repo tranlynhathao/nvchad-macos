@@ -35,6 +35,11 @@ return {
       local util = require "lspconfig.util"
 
       local vue_language_server_path = vim.fn.stdpath "data" .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
+      local mason_tsdk = vim.fn.stdpath "data" .. "/mason/packages/typescript-language-server/node_modules/typescript/lib"
+
+      local function resolve_tsdk(root_dir)
+        return util.get_typescript_server_path(root_dir) or (vim.fn.isdirectory(mason_tsdk) == 1 and mason_tsdk or nil)
+      end
 
       local function organize_imports()
         local params = {
@@ -70,6 +75,9 @@ return {
         on_attach = on_attach,
         capabilities = capabilities,
         init_options = {
+          typescript = {
+            tsdk = resolve_tsdk(vim.uv.cwd()),
+          },
           preferences = {
             disableSuggestions = true,
           },
@@ -87,7 +95,27 @@ return {
             description = "Organize Imports",
           },
         },
+        on_new_config = function(new_config, new_root_dir)
+          new_config.init_options = new_config.init_options or {}
+          new_config.init_options.typescript = new_config.init_options.typescript or {}
+          new_config.init_options.typescript.tsdk = resolve_tsdk(new_root_dir)
+        end,
         filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+      })
+
+      vim.lsp.config("astro", {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        init_options = {
+          typescript = {
+            tsdk = resolve_tsdk(vim.uv.cwd()),
+          },
+        },
+        before_init = function(_, config)
+          config.init_options = config.init_options or {}
+          config.init_options.typescript = config.init_options.typescript or {}
+          config.init_options.typescript.tsdk = config.init_options.typescript.tsdk or resolve_tsdk(config.root_dir)
+        end,
       })
 
       vim.lsp.config("tailwindcss", {
