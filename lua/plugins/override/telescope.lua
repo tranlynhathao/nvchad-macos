@@ -8,6 +8,7 @@ return {
   },
   opts = function(_, opts)
     local map = vim.keymap.set
+    local fff = require "noah.fff"
     local pickers = require("noah.telescope").pickers
     local actions = require "telescope.actions"
     local actions_layout = require "telescope.actions.layout"
@@ -31,13 +32,14 @@ return {
       })
     end, { desc = "Telescope all files (hidden + ignored)" })
 
-    map("n", "<leader>ff", function()
-      pickers.files("find", {
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-        prompt_title = "Files",
-      })
-    end, { desc = "Telescope find files" })
+    -- map("n", "<leader>ff", function()
+    --   pickers.files("find", {
+    --     layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+    --     previewer = true,
+    --     prompt_title = "Files",
+    --   })
+    -- end, { desc = "Telescope find files" })
+    map("n", "<leader>ff", fff.find_files, { desc = "Find files" })
 
     map("n", "<leader>fg", "<cmd>Telescope git_files<CR>", { desc = "Telescope git files (tracked only)" })
 
@@ -50,42 +52,49 @@ return {
     end, { desc = "Telescope recent files" })
 
     -- ── Grep / text search ────────────────────────────────────────────────
-    map("n", "<leader>fw", function()
-      pickers.grep("live_grep", nil, nil, {
-        layout_strategy = "horizontal",
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-        prompt_title = "Live Grep",
-      })
-    end, { desc = "Telescope live grep" })
+    -- map("n", "<leader>fw", function()
+    --   pickers.grep("live_grep", nil, nil, {
+    --     layout_strategy = "horizontal",
+    --     layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+    --     previewer = true,
+    --     prompt_title = "Live Grep",
+    --   })
+    -- end, { desc = "Telescope live grep" })
+    map("n", "<leader>fw", fff.live_grep, { desc = "Live grep" })
+    map("n", "<leader>fz", fff.fuzzy_grep, { desc = "FFF fuzzy grep" })
 
     -- Grep exact word under cursor (normal mode)
-    map("n", "<leader>fs", function()
-      local word = vim.fn.expand "<cword>"
-      pickers.grep("grep_string", word, nil, {
-        layout_strategy = "horizontal",
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-        prompt_title = "Grep: " .. word,
-      })
-    end, { desc = "Telescope grep word under cursor" })
+    -- map("n", "<leader>fs", function()
+    --   local word = vim.fn.expand "<cword>"
+    --   pickers.grep("grep_string", word, nil, {
+    --     layout_strategy = "horizontal",
+    --     layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+    --     previewer = true,
+    --     prompt_title = "Grep: " .. word,
+    --   })
+    -- end, { desc = "Telescope grep word under cursor" })
+    map("n", "<leader>fs", fff.grep_cword, { desc = "Grep word under cursor" })
 
     -- Grep visual selection
-    map("v", "<leader>fs", function()
-      local saved = vim.fn.getreg "s"
-      vim.cmd [[noau normal! "sy]]
-      local selection = vim.fn.getreg "s"
-      vim.fn.setreg("s", saved)
-      if selection == "" then
-        return
-      end
-      pickers.grep("grep_string", selection, nil, {
-        layout_strategy = "horizontal",
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-        prompt_title = "Grep: " .. selection,
-      })
-    end, { desc = "Telescope grep visual selection" })
+    -- map("v", "<leader>fs", function()
+    --   local saved = vim.fn.getreg "s"
+    --   vim.cmd [[noau normal! "sy]]
+    --   local selection = vim.fn.getreg "s"
+    --   vim.fn.setreg("s", saved)
+    --   if selection == "" then
+    --     return
+    --   end
+    --   pickers.grep("grep_string", selection, nil, {
+    --     layout_strategy = "horizontal",
+    --     layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+    --     previewer = true,
+    --     prompt_title = "Grep: " .. selection,
+    --   })
+    -- end, { desc = "Telescope grep visual selection" })
+    map("v", "<leader>fs", fff.grep_visual_selection, { desc = "Grep visual selection" })
+
+    map("n", "<leader>fF", fff.scan_files, { desc = "Rescan project files" })
+    map("n", "<leader>fG", fff.refresh_git_status, { desc = "Refresh finder git status" })
 
     -- ── Buffers / navigation ──────────────────────────────────────────────
     map("n", "<leader>fb", function()

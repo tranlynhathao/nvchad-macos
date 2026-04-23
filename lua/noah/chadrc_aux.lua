@@ -134,27 +134,41 @@ local stbufnr = function()
 end
 
 local filename = function()
+  local bufnr = stbufnr()
   local transparency = require("chadrc").base46.transparency
-  local hl = ""
+  local ft = vim.bo[bufnr].filetype
+  local picker_labels = {
+    fff_input = "FFF Search",
+    fff_list = "FFF Results",
+    fff_preview = "FFF Preview",
+    fff_file_info = "FFF Info",
+  }
+
+  if picker_labels[ft] then
+    return "%#StText#   %#StText#" .. picker_labels[ft]
+  end
+
+  local hl = "%#StText#"
   local icon = "  󰈚"
-  local path = vim.api.nvim_buf_get_name(stbufnr())
+  local path = vim.api.nvim_buf_get_name(bufnr)
   local name = (path == "" and "Empty") or vim.fs.basename(path)
-  local ext = name:match "%.([^%.]+)$" or name
+  local ext = name:match "%.([^%.]+)$"
 
   if name ~= "Empty" then
     local devicons_present, devicons = pcall(require, "nvim-web-devicons")
     if devicons_present then
-      local hl_group = "DevIcon" .. ext
-      local ok, ft_hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
-      if ok and ft_hl.fg then
-        local ft_fg = string.format("#%06x", ft_hl.fg)
-        local st_hl_name = "St_DevIcon" .. ext
-        hl = "%#" .. st_hl_name .. "#"
-        vim.api.nvim_set_hl(0, st_hl_name, { bg = transparency and "NONE" or "#242D3D", fg = ft_fg })
-        local ft_icon = devicons.get_icon(name)
-        icon = (ft_icon ~= nil and "  " .. ft_icon) or ("  " .. icon)
-      else
-        return
+      local ft_icon = devicons.get_icon(name, ext, { default = false })
+      icon = (ft_icon ~= nil and "  " .. ft_icon) or icon
+
+      if ext and ext:match "^[%w_]+$" then
+        local hl_group = "DevIcon" .. ext
+        local ok, ft_hl = pcall(vim.api.nvim_get_hl, 0, { name = hl_group })
+        if ok and ft_hl.fg then
+          local ft_fg = string.format("#%06x", ft_hl.fg)
+          local st_hl_name = "St_DevIcon" .. ext
+          hl = "%#" .. st_hl_name .. "#"
+          pcall(vim.api.nvim_set_hl, 0, st_hl_name, { bg = transparency and "NONE" or "#242D3D", fg = ft_fg })
+        end
       end
     end
   end
