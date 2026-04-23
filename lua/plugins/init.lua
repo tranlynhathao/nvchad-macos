@@ -27,6 +27,7 @@ return {
   { import = "plugins.spec.dressing" },
   { import = "plugins.spec.dropbar" },
   { import = "plugins.spec.edgy" },
+  { import = "plugins.spec.fff" },
   { import = "plugins.spec.flutter" },
   { import = "plugins.spec.fugitive" },
   { import = "plugins.spec.gitsigns" },

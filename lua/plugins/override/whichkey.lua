@@ -15,7 +15,8 @@ return {
     notify = false,
     spec = {
       -- top-level namespaces
-      { "<leader>f", group = "Find / Telescope" },
+      -- { "<leader>f", group = "Find / Telescope" },
+      { "<leader>f", group = "Find / Search" },
       { "<leader>g", group = "Git" },
       { "<leader>gh", group = "Git hunks" },
       { "<leader>gm", group = "Git merge / conflicts" },
