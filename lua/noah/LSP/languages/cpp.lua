@@ -1,10 +1,9 @@
 --[=[
-install clang with bundle clangd and clang-format
+clangd LSP. Format do conform (clang-format) lo; lint do nvim-lint (clang-tidy).
 --]=]
 
 local ok = require("noah.utils.check_requires").check {
   "cmp_nvim_lsp",
-  "null-ls",
   "lspconfig.util",
 }
 if not ok then
@@ -12,18 +11,18 @@ if not ok then
 end
 
 local cmp_nvim_lsp = require "cmp_nvim_lsp"
-local null_ls = require "null-ls"
 local util = require "lspconfig.util"
 
-local on_attach = function(client, bufnr)
+local function on_attach(_, bufnr)
   require "noah.LSP.utils.keymap"(bufnr)
 end
 
-local capabilities = cmp_nvim_lsp.default_capabilities()
-
 vim.lsp.config("clangd", {
-  capabilities = capabilities,
+  capabilities = cmp_nvim_lsp.default_capabilities(),
   on_attach = function(client, bufnr)
+    -- clangd has builtin format; disable so conform is the single source.
+    client.server_capabilities.documentFormattingProvider = false
+    client.server_capabilities.documentRangeFormattingProvider = false
     on_attach(client, bufnr)
   end,
   root_dir = util.root_pattern "compile_commands.json",
@@ -45,11 +44,3 @@ vim.lsp.config("clangd", {
     semanticHighlighting = true,
   },
 })
-
-null_ls.register {
-  name = "null-ls-Cpp",
-  sources = {
-    null_ls.builtins.formatting.clang_format.with {},
-  },
-  on_attach = on_attach,
-}

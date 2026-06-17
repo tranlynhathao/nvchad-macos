@@ -33,9 +33,11 @@ return {
                 loadOutDirsFromCheck = false,
                 runBuildScripts = true,
               },
-              -- Use "check" for faster diagnostics; run clippy manually when needed (e.g. cargo clippy)
-              checkOnSave = {
-                allFeatures = true,
+              -- Use "check" for faster diagnostics; run clippy manually when needed (e.g. cargo clippy).
+              -- checkOnSave is a boolean now; command/args live under `check`. allFeatures is
+              -- already covered by cargo.allFeatures above.
+              checkOnSave = true,
+              check = {
                 command = "check",
                 extraArgs = {},
               },

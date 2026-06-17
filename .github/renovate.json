@@ -5,24 +5,11 @@
     {
       "matchDepTypes": ["dependencies", "devDependencies"],
       "groupName": "Neovim Plugins",
-      "matchPackagePrefixes": [
-        "nvim-",
-        "vim-",
-        "telescope-",
-        "treesitter-",
-        "lsp-",
-        "cmp-",
-        "luasnip-",
-        "conform-"
-      ],
+      "matchPackagePrefixes": ["nvim-", "vim-", "telescope-", "treesitter-", "lsp-", "cmp-", "luasnip-", "conform-"],
       "schedule": ["at 10am on Saturday"]
     },
     {
-      "matchPaths": [
-        "lua/plugins/init.lua",
-        "lua/plugins/override/*.lua",
-        "lua/plugins/spec/*.lua"
-      ],
+      "matchPaths": ["lua/plugins/init.lua", "lua/plugins/override/*.lua", "lua/plugins/spec/*.lua"],
       "groupName": "Neovim Plugin Overrides",
       "schedule": ["before 5am on Monday"]
     },

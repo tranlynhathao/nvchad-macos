@@ -7,113 +7,126 @@ return {
   init = function()
     vim.keymap.set("n", "<leader>fm", function()
       require("conform").format { lsp_fallback = true }
-    end, { desc = "General format file" })
+    end, { desc = "Format file" })
+
+    -- Toggle format-on-save (per-buffer or global).
+    -- `:FormatOff` / `:FormatOn` for quick on/off.
+    vim.api.nvim_create_user_command("FormatOff", function(args)
+      if args.bang then
+        vim.b.disable_autoformat = true
+      else
+        vim.g.disable_autoformat = true
+      end
+    end, { desc = "Disable format-on-save (! = buffer only)", bang = true })
+
+    vim.api.nvim_create_user_command("FormatOn", function()
+      vim.b.disable_autoformat = false
+      vim.g.disable_autoformat = false
+    end, { desc = "Enable format-on-save" })
   end,
   ---@type conform.setupOpts
   opts = {
+    -- Rule: ONE formatter per language. No fallback chain, to avoid the
+    -- output drifting between saves.
     formatters_by_ft = {
-      -- C, C++, Objective-C
-      c = { "clangformat" }, -- or: "uncrustify", "astyle"
-      cpp = { "clangformat" }, -- or: "uncrustify", "astyle"
-      objc = { "clangformat" }, -- or: "uncrustify", "astyle"
+      -- C / C++ / Objective-C
+      c = { "clang-format" },
+      cpp = { "clang-format" },
+      objc = { "clang-format" },
 
-      -- C#, .NET
-      c_sharp = { "dotnet-format" }, -- or: "clangformat", "uncrustify"
-      cs = { "dotnet-format" },
-      csharp = { "dotnet-format" }, -- or: "clangformat", "uncrustify"
-
-      -- macOS/iOS
-      -- objectivec = { "clangformat" },
-      -- swift = { "swiftformat" }, -- or: "swiftformat", "clangformat"
+      -- C# / .NET
+      cs = { "csharpier" },
+      ["c_sharp"] = { "csharpier" },
 
       -- Dart
-      dart = { "dart_format" }, -- or: "dartfmt" (deprecated)
+      dart = { "dart_format" },
 
-      -- Bash / Shell
-      bash = { "shfmt" }, -- or: "beautysh"
+      -- Shell
+      sh = { "shfmt" },
+      bash = { "shfmt" },
+      zsh = { "shfmt" },
 
-      -- CSS / SCSS
-      css = { "prettier" }, -- or: "stylelint", "css-beautify"
-      scss = { "prettier" }, -- same as above
-
-      -- Gleam
-      gleam = { "gleam" }, -- available in the Gleam language server
+      -- CSS / SCSS / Less
+      css = { "prettier" },
+      scss = { "prettier" },
+      less = { "prettier" },
 
       -- Go
-      go = { "gofmt" }, -- or: "goimports", "goreturns"
+      go = { "goimports" },
 
       -- HTML
-      html = { "prettier" }, -- or: "html-beautify"
+      html = { "prettier" },
 
-      -- JavaScript / TypeScript / Vue / Svelte
-      javascript = { "prettier" }, -- or: "biome", "eslint --fix"
-      javascriptreact = { "prettier" }, -- same as above
-      typescript = { "prettier" }, -- or: "biome", "eslint --fix"
-      typescriptreact = { "prettier" }, -- same as above
-      vue = { "prettier" }, -- or: "eslint --fix"
-      svelte = { "prettier" }, -- or: "svelte-preprocess"
+      -- JS / TS / JSX / TSX
+      javascript = { "prettier" },
+      javascriptreact = { "prettier" },
+      typescript = { "prettier" },
+      typescriptreact = { "prettier" },
 
-      -- JSON
-      -- Use prettier as primary, biome as fallback (biome needs --write flag)
-      json = { "prettier", "biome" }, -- or: "jq"
+      -- Frontend frameworks
+      vue = { "prettier" },
+      svelte = { "prettier" },
+      astro = { "prettier" },
 
-      -- Markdown
-      markdown = { "markdownlint" }, -- or: "prettier", "mdformat"
+      -- Data formats
+      json = { "prettier" },
+      jsonc = { "prettier" },
+      yaml = { "yamlfmt" },
+      toml = { "taplo" },
+      graphql = { "prettier" },
 
-      -- OCaml
-      ocaml = { "ocamlformat" }, -- or: "refmt"
+      -- Markdown (ALWAYS use prettier; markdownlint is a LINTER, not a formatter)
+      markdown = { "prettier" },
 
       -- Lua
-      lua = { "stylua" }, -- or: "lua-format"
+      lua = { "stylua" },
 
-      -- TOML
-      toml = { "taplo" }, -- or: "prettier"
-
-      -- YAML
-      -- Use yamlfmt first, prettier as fallback (for complex YAML like pre-commit configs)
-      yaml = { "yamlfmt", "prettier" }, -- or: "yamlfix"
-
-      -- Zig
-      zig = { "zigfmt" }, -- available in the Zig langauge server
-
-      -- Ruby
-      ruby = { "rufo" }, -- or: "standardrb", "rubocop"
-
-      -- Elixir
-      elixir = { "mix" }, -- or: "mix format"
-
-      -- Erlang
-      erlang = { "erlfmt" }, -- or: "rebar3", "erlange formatter", available in the Erlang lanhguage server
-
-      -- Python
-      python = { "ruff_format" }, -- or: "black", "yapf", "autopep8"
+      -- Python (ruff_format = ruff fmt; same tool as the linter)
+      python = { "ruff_format" },
 
       -- Rust
-      rust = { "rustfmt" }, -- or: "rust-analyzer", "cargo fmt", relase in the Rust language server
+      rust = { "rustfmt" },
 
       -- Kotlin
-      kotlin = { "ktlint" }, -- or: "detekt", "ktfmt"
+      kotlin = { "ktlint" },
 
-      -- PHP
-      php = { "phpcbf" }, -- or: "php-cs-fixer", "phpcbf"
+      -- PHP (Laravel Pint - modern standard, bundles PHP-CS-Fixer rules)
+      php = { "pint" },
 
-      -- SQL
-      -- SQLFluff first (for standard SQL), prettier as fallback (handles templated SQL better)
-      sql = { "sqlfluff", "prettier" }, -- or: "pg_format", "sql-formatter", "sql-formatter-plus"
-
-      -- Solidity
-      -- Try forge_fmt first (for Foundry), fallback to prettier
-      -- Conform will try formatters in order until one succeeds
-      solidity = { "forge_fmt", "prettier" },
+      -- Ruby
+      ruby = { "rubocop" },
 
       -- Java
-      java = { "google-java-format" }, -- or: "clangformat", "eclipse formatter"
+      java = { "google-java-format" },
 
-      -- JSX Variants
-      ["javascriptnext.jsx"] = { "prettier" }, -- or: "biome"
-      ["javascriptnuxt.jsx"] = { "prettier" }, -- or: "biome"
+      -- SQL
+      sql = { "sqlfluff" },
+
+      -- Solidity (Foundry forge fmt)
+      solidity = { "forge_fmt" },
+
+      -- Terraform / HCL
+      terraform = { "terraform_fmt" },
+      hcl = { "terraform_fmt" },
+
+      -- OCaml / Gleam / Zig / Elixir / Erlang
+      ocaml = { "ocamlformat" },
+      gleam = { "gleam" },
+      zig = { "zigfmt" },
+      elixir = { "mix" },
+      erlang = { "erlfmt" },
+
+      -- INI / .cfg generic config (xem noah/filetypes.lua cho dosini vs conf)
+      dosini = { "trim_whitespace" },
+      conf = { "trim_whitespace" },
+
+      -- Catch-all: trim trailing whitespace for every remaining filetype.
+      ["_"] = { "trim_whitespace" },
     },
+
     format_on_save = function(bufnr)
+      -- Allow disabling format-on-save globally (vim.g) or per-buffer (vim.b)
+      -- via `:FormatOff` / `:FormatOff!` (see the init function).
       if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
         return
       end
@@ -121,85 +134,26 @@ return {
     end,
 
     formatters = {
-      yamlfmt = {
-        args = { "-formatter", "retain_line_breaks_single=true" },
-        timeout_ms = 3000,
-      },
-
-      -- Biome formatter
-      -- Biome format outputs to stdout when using stdin (no --write needed)
-      -- Prettier is the primary formatter for JSON, biome is fallback
-      biome = {
-        command = "biome",
-        args = { "format", "--stdin-file-path", "$FILENAME", "-" },
+      -- Compact-first style for every formatter: arrays / structs / matrices stay
+      -- on one line when they fit within 120 cols. Trailing commas removed so
+      -- "magic trailing comma" doesn't force multiline.
+      prettier = {
+        command = "prettier",
+        args = {
+          "--stdin-filepath",
+          "$FILENAME",
+          "--print-width",
+          "120",
+          "--bracket-same-line",
+          "--trailing-comma",
+          "none",
+          "--arrow-parens",
+          "avoid",
+        },
         stdin = true,
         timeout_ms = 3000,
       },
 
-      sqlfluff = {
-        command = "sqlfluff",
-        args = { "fix", "--dialect", "postgres", "--disable-progress-bar", "-" },
-        stdin = true,
-        cwd = function(ctx)
-          if ctx.filename == nil or ctx.filename == "" then
-            return vim.loop.cwd()
-          else
-            return vim.fn.fnamemodify(ctx.filename, ":h")
-          end
-        end,
-        timeout_ms = 8000, -- Reduced timeout, fail faster
-        -- Skip files with templating (common in dbt, jinja, etc.)
-        -- This prevents errors on templated SQL files
-        condition = function(ctx)
-          local filename = ctx.filename or ""
-          if filename == "" then
-            return true
-          end
-
-          -- Check file path for common templating indicators
-          local path_lower = filename:lower()
-          if path_lower:match "models/" or path_lower:match "dbt/" or path_lower:match "jinja" then
-            return false -- Skip dbt/jinja files
-          end
-
-          -- Quick check: read first 100 lines for templating syntax
-          local ok, lines = pcall(vim.fn.readfile, filename, "", 100)
-          if not ok or not lines then
-            return true -- If we can't read, let sqlfluff try
-          end
-
-          for _, line in ipairs(lines) do
-            -- Skip files with common templating syntax (dbt, jinja, etc.)
-            -- Check for: {{ }}, {% %}, ${ }, {%- -%}, {{- -}}
-            if line:match "{{" or line:match "{%" or line:match "${" or line:match "jinja" or line:match "dbt" then
-              return false
-            end
-          end
-          return true
-        end,
-      },
-
-      -- black = {
-      --   timeout_ms = 5000,
-      -- },
-
-      markdownlint = {
-        timeout_ms = 5000,
-      },
-
-      ["dotnet-format"] = {
-        command = "dotnet",
-        args = { "format" },
-        stdin = false,
-        timeout_ms = 5000,
-      },
-
-      google_java_format = {
-        timeout_ms = 5000,
-      },
-
-      -- Ruff formatter for Python (fast, simple formatting)
-      -- With skip-magic-trailing-comma to keep arrays compact
       ruff_format = {
         command = "ruff",
         args = {
@@ -210,62 +164,129 @@ return {
           "format.skip-magic-trailing-comma=true",
           "--stdin-filename",
           "$FILENAME",
+          "-",
         },
         stdin = true,
         timeout_ms = 3000,
       },
 
-      -- Rustfmt with max_width to keep arrays more compact
       rustfmt = {
         command = "rustfmt",
-        args = { "--edition", "2021" },
+        -- max_width=120 is stable; the *_width / heuristics / trailing_comma
+        -- options are nightly-only -> require `--unstable-features`. Since the
+        -- default toolchain is nightly (rustup default nightly), this is fine.
+        args = {
+          "--edition",
+          "2021",
+          "--unstable-features",
+          "--config",
+          "max_width=120,"
+            .. "fn_call_width=100,"
+            .. "array_width=100,"
+            .. "chain_width=100,"
+            .. "struct_lit_width=80,"
+            .. "struct_variant_width=80,"
+            .. "attr_fn_like_width=100,"
+            .. "single_line_if_else_max_width=60,"
+            .. "use_small_heuristics=Max,"
+            .. "trailing_comma=Never,"
+            .. "match_block_trailing_comma=false,"
+            .. "fn_params_layout=Compressed",
+        },
         stdin = true,
         timeout_ms = 3000,
       },
 
-      -- clang-format with compact array style
-      clangformat = {
+      ["clang-format"] = {
         command = "clang-format",
         args = {
           "--assume-filename",
           "$FILENAME",
-          "--style={BasedOnStyle: LLVM, ColumnLimit: 120, BinPackArguments: true, BinPackParameters: true, AllowShortFunctionsOnASingleLine: All}",
+          "--style={"
+            .. "BasedOnStyle: LLVM, "
+            .. "ColumnLimit: 120, "
+            .. "BinPackArguments: true, "
+            .. "BinPackParameters: true, "
+            .. "AllowAllArgumentsOnNextLine: false, "
+            .. "AllowAllParametersOfDeclarationOnNextLine: false, "
+            .. "AllowShortFunctionsOnASingleLine: All, "
+            .. "AllowShortBlocksOnASingleLine: Always, "
+            .. "AllowShortIfStatementsOnASingleLine: WithoutElse, "
+            .. "AllowShortLoopsOnASingleLine: true, "
+            .. "AllowShortCaseLabelsOnASingleLine: true, "
+            .. "Cpp11BracedListStyle: false, "
+            .. "AlignAfterOpenBracket: BlockIndent"
+            .. "}",
         },
         stdin = true,
         timeout_ms = 3000,
       },
 
-      -- Prettier with compact arrays
-      prettier = {
-        command = "prettier",
-        args = { "--stdin-filepath", "$FILENAME", "--print-width", "120", "--bracket-same-line" },
-        stdin = true,
-        timeout_ms = 3000,
-      },
-
-      -- gofmt (Go's standard formatter keeps things compact)
-      gofmt = {
-        command = "gofmt",
-        stdin = true,
-        timeout_ms = 3000,
-      },
-
-      -- autopep8 with minimal fixes - only fix indent/whitespace, preserve arrays
-      autopep8 = {
-        command = "autopep8",
+      stylua = {
+        command = "stylua",
         args = {
-          "-",
-          "--max-line-length",
+          "--column-width",
           "120",
-          "--ignore",
-          "E501", -- Ignore line too long
+          "--collapse-simple-statement",
+          "Always",
+          "--quote-style",
+          "AutoPreferDouble",
+          "--call-parentheses",
+          "Always",
+          "-",
         },
         stdin = true,
-        timeout_ms = 5000,
+        timeout_ms = 3000,
       },
 
-      -- Forge fmt formatter for Solidity
-      -- Automatically finds project root (where foundry.toml is)
+      goimports = {
+        command = "goimports",
+        stdin = true,
+        timeout_ms = 3000,
+      },
+
+      yamlfmt = {
+        args = {
+          "-formatter",
+          "retain_line_breaks_single=true,scan_folded_as_literal=true,max_line_length=120",
+        },
+        timeout_ms = 3000,
+      },
+
+      sqlfluff = {
+        command = "sqlfluff",
+        args = { "fix", "--dialect", "postgres", "--disable-progress-bar", "-" },
+        stdin = true,
+        cwd = function(ctx)
+          if ctx.filename == nil or ctx.filename == "" then
+            return vim.loop.cwd()
+          end
+          return vim.fn.fnamemodify(ctx.filename, ":h")
+        end,
+        timeout_ms = 8000,
+        -- Skip files with templating (dbt, jinja, ...) since sqlfluff fails to parse them.
+        condition = function(ctx)
+          local filename = ctx.filename or ""
+          if filename == "" then
+            return true
+          end
+          local path_lower = filename:lower()
+          if path_lower:match "models/" or path_lower:match "dbt/" or path_lower:match "jinja" then
+            return false
+          end
+          local ok, lines = pcall(vim.fn.readfile, filename, "", 100)
+          if not ok or not lines then
+            return true
+          end
+          for _, line in ipairs(lines) do
+            if line:match "{{" or line:match "{%" or line:match "${" or line:match "jinja" or line:match "dbt" then
+              return false
+            end
+          end
+          return true
+        end,
+      },
+
       forge_fmt = {
         command = "forge",
         args = { "fmt", "$FILENAME" },
@@ -273,16 +294,38 @@ return {
         cwd = function(ctx)
           local filename = ctx.filename or ""
           local dir = filename ~= "" and vim.fn.fnamemodify(filename, ":h") or vim.loop.cwd()
-
-          -- Find project root by looking for foundry.toml
           local found = vim.fn.findfile("foundry.toml", dir .. ";")
           if found ~= "" then
             return vim.fn.fnamemodify(found, ":h")
           end
-
           return dir
         end,
         timeout_ms = 5000,
+      },
+
+      csharpier = {
+        command = "dotnet",
+        args = { "csharpier", "--write-stdout" },
+        stdin = true,
+        timeout_ms = 5000,
+      },
+
+      google_java_format = {
+        timeout_ms = 5000,
+      },
+
+      pint = {
+        command = "pint",
+        args = { "$FILENAME" },
+        stdin = false,
+        timeout_ms = 5000,
+      },
+
+      terraform_fmt = {
+        command = "terraform",
+        args = { "fmt", "-" },
+        stdin = true,
+        timeout_ms = 3000,
       },
     },
   },

@@ -4,64 +4,125 @@ return {
   build = ":MasonUpdate",
   opts = {
     ui = { border = "rounded" },
+    -- Rule: every language gets (LSP + formatter + linter) coverage.
+    -- Kept in sync with conform.lua, nvim-lint.lua, lspconfig.lua, lsp/init.lua.
     ensure_installed = {
-      -- ── Blockchain / Solidity ──────────────────────────────────────────────
-      "nomicfoundation-solidity-language-server", -- better diagnostics, Foundry root detection
-      "solidity-ls", -- legacy fallback
-      "solhint", -- Solidity linter (security + style)
-      "js-debug-adapter",
-      "codelldb", -- Rust / C/C++ debugger
+      -- ── Debug adapters ─────────────────────────────────────────────────
+      "codelldb", -- Rust / C / C++
+      "js-debug-adapter", -- JS / TS / Node
+      "kotlin-debug-adapter",
+      "java-debug-adapter",
+      "java-test",
+      "delve", -- Go debugger
 
-      -- ── TypeScript / JavaScript ───────────────────────────────────────────
-      "eslint-lsp",
-      "typescript-language-server",
-      "prettier",
+      -- ── C / C++ / Objective-C ─────────────────────────────────────────
+      "clangd", -- LSP
+      "clang-format", -- formatter
+
+      -- ── C# / .NET ──────────────────────────────────────────────────────
+      "omnisharp", -- LSP
+      "csharpier", -- formatter (modern)
+
+      -- ── Dart / Flutter ─────────────────────────────────────────────────
+      -- dartls ships with the Dart SDK, no Mason install needed.
+
+      -- ── Solidity ───────────────────────────────────────────────────────
+      "nomicfoundation-solidity-language-server", -- primary LSP (Foundry-aware)
+      "solidity-ls", -- LSP fallback
+      "solhint", -- linter (nvim-lint)
+      -- forge_fmt ships with the Foundry CLI; install via foundryup.
+
+      -- ── Web (HTML / CSS / Tailwind) ────────────────────────────────────
+      "html-lsp",
+      "css-lsp",
       "tailwindcss-language-server",
 
-      -- ── Go ────────────────────────────────────────────────────────────────
-      "goimports",
-      "gopls",
+      -- ── JS / TS / Node ─────────────────────────────────────────────────
+      "typescript-language-server",
+      "eslint-lsp", -- linter qua LSP
 
-      -- ── Rust ──────────────────────────────────────────────────────────────
-      "rust-analyzer",
+      -- ── Frontend frameworks ────────────────────────────────────────────
+      "svelte-language-server",
+      "vue-language-server", -- volar
+      "astro-language-server",
 
-      -- ── Lua ───────────────────────────────────────────────────────────────
+      -- ── Go ─────────────────────────────────────────────────────────────
+      "gopls", -- LSP
+      "goimports", -- formatter
+      "golangci-lint", -- linter
+
+      -- ── Rust ───────────────────────────────────────────────────────────
+      -- rust-analyzer + rustfmt + clippy all come from rustup; no Mason needed.
+
+      -- ── Java ───────────────────────────────────────────────────────────
+      "jdtls", -- LSP
+      "google-java-format", -- formatter
+
+      -- ── Lua ────────────────────────────────────────────────────────────
       "lua-language-server",
-      "stylua",
+      "stylua", -- formatter
 
-      -- ── Data formats (foundry.toml, Cargo.toml, Anchor.toml) ──────────────
-      "taplo", -- TOML LSP + formatter
+      -- ── Data formats ───────────────────────────────────────────────────
       "json-lsp",
       "yaml-language-server",
+      "taplo", -- TOML LSP + formatter
+      "yamlfmt", -- formatter YAML
+      "yamllint", -- linter YAML
 
-      -- ── Docker ────────────────────────────────────────────────────────────
+      -- ── Docker ─────────────────────────────────────────────────────────
       "dockerfile-language-server",
       "docker-compose-language-service",
+      "hadolint", -- linter Dockerfile
 
-      -- ── Shell / scripting ─────────────────────────────────────────────────
+      -- ── Shell ──────────────────────────────────────────────────────────
       "bash-language-server",
-      "shfmt",
+      "shfmt", -- formatter
+      "shellcheck", -- linter
 
-      -- ── Python / other ────────────────────────────────────────────────────
-      "pyright",
-      "mypy",
-      "ruff",
+      -- ── Python ─────────────────────────────────────────────────────────
+      "pyright", -- LSP (type checker)
+      "ruff", -- formatter + linter (single modern tool)
 
-      -- ── Zig ───────────────────────────────────────────────────────────
-      "zls",
+      -- ── Zig ────────────────────────────────────────────────────────────
+      "zls", -- LSP + zigfmt formatter built-in
 
-      -- ── Kotlin ────────────────────────────────────────────────────────
+      -- ── Kotlin ─────────────────────────────────────────────────────────
       "kotlin-language-server",
-      "kotlin-debug-adapter",
+      "ktlint", -- formatter + linter
 
-      -- ── C# / .NET ─────────────────────────────────────────────────────
-      "omnisharp",
+      -- ── Ruby ───────────────────────────────────────────────────────────
+      "solargraph", -- LSP
+      -- rubocop installs via `gem install rubocop`.
 
-      -- ── Ruby ──────────────────────────────────────────────────────────
-      "solargraph",
+      -- ── PHP ────────────────────────────────────────────────────────────
+      "intelephense", -- LSP
+      -- pint installs per-project: `composer require laravel/pint --dev`.
+      -- For a global install: `brew install composer && composer global require laravel/pint`.
+      -- Conform finds pint on PATH (vendor/bin -> composer global -> brew).
 
-      -- ── Terraform / HCL ───────────────────────────────────────────────
-      "terraform-ls",
+      -- ── Haskell ────────────────────────────────────────────────────────
+      "haskell-language-server",
+
+      -- ── OCaml ──────────────────────────────────────────────────────────
+      -- ocamllsp + ocamlformat install via opam.
+
+      -- ── Elixir / Erlang ────────────────────────────────────────────────
+      "elixir-ls",
+      "erlang-ls",
+
+      -- ── SQL ────────────────────────────────────────────────────────────
+      "sqlfluff", -- formatter + linter
+
+      -- ── Terraform / HCL ────────────────────────────────────────────────
+      "terraform-ls", -- LSP
+      "tflint", -- linter
+      -- terraform fmt ships with the terraform CLI.
+
+      -- ── Markdown ───────────────────────────────────────────────────────
+      "marksman", -- LSP
+      "markdownlint-cli2", -- linter
+      "markdown-toc", -- TOC generator
+      "prettier", -- formatter (shared across many web languages)
     },
   },
 }

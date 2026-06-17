@@ -20,15 +20,15 @@ pip3 install slither-analyzer
 
 ## Keymaps (Prefix: `<leader>b`)
 
-| Key | Function | Language |
-|-----|----------|----------|
-| `<leader>bm` | Miri memory check | Rust |
-| `<leader>ba` | AddressSanitizer | Rust |
-| `<leader>bv` | Valgrind | C/C++ |
-| `<leader>bc` | Compile with ASAN | C/C++ |
-| `<leader>bg` | Gas report | Solidity |
-| `<leader>bs` | Slither security | Solidity |
-| `<leader>bC` | Coverage | Solidity |
+| Key          | Function          | Language |
+| ------------ | ----------------- | -------- |
+| `<leader>bm` | Miri memory check | Rust     |
+| `<leader>ba` | AddressSanitizer  | Rust     |
+| `<leader>bv` | Valgrind          | C/C++    |
+| `<leader>bc` | Compile with ASAN | C/C++    |
+| `<leader>bg` | Gas report        | Solidity |
+| `<leader>bs` | Slither security  | Solidity |
+| `<leader>bC` | Coverage          | Solidity |
 
 ## Commands
 

@@ -250,4 +250,28 @@ if not vim.g.noah_tsdk_compat then
   end
 end
 
+if not vim.g.noah_lsp_deprecate_compat then
+  vim.g.noah_lsp_deprecate_compat = true
+
+  -- Several third-party plugins (flutter-tools.nvim, nvim-ufo, nvim-highlight-colors,
+  -- rustaceanvim, nvim-lspconfig, nvim-lsp-endhints, ...) still hit Nvim 0.12
+  -- deprecations we can't fix at their source. Silence only those specific
+  -- plugin-originated cases; every other deprecation passes through unchanged.
+  local original_deprecate = vim.deprecate
+  local silenced = {
+    "^client%.", -- client.request / client.notify dot-syntax
+    "get_buffers_by_client_id", -- vim.lsp.get_buffers_by_client_id (replaced by client.attached_buffers)
+  }
+  vim.deprecate = function(name, ...)
+    if type(name) == "string" then
+      for _, pat in ipairs(silenced) do
+        if name:match(pat) then
+          return
+        end
+      end
+    end
+    return original_deprecate(name, ...)
+  end
+end
+
 return M

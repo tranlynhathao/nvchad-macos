@@ -118,9 +118,29 @@ return {
         end,
       })
 
+      -- tailwindcss: only spawn when the project actually uses Tailwind.
+      -- Avoids "language server not installed" errors on every plain CSS buffer
+      -- and stops a heavy LSP from starting for projects that do not need it.
       vim.lsp.config("tailwindcss", {
         on_attach = on_attach,
         capabilities = capabilities,
+        root_dir = function(bufnr, on_dir)
+          local fname = vim.api.nvim_buf_get_name(bufnr)
+          local root = require("lspconfig.util").root_pattern(
+            "tailwind.config.js",
+            "tailwind.config.cjs",
+            "tailwind.config.mjs",
+            "tailwind.config.ts",
+            "postcss.config.js",
+            "postcss.config.cjs",
+            "postcss.config.mjs",
+            "postcss.config.ts"
+          )(fname)
+          if root then
+            on_dir(root)
+          end
+          -- No tailwind config found: do nothing -> LSP does not attach.
+        end,
       })
 
       vim.lsp.config("eslint", {
@@ -266,23 +286,9 @@ return {
             },
           },
         },
-        rust_analyzer = {
-          settings = {
-            ["rust-analyzer"] = {
-              assist = {
-                importMergeBehavior = "last",
-                importPrefix = "by_self",
-              },
-              cargo = {
-                allFeatures = true,
-                loadOutDirsFromCheck = false,
-              },
-              procMacro = { enable = true },
-              -- Use "check" for faster diagnostics; run clippy manually when needed
-              checkOnSave = { command = "check" },
-            },
-          },
-        },
+        -- rust_analyzer intentionally omitted: rustaceanvim manages it exclusively.
+        -- Enabling it here invokes nvim-lspconfig's root_dir -> default_sysroot_src,
+        -- which shells out to `rustc` and errors with ENOENT when Rust isn't installed.
         -- Solidity LSP (solidity-ls)
         solidity_ls = {
           root_dir = util.root_pattern("foundry.toml", "hardhat.config.js", "hardhat.config.ts", "truffle-config.js", ".git"),
@@ -327,10 +333,9 @@ return {
         javascript = { "ts_ls", "eslint" },
         javascriptreact = { "ts_ls", "eslint" },
         typescriptreact = { "ts_ls", "eslint" },
-        vue = { "ts_ls", "eslint" },
         python = { "pyright", "ruff" },
         lua = { "lua_ls" },
-        rust = { "rust_analyzer" },
+        -- rust intentionally omitted: rustaceanvim manages the rust LSP client.
         json = { "jsonls" },
         yaml = { "yamlls" },
         sh = { "bashls" },
@@ -347,9 +352,21 @@ return {
         astro = { "astro" },
         c = { "clangd" },
         cpp = { "clangd" },
+        objc = { "clangd" },
         haskell = { "hls" },
         ocaml = { "ocamllsp" },
         sass = { "somesass_ls" },
+
+        -- Added to close coverage gaps:
+        cs = { "omnisharp" }, -- C# / .NET
+        kotlin = { "kotlin_language_server" },
+        terraform = { "terraformls" },
+        hcl = { "terraformls" },
+        php = { "intelephense" },
+        svelte = { "svelte", "ts_ls" },
+        vue = { "ts_ls", "eslint", "volar" }, -- add volar alongside ts_ls
+        elixir = { "elixirls" },
+        erlang = { "erlangls" },
       }
 
       local enabled_servers = {}

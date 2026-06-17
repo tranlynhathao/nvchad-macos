@@ -2,7 +2,8 @@
 return {
   "MeanderingProgrammer/markdown.nvim",
   main = "render-markdown",
-  opts = {},
+  -- Disable LaTeX/math rendering; markview.nvim also has it disabled to avoid clutter.
+  opts = { latex = { enabled = false } },
   name = "render-markdown",
   dependencies = {
     "nvim-treesitter/nvim-treesitter",

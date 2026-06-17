@@ -4,39 +4,22 @@ return {
   event = "VeryLazy",
   config = function()
     require("flutter-tools").setup {
-      -- Dart SDK path
-      sdk = "/Users/tranlynhathao/Developer/flutter/bin/cache/dart-sdk", -- Adjust according to your Dart SDK path if needed
-
-      -- Flutter tools configuration
-      flutter_path = "/Users/tranlynhathao/Developer/flutter", -- Adjust according to your Flutter SDK path if needed
-
-      -- Widget outline
-      widget_guides = {
-        enabled = true, -- Enable or disable widget guides
-      },
-
-      -- Run in debug mode
+      sdk = "/Users/tranlynhathao/Developer/flutter/bin/cache/dart-sdk",
+      flutter_path = "/Users/tranlynhathao/Developer/flutter",
+      widget_guides = { enabled = true },
       run_via_dart = true,
-
-      -- Show outlines of widgets
-      outline = {
-        auto_open = true, -- Automatically open outline when starting the project
-      },
-
-      -- LSP configurations
-      lsp = {
-        color = {
-          -- Highlight the colors of the widget
-          enabled = true, -- Enable colors
-          virtual_text = true, -- Display colors in virtual text
-          background = true, -- Display colors in the background
-        },
-      },
-
-      -- Dev tools
-      dev_log = {
-        open_on_start = false, -- Automatically open dev log when starting Flutter
-      },
+      outline = { auto_open = true },
+      dev_log = { open_on_start = false },
     }
+
+    -- Document colors are now native (vim.lsp.document_color); flutter-tools' lsp.color is deprecated.
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client.name == "dartls" then
+          vim.lsp.document_color.enable(true, { bufnr = args.buf }, { style = "background" })
+        end
+      end,
+    })
   end,
 }

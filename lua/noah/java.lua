@@ -45,13 +45,7 @@ return {
       vim.list_extend(opts.ensure_installed, { "jdtls", "java-debug-adapter", "java-test", "google-java-format" })
     end,
   },
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    opts = function(_, opts)
-      local nls = require "null-ls"
-      table.insert(opts.sources, nls.builtins.formatting.google_java_format)
-    end,
-  },
+  -- null-ls removed; google-java-format now runs via conform.nvim.
   {
     "mfussenegger/nvim-jdtls",
     dependencies = { "mfussenegger/nvim-dap", "neovim/nvim-lspconfig" },

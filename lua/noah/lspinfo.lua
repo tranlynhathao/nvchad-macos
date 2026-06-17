@@ -44,8 +44,11 @@ local function build_lines(bufnr)
       table.insert(lines, "  root: `" .. shorten(client.config.root_dir) .. "`")
     end
 
-    if client.config.cmd and #client.config.cmd > 0 then
-      table.insert(lines, "  cmd: `" .. table.concat(client.config.cmd, " ") .. "`")
+    local cmd = client.config.cmd
+    if type(cmd) == "table" and #cmd > 0 then
+      table.insert(lines, "  cmd: `" .. table.concat(cmd, " ") .. "`")
+    elseif type(cmd) == "function" then
+      table.insert(lines, "  cmd: `<function>`")
     end
   end
 

@@ -33,7 +33,7 @@
   changes in browser
 - round borders as a priority over sharp borders
 
->[!WARNING]
+> [!WARNING]
 > **Disclaimer**: I frequently use `git rebase -i` to streamline my
 > configuration. if you plan to use `lazy-lock.json` to stick with certain
 > snapshots of the config, you might have a hard time due to changing commit

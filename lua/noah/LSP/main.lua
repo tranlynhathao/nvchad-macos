@@ -5,14 +5,8 @@ local M = {}
 M.plugin = {
   "neovim/nvim-lspconfig",
   dependencies = {
-    -- # LSP Hook
-    {
-      "nvimtools/none-ls.nvim",
-      dependencies = {
-        "nvim-lua/plenary.nvim",
-      },
-      commit = "bb680d7",
-    },
+    -- none-ls.nvim removed; format-on-save moved to conform.nvim,
+    -- linting moved to nvim-lint.
     -- # LSP Completion
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-nvim-lsp-signature-help",
@@ -55,8 +49,7 @@ M.setup = function()
   require "noah.LSP.languages.lua"
   require "noah.LSP.languages.php"
   require "noah.LSP.languages.csharp"
-  -- format some markup and dif file
-  require "noah.LSP.languages.prettier"
+  -- "noah.LSP.languages.prettier" removed; conform handles prettier for every filetype.
 
   -- # LuaSnip
   require "noah.LSP.luasnip.main"

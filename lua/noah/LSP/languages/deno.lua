@@ -1,11 +1,9 @@
 --[=[
-Deno lsp, lint and, formatting
-just install deno
+Deno LSP. Format handled by conform (see conform.lua).
 --]=]
 
 local ok = require("noah.utils.check_requires").check {
   "cmp_nvim_lsp",
-  "null-ls",
   "lspconfig.util",
 }
 if not ok then
@@ -13,23 +11,18 @@ if not ok then
 end
 
 local cmp_nvim_lsp = require "cmp_nvim_lsp"
-local null_ls = require "null-ls"
 local util = require "lspconfig.util"
 
 vim.g.markdown_fenced_languages = {
   "ts=typescript",
 }
-local on_attach = function(client, bufnr)
+
+local function on_attach(_, bufnr)
   require "noah.LSP.utils.keymap"(bufnr)
-  if client.server_capabilities.documentFormattingProvider then
-    vim.cmd "autocmd BufWritePre <buffer> lua vim.lsp.buf.format()"
-  end
 end
 
-local capabilities = cmp_nvim_lsp.default_capabilities()
-
 vim.lsp.config("denols", {
-  capabilities = capabilities,
+  capabilities = cmp_nvim_lsp.default_capabilities(),
   init_options = {
     enable = true,
     lint = true,
@@ -43,35 +36,3 @@ vim.lsp.config("denols", {
   root_dir = util.root_pattern("deno.json", "deno.jsonc"),
   single_file_support = false,
 })
-
-null_ls.register {
-  name = "null-ls-deno",
-  sources = {
-    null_ls.builtins.formatting.deno_fmt.with {
-      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "markdown", "json", "jsonc" },
-      -- https://github.com/jose-elias-alvarez/null-ls.nvim/pull/1313
-      args = function(params)
-        local extensions = {
-          javascript = "js",
-          javascriptreact = "jsx",
-          json = "json",
-          jsonc = "jsonc",
-          markdown = "md",
-          typescript = "ts",
-          typescriptreact = "tsx",
-        }
-
-        return {
-          "fmt",
-          "-",
-          "--ext",
-          extensions[params.ft],
-        }
-      end,
-      condition = function(utils)
-        return utils.root_has_file { "deno.json", "deno.jsonc" }
-      end,
-    },
-  },
-  on_attach = on_attach,
-}

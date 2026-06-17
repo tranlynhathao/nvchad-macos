@@ -45,6 +45,8 @@ return {
           style = "rounded",
         },
       },
+      -- Disable LaTeX/math rendering ($..$, $$..$$); show raw for readability.
+      latex = { enable = false },
       checkboxes = presets.checkboxes.nerd,
       -- markdown_inline = {
       --   entities = {

@@ -125,6 +125,21 @@ return {
         end,
         single_file_support = false,
       },
+
+      -- Added to close coverage gaps:
+      intelephense = {}, -- PHP
+      elixirls = {}, -- Elixir
+      erlangls = {}, -- Erlang
+      svelte = {}, -- Svelte LSP
+      volar = {}, -- Vue 3 LSP (volar)
+      astro = {}, -- Astro LSP
+      dartls = {}, -- Dart / Flutter
+      html = {}, -- HTML LSP
+      cssls = {}, -- CSS LSP
+      somesass_ls = {}, -- SCSS/Sass
+      hls = {}, -- Haskell
+      ocamllsp = {}, -- OCaml
+      marksman = {}, -- Markdown LSP
     }
 
     require("neodev").setup()

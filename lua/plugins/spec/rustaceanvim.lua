@@ -22,8 +22,10 @@ return {
         end,
         default_settings = {
           ["rust-analyzer"] = {
-            -- Use "check" instead of "clippy" for faster diagnostics; run clippy manually when needed
-            checkOnSave = {
+            -- Use "check" instead of "clippy" for faster diagnostics; run clippy manually when needed.
+            -- checkOnSave is a boolean in current rust-analyzer; command/args live under `check`.
+            checkOnSave = true,
+            check = {
               command = "check",
               extraArgs = {},
             },

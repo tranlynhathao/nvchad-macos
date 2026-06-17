@@ -7,23 +7,8 @@ return {
       end
     end,
   },
-  {
-    "jose-elias-alvarez/null-ls.nvim",
-    opts = function(_, opts)
-      local nls = require "null-ls"
-      opts.sources = opts.sources or {}
-      vim.list_extend(opts.sources, {
-        nls.builtins.diagnostics.hadolint,
-      })
-    end,
-    dependencies = {
-      "mason.nvim",
-      opts = function(_, opts)
-        opts.ensure_installed = opts.ensure_installed or {}
-        vim.list_extend(opts.ensure_installed, { "hadolint" })
-      end,
-    },
-  },
+  -- null-ls removed; hadolint now runs via nvim-lint (see nvim-lint.lua).
+  -- Mason installs hadolint through ensure_installed in mason.lua.
   {
     "neovim/nvim-lspconfig",
     opts = {

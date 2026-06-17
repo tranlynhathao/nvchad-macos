@@ -42,7 +42,7 @@ return {
 
   config = function(_, opts)
     require("mini.files").setup(opts)
-    -- Hiển thị thông tin file đẹp (float có viền) khi bấm <C-k> trong explorer
+    -- Show a bordered float with file info when pressing <C-k> in the explorer
     vim.api.nvim_create_autocmd("User", {
       pattern = "MiniFilesBufferCreate",
       callback = function(args)
