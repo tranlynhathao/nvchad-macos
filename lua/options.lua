@@ -11,13 +11,14 @@ local opt = {
   encoding = "utf-8",
   fileencoding = "utf-8",
   clipboard = "unnamedplus", -- extended via "noah.wsl"
-  -- Folds
-  foldmethod = "expr",
-  foldexpr = "v:lua.vim.treesitter.foldexpr()",
-  foldcolumn = "0",
+  -- Folds: nvim-ufo (lua/plugins/override/nvim-ufo.lua) manages foldmethod
+  -- and foldexpr per buffer with LSP + indent providers. Setting them here
+  -- forced builtin `vim.treesitter.foldexpr()` to run before UFO attached,
+  -- which races with async parse and emits "invalid bot" errors.
+  foldcolumn = "1",
   foldtext = "",
   foldlevel = 99,
-  foldlevelstart = 5,
+  foldlevelstart = 99,
   foldnestmax = 5,
   -- Prevent issues with some language servers
   backup = false,

@@ -1,7 +1,8 @@
 ---@type NvPluginSpec
 return {
   "laytan/cloak.nvim",
-  lazy = false,
+  event = { "BufReadPost", "BufNewFile" },
+  cmd = "CloakToggle",
   init = function()
     vim.keymap.set("n", "<leader>ct", "<cmd>CloakToggle<CR>", { desc = "Toggle Cloak" })
   end,

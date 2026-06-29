@@ -2,7 +2,6 @@
 return {
   {
     "chrisgrieser/nvim-scissors",
-    event = "BufEnter",
     dependencies = "nvim-telescope/telescope.nvim", -- optional
     opts = {
       snippetDir = vim.fn.expand "~/.config/nvim/snippets/vscode",

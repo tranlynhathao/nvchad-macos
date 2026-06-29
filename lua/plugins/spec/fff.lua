@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "dmtrKovalenko/fff.nvim",
-  lazy = false,
+  lazy = true,
   build = function()
     require("fff.download").download_or_build_binary()
   end,

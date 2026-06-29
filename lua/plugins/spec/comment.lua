@@ -7,9 +7,9 @@ return {
   },
   init = function()
     local map = vim.keymap.set
-    local api = require "Comment.api"
 
     map("n", "<leader>_", function()
+      local api = require "Comment.api"
       api.toggle.blockwise.current()
     end, { desc = "Comment toggle (block) in single line" })
 
@@ -22,6 +22,7 @@ return {
           vim.api.nvim_set_current_line("// " .. line)
         end
       else
+        local api = require "Comment.api"
         api.toggle.linewise.current()
       end
     end, { desc = "Comment toggle for Pug files" })
@@ -31,7 +32,12 @@ return {
     --   api.toggle.linewise.current()
     -- end, { desc = "Comment toggle" })
 
-    map("x", "<leader>/", "<cmd>set operatorfunc=v:lua.__toggle_contextual<CR>g@", { desc = "Comment toggle (aware of context)" })
+    map("x", "<leader>/", function()
+      local api = require "Comment.api"
+      local esc = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
+      vim.api.nvim_feedkeys(esc, "nx", false)
+      api.toggle.linewise(vim.fn.visualmode())
+    end, { desc = "Comment toggle (aware of context)" })
   end,
   ---@param opts CommentConfig
   config = function(_, opts)

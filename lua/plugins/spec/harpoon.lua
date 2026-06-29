@@ -1,7 +1,19 @@
 ---@type NvPluginSpec
 return {
   "ThePrimeagen/harpoon",
-  event = "BufEnter",
+  keys = {
+    { "<A-q>", mode = "n", desc = "Harpoon Go to 1st buffer" },
+    { "<A-w>", mode = "n", desc = "Harpoon Go to 2nd buffer" },
+    { "<A-e>", mode = "n", desc = "Harpoon Go to 3rd buffer" },
+    { "<A-r>", mode = "n", desc = "Harpoon Go to 4th buffer" },
+    { "<A-t>", mode = "n", desc = "Harpoon Go to 5th buffer" },
+    { "<A-y>", mode = "n", desc = "Harpoon Go to 6th buffer" },
+    { "<A-a>", mode = "n", desc = "Harpoon Add buffer" },
+    { "<A-d>", mode = "n", desc = "Harpoon Remove buffer" },
+    { "<A-m>", mode = "n", desc = "Harpoon Open menu" },
+    { "<A-,>", mode = "n", desc = "Harpoon Go to prev buffer" },
+    { "<A-.>", mode = "n", desc = "Harpoon Go to next buffer" },
+  },
   branch = "harpoon2",
   dependencies = { "nvim-lua/plenary.nvim" },
   config = function()

@@ -26,7 +26,13 @@ end
 
 require "noah.vim"
 require "noah.filetypes"
-require "noah.material-ui"
+vim.api.nvim_create_autocmd("InsertEnter", {
+  once = true,
+  callback = function()
+    -- Material UI snippets depend on LuaSnip; keep them off the startup path.
+    pcall(require, "noah.material-ui")
+  end,
+})
 require "noah.LSP.main"
 require "noah.config"
 

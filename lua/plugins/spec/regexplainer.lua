@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "bennypowers/nvim-regexplainer",
-  event = "BufEnter",
+  event = "VeryLazy",
   dependencies = {
     "nvim-treesitter/nvim-treesitter",
     "MunifTanjim/nui.nvim",

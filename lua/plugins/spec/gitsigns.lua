@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "lewis6991/gitsigns.nvim",
-  lazy = false,
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = "sindrets/diffview.nvim",
   ---@class Gitsigns.Config
   opts = {

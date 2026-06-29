@@ -3,10 +3,17 @@ return {
   "mfussenegger/nvim-lint",
   event = "VeryLazy",
   config = function()
+    local lint = require "lint"
+    local markdownlint_config = vim.fn.stdpath "config" .. "/.markdownlint.json"
+
+    if lint.linters["markdownlint-cli2"] then
+      lint.linters["markdownlint-cli2"].args = { "--config", markdownlint_config, "-" }
+    end
+
     -- Rule: only add a linter for languages the LSP does NOT cover.
     -- Example: TS/JS skipped here because eslint-lsp lints via LSP;
     -- Rust skipped because rust-analyzer + clippy already handles it.
-    require("lint").linters_by_ft = {
+    lint.linters_by_ft = {
       -- Solidity: solhint catches security anti-patterns + style that
       -- solidity_ls_nomicfoundation misses.
       solidity = { "solhint" },
@@ -22,9 +29,12 @@ return {
       -- Markdown
       markdown = { "markdownlint-cli2" },
 
-      -- C / C++ (clangd LSP covers most things; clang-tidy adds deeper rules)
-      c = { "clangtidy" },
-      cpp = { "clangtidy" },
+      -- C / C++: clangd LSP runs with --clang-tidy (see noah/LSP/languages/cpp.lua),
+      -- so clang-tidy diagnostics already flow through the LSP. Running it again
+      -- via nvim-lint would just duplicate, and clang-tidy itself is not on PATH
+      -- by default on macOS (requires `brew install llvm` or full Xcode).
+      -- c = { "clangtidy" },
+      -- cpp = { "clangtidy" },
 
       -- Go (golangci-lint is the community-standard meta-linter)
       go = { "golangcilint" },
@@ -52,7 +62,7 @@ return {
     vim.api.nvim_create_autocmd("BufWritePost", {
       group = group,
       callback = function()
-        require("lint").try_lint()
+        lint.try_lint()
       end,
     })
   end,

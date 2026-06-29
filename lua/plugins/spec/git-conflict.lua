@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "akinsho/git-conflict.nvim",
-  lazy = false,
+  event = { "BufReadPost", "BufNewFile" },
   opts = {
     default_mappings = {
       ours = "co",

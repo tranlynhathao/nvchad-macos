@@ -5,7 +5,7 @@ return {
     timeout = 50,
     stages = "fade_in_slide_out",
   },
-  lazy = false,
+  event = "VeryLazy",
   config = function()
     if not vim.g.base46_cache then
       vim.notify("base46_cache is not set!", vim.log.levels.ERROR)
