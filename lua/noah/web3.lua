@@ -9,9 +9,7 @@ function M.detect_project_type()
   local cwd = vim.fn.getcwd()
 
   -- Check for Foundry
-  if vim.fn.filereadable(cwd .. "/foundry.toml") == 1 then
-    return "foundry"
-  end
+  if vim.fn.filereadable(cwd .. "/foundry.toml") == 1 then return "foundry" end
 
   -- Check for Hardhat
   if
@@ -24,9 +22,7 @@ function M.detect_project_type()
   end
 
   -- Check for Truffle
-  if vim.fn.filereadable(cwd .. "/truffle-config.js") == 1 then
-    return "truffle"
-  end
+  if vim.fn.filereadable(cwd .. "/truffle-config.js") == 1 then return "truffle" end
 
   return nil
 end
@@ -40,17 +36,13 @@ function M.get_project_root()
   if project_type == "foundry" then
     -- Look for foundry.toml
     local found = vim.fn.findfile("foundry.toml", ".;")
-    if found ~= "" then
-      return vim.fn.fnamemodify(found, ":p:h")
-    end
+    if found ~= "" then return vim.fn.fnamemodify(found, ":p:h") end
   elseif project_type == "hardhat" then
     -- Look for hardhat.config.*
     local patterns = { "hardhat.config.js", "hardhat.config.ts", "hardhat.config.cjs", "hardhat.config.mjs" }
     for _, pattern in ipairs(patterns) do
       local found = vim.fn.findfile(pattern, ".;")
-      if found ~= "" then
-        return vim.fn.fnamemodify(found, ":p:h")
-      end
+      if found ~= "" then return vim.fn.fnamemodify(found, ":p:h") end
     end
   end
 
@@ -63,9 +55,7 @@ function M.run_foundry_test(test_name)
   local root = M.get_project_root()
   local cmd = "forge test"
 
-  if test_name then
-    cmd = cmd .. " --match-test " .. test_name
-  end
+  if test_name then cmd = cmd .. " --match-test " .. test_name end
 
   -- Use toggleterm or terminal
   local Terminal = require("toggleterm.terminal").Terminal
@@ -76,9 +66,7 @@ function M.run_foundry_test(test_name)
     float_opts = {
       border = "rounded",
     },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
 
   test_term:toggle()
@@ -99,9 +87,7 @@ function M.run_foundry_test_verbose(verbosity)
     float_opts = {
       border = "rounded",
     },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
 
   test_term:toggle()
@@ -113,9 +99,7 @@ function M.run_hardhat_test(test_file)
   local root = M.get_project_root()
   local cmd = "npx hardhat test"
 
-  if test_file then
-    cmd = cmd .. " " .. test_file
-  end
+  if test_file then cmd = cmd .. " " .. test_file end
 
   local Terminal = require("toggleterm.terminal").Terminal
   local test_term = Terminal:new {
@@ -125,9 +109,7 @@ function M.run_hardhat_test(test_file)
     float_opts = {
       border = "rounded",
     },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
 
   test_term:toggle()
@@ -178,9 +160,7 @@ function M.compile_foundry()
     float_opts = {
       border = "rounded",
     },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
 
   compile_term:toggle()
@@ -204,9 +184,7 @@ function M.compile_hardhat()
     float_opts = {
       border = "rounded",
     },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
 
   compile_term:toggle()

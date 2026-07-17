@@ -103,9 +103,7 @@ local harpoon_statusline_indicator = function()
   local status = { options.icon }
 
   local get_full_path = function(root, value)
-    if vim.uv.os_uname().sysname == "Windows_NT" then
-      return root .. "\\" .. value
-    end
+    if vim.uv.os_uname().sysname == "Windows_NT" then return root .. "\\" .. value end
 
     return root .. "/" .. value
   end
@@ -129,9 +127,7 @@ local harpoon_statusline_indicator = function()
   end
 end
 
-local stbufnr = function()
-  return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0)
-end
+local stbufnr = function() return vim.api.nvim_win_get_buf(vim.g.statusline_winid or 0) end
 
 local filename = function()
   local bufnr = stbufnr()
@@ -144,9 +140,7 @@ local filename = function()
     fff_file_info = "FFF Info",
   }
 
-  if picker_labels[ft] then
-    return "%#StText#   %#StText#" .. picker_labels[ft]
-  end
+  if picker_labels[ft] then return "%#StText#   %#StText#" .. picker_labels[ft] end
 
   local hl = "%#StText#"
   local icon = "  󰈚"
@@ -181,9 +175,7 @@ local git_custom = function()
   local stop = "%X"
 
   local bufnr = stbufnr()
-  if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then
-    return ""
-  end
+  if not vim.b[bufnr].gitsigns_head or vim.b[bufnr].gitsigns_git_status then return "" end
 
   local git_status = vim.b[bufnr].gitsigns_status_dict
   local clear_hl = "%#StText#"
@@ -231,9 +223,7 @@ M.modules = {
     oil_dir_cwd = "%@OilDirCWD@",
     force_stop = "%X",
 
-    modified = function()
-      return vim.bo.modified and " *" or " "
-    end, -- Show modified indicator
+    modified = function() return vim.bo.modified and " *" or " " end, -- Show modified indicator
 
     bufnr = function()
       local bufnr = vim.api.nvim_get_current_buf()
@@ -243,16 +233,12 @@ M.modules = {
     filename = filename,
     git_custom = git_custom,
     harpoon = harpoon_statusline_indicator,
-    word_count = function()
-      return " %#StText#󱀽" .. utils.count_words_in_line() .. utils.count_words_in_buffer()
-    end,
+    word_count = function() return " %#StText#󱀽" .. utils.count_words_in_line() .. utils.count_words_in_buffer() end,
   },
 
   ---@type table<string, fun():string>
   tabufline = {
-    fill = function()
-      return "%#TbFill#%="
-    end, -- Fill tabufline with TbFill hl
+    fill = function() return "%#TbFill#%=" end, -- Fill tabufline with TbFill hl
   },
 
   lspx = lspx,

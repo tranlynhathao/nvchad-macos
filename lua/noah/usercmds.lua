@@ -17,9 +17,7 @@ vim.api.nvim_create_user_command("ToggleStLineWordCount", function()
   end
 end, { desc = "Toggle statusline word count per line" })
 
-create_cmd("ToggleShowkeys", function()
-  require("showkeys").toggle { show_count = true }
-end, { desc = "Toggle screenkey" })
+create_cmd("ToggleShowkeys", function() require("showkeys").toggle { show_count = true } end, { desc = "Toggle screenkey" })
 
 create_cmd("TabuflineToggle", function()
   if vim.g.tabufline_visible then
@@ -47,13 +45,9 @@ create_cmd("SrcFile", function()
   end
 end, { desc = "Source current file" })
 
-create_cmd("TabbyStart", function()
-  require("noah.tabby").start()
-end, { desc = "Start TabbyML docker container" })
+create_cmd("TabbyStart", function() require("noah.tabby").start() end, { desc = "Start TabbyML docker container" })
 
-create_cmd("TabbyStop", function()
-  require("noah.tabby").stop()
-end, { desc = "Stop TabbyML docker container" })
+create_cmd("TabbyStop", function() require("noah.tabby").stop() end, { desc = "Stop TabbyML docker container" })
 
 create_cmd("ToggleInlayHints", function()
   ---@diagnostic disable-next-line
@@ -78,9 +72,7 @@ create_cmd("DiagnosticsToggle", function()
   end
 end, { desc = "Toggle diagnostics" })
 
-create_cmd("DapUIToggle", function()
-  require("dapui").toggle()
-end, { desc = "Open DapUI" })
+create_cmd("DapUIToggle", function() require("dapui").toggle() end, { desc = "Open DapUI" })
 
 create_cmd("UpdateAll", function()
   require("lazy").load { plugins = { "mason.nvim", "nvim-treesitter" } }
@@ -89,15 +81,11 @@ create_cmd("UpdateAll", function()
   vim.cmd "Lazy sync"
 end, { desc = "Batch update" })
 
-create_cmd("FileInfo", function()
-  require("noah.fileinfo").show()
-end, { desc = "Show file info (path, size, dates) in popup" })
+create_cmd("FileInfo", function() require("noah.fileinfo").show() end, { desc = "Show file info (path, size, dates) in popup" })
 
 create_cmd("RenderMarkdownHealth", function()
   require("lazy").load { plugins = { "render-markdown.nvim" } }
-  vim.defer_fn(function()
-    vim.cmd "checkhealth render-markdown"
-  end, 100)
+  vim.defer_fn(function() vim.cmd "checkhealth render-markdown" end, 100)
 end, { desc = "Check health render-markdown.nvim (loads plugin first)" })
 
 create_cmd("FormatToggle", function(args)
@@ -122,9 +110,7 @@ end, {
   bang = true,
 })
 
-create_cmd("FormatFile", function()
-  require("conform").format { lsp_fallback = true }
-end, { desc = "Format files via conform" })
+create_cmd("FormatFile", function() require("conform").format { lsp_fallback = true } end, { desc = "Format files via conform" })
 
 create_cmd("FormatProject", function()
   local project_dir = vim.fn.getcwd()

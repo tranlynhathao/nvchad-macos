@@ -9,9 +9,7 @@ return {
   -- Treesitter: solidity parser (belt-and-suspenders with main treesitter config)
   {
     "nvim-treesitter/nvim-treesitter",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, { "solidity" })
-    end,
+    opts = function(_, opts) vim.list_extend(opts.ensure_installed, { "solidity" }) end,
   },
 
   -- Blockchain workflow keymaps via ToggleTerm.

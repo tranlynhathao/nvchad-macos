@@ -2,9 +2,7 @@ local ok = require("noah.utils.check_requires").check {
   "luasnip",
 }
 
-if not ok then
-  return
-end
+if not ok then return end
 
 local luasnip = require "luasnip"
 local types = require "luasnip.util.types"
@@ -35,24 +33,16 @@ vim.cmd "hi link LuaSnipChoiceNode Boolean"
 vim.cmd "hi link LuaSnipInsertNode String"
 
 -- # Keymap
-local keymap = function(mode, lhs, rhs)
-  vim.keymap.set(mode, lhs, rhs, { silent = true })
-end
+local keymap = function(mode, lhs, rhs) vim.keymap.set(mode, lhs, rhs, { silent = true }) end
 
 keymap({ "i", "s" }, "<C-j>", function()
-  if luasnip.expand_or_jumpable() then
-    luasnip.expand_or_jump()
-  end
+  if luasnip.expand_or_jumpable() then luasnip.expand_or_jump() end
 end)
 keymap({ "i", "s" }, "<C-k>", function()
-  if luasnip.jumpable(-1) then
-    luasnip.jump(-1)
-  end
+  if luasnip.jumpable(-1) then luasnip.jump(-1) end
 end)
 keymap({ "i", "s" }, "<C-l>", function()
-  if luasnip.choice_active() then
-    luasnip.change_choice(1)
-  end
+  if luasnip.choice_active() then luasnip.change_choice(1) end
 end)
 
 -- # Snippet

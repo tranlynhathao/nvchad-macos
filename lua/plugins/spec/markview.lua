@@ -113,9 +113,7 @@ return {
             span = {
               conceal = false,
               hl = function(attrs)
-                if attrs.style and attrs.style:match "color:red" then
-                  return "ErrorMsg"
-                end
+                if attrs.style and attrs.style:match "color:red" then return "ErrorMsg" end
               end,
             },
           },

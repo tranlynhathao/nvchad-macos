@@ -30,18 +30,14 @@ return {
       bufnr = bufnr or vim.api.nvim_get_current_buf()
       local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
       for _, line in ipairs(lines) do
-        if vim.startswith(line, "<<<<<<<") then
-          return true
-        end
+        if vim.startswith(line, "<<<<<<<") then return true end
       end
       return false
     end
 
     local function parse_conflicts(bufnr)
       bufnr = bufnr or vim.api.nvim_get_current_buf()
-      if not vim.api.nvim_buf_is_valid(bufnr) then
-        return {}
-      end
+      if not vim.api.nvim_buf_is_valid(bufnr) then return {} end
 
       local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
       local conflicts = {}
@@ -57,15 +53,11 @@ return {
 
           local scan = idx + 1
           while scan <= line_count and not vim.startswith(lines[scan], "=======") do
-            if vim.startswith(lines[scan], "|||||||") and not conflict.base_marker then
-              conflict.base_marker = scan
-            end
+            if vim.startswith(lines[scan], "|||||||") and not conflict.base_marker then conflict.base_marker = scan end
             scan = scan + 1
           end
 
-          if scan > line_count then
-            break
-          end
+          if scan > line_count then break end
 
           conflict.separator = scan
           conflict.ours_end = (conflict.base_marker or conflict.separator) - 1
@@ -81,9 +73,7 @@ return {
             scan = scan + 1
           end
 
-          if scan > line_count then
-            break
-          end
+          if scan > line_count then break end
 
           conflict.end_line = scan
           conflict.theirs_end = scan - 1
@@ -102,9 +92,7 @@ return {
       local cursor_line = vim.api.nvim_win_get_cursor(0)[1]
       local conflicts = parse_conflicts(bufnr)
       for _, conflict in ipairs(conflicts) do
-        if cursor_line >= conflict.start_line and cursor_line <= conflict.end_line then
-          return conflict, conflicts
-        end
+        if cursor_line >= conflict.start_line and cursor_line <= conflict.end_line then return conflict, conflicts end
       end
       return nil, conflicts
     end
@@ -112,9 +100,7 @@ return {
     local function conflict_lines(bufnr, conflict, side)
       local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
       local function slice(first, last)
-        if not first or not last or last < first then
-          return {}
-        end
+        if not first or not last or last < first then return {} end
 
         local out = {}
         for line = first, last do
@@ -137,9 +123,7 @@ return {
     end
 
     local function clear_buffer_maps(bufnr)
-      if not vim.b[bufnr].noah_conflict_maps then
-        return
-      end
+      if not vim.b[bufnr].noah_conflict_maps then return end
 
       for _, lhs in ipairs { "co", "ct", "cb", "c0", "]x", "[x" } do
         pcall(vim.keymap.del, "n", lhs, { buffer = bufnr })
@@ -150,13 +134,9 @@ return {
 
     local function refresh_conflict_buffer(bufnr)
       bufnr = bufnr or vim.api.nvim_get_current_buf()
-      if not vim.api.nvim_buf_is_valid(bufnr) then
-        return
-      end
+      if not vim.api.nvim_buf_is_valid(bufnr) then return end
 
-      vim.api.nvim_buf_call(bufnr, function()
-        pcall(vim.cmd, "redraw")
-      end)
+      vim.api.nvim_buf_call(bufnr, function() pcall(vim.cmd, "redraw") end)
     end
 
     local function list_conflicts()
@@ -198,16 +178,12 @@ return {
         end
 
         local replacement = conflict_lines(bufnr, conflict, side)
-        if replacement == nil then
-          return
-        end
+        if replacement == nil then return end
 
         vim.api.nvim_buf_set_lines(bufnr, conflict.start_line - 1, conflict.end_line, false, replacement)
 
         local remaining = parse_conflicts(bufnr)
-        if #remaining == 0 then
-          clear_buffer_maps(bufnr)
-        end
+        if #remaining == 0 then clear_buffer_maps(bufnr) end
 
         refresh_conflict_buffer(bufnr)
       end
@@ -247,9 +223,7 @@ return {
     end
 
     local function set_buffer_maps(bufnr)
-      if vim.b[bufnr].noah_conflict_maps then
-        return
-      end
+      if vim.b[bufnr].noah_conflict_maps then return end
 
       local opts_buf = { buffer = bufnr, silent = true }
       map("n", "co", choose "ours", vim.tbl_extend("force", opts_buf, { desc = "Git conflict choose ours" }))
@@ -277,16 +251,12 @@ return {
       group = augroup,
       callback = function(args)
         if not vim.api.nvim_buf_is_valid(args.buf) or not has_conflict_markers(args.buf) then
-          if vim.api.nvim_buf_is_valid(args.buf) then
-            clear_buffer_maps(args.buf)
-          end
+          if vim.api.nvim_buf_is_valid(args.buf) then clear_buffer_maps(args.buf) end
           return
         end
 
         set_buffer_maps(args.buf)
-        vim.schedule(function()
-          refresh_conflict_buffer(args.buf)
-        end)
+        vim.schedule(function() refresh_conflict_buffer(args.buf) end)
       end,
     })
 

@@ -40,9 +40,7 @@ return {
     dev = false,
     init = function()
       vim.b["quarto_is_python_chunk"] = false
-      Quarto_is_in_python_chunk = function()
-        require("otter.tools.functions").is_otter_language_context "python"
-      end
+      Quarto_is_in_python_chunk = function() require("otter.tools.functions").is_otter_language_context "python" end
 
       vim.cmd [[
       let g:slime_dispatch_ipython_pause = 100
@@ -75,9 +73,7 @@ return {
         vim.print("job_id: " .. job_id)
       end
 
-      local function set_terminal()
-        vim.fn.call("slime#config", {})
-      end
+      local function set_terminal() vim.fn.call("slime#config", {}) end
       vim.keymap.set("n", "<leader>cm", mark_terminal, { desc = "[m]ark terminal" })
       vim.keymap.set("n", "<leader>cs", set_terminal, { desc = "[s]et terminal" })
     end,

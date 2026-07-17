@@ -8,9 +8,7 @@ return {
       pattern = "*",
       group = vim.api.nvim_create_augroup("SmarterFoldColumn", { clear = true }),
       callback = function(event)
-        if vim.bo[event.buf].buftype == "help" then
-          vim.opt_local.foldcolumn = "0"
-        end
+        if vim.bo[event.buf].buftype == "help" then vim.opt_local.foldcolumn = "0" end
       end,
     })
 

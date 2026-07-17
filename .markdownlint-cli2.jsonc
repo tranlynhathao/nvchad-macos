@@ -1,0 +1,38 @@
+// markdownlint-cli2 config for Neovim (nvim-lint).
+// Referenced from lua/plugins/override/nvim-lint.lua.
+//
+// Rule reference: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+//
+// Per-project override: put a `.markdownlint-cli2.jsonc` at the project root.
+// markdownlint-cli2 CLI (used by pre-commit / CI) will pick that up first;
+// this file is only used when nvim-lint invokes the linter through `--config`.
+{
+  "config": {
+    "default": true,
+
+    // MD041 - First line must be a top-level heading.
+    //   Off: many valid files (READMEs with badges/TOC, docs with front-matter,
+    //   scratch notes, snippets) don't start with a heading.
+    "MD041": false,
+
+    // MD013 - Line length.
+    //   Off: prose flows better without hard wrap; prettier handles formatting.
+    "MD013": false,
+
+    // MD033 - Inline HTML.
+    //   Off: <details>, <sub>, <br>, <img align=...> are common and legit.
+    "MD033": false,
+
+    // MD024 - Multiple headings with same content.
+    //   Allow siblings so different sub-trees can reuse names like ## Changed.
+    "MD024": { "siblings_only": true },
+
+    // MD029 - Ordered list item prefix.
+    //   Use `1.` for every item so reordering doesn't force renumbering.
+    "MD029": { "style": "one" },
+
+    // MD007 - Unordered list indentation. Matches prettier defaults.
+    "MD007": { "indent": 2 }
+  },
+  "ignores": ["node_modules/**", ".git/**", "vendor/**", "dist/**", "build/**", "target/**"]
+}

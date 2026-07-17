@@ -1,6 +1,18 @@
 ---@type NvPluginSpec
 return {
   "nvim-telescope/telescope.nvim",
+  -- Load triggers:
+  --   cmd = "Telescope"    -> any `:Telescope <sub>` command loads the plugin
+  --   event = "VeryLazy"   -> also load shortly after UI is ready so the ~30
+  --                           `<leader>f*` keymaps defined inside opts() below
+  --                           are registered even when `nvim .` was launched
+  --                           with no file buffer.
+  --
+  -- Without VeryLazy, opening `nvim .` and pressing `<leader>fw` did nothing
+  -- because opts() had not run yet -> the keymap did not exist. Same class of
+  -- bug as fff.nvim before we added its own keys trigger.
+  cmd = "Telescope",
+  event = "VeryLazy",
   -- fzf-native was installed as a dropbar dependency but had no build step.
   -- Declaring it here ensures lazy.nvim compiles it after install/update.
   dependencies = {
@@ -20,17 +32,22 @@ return {
     }
 
     -- ── File finding ──────────────────────────────────────────────────────
-    map("n", "<leader>fa", function()
-      pickers.files("find", {
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-        follow = true,
-        no_ignore = true,
-        hidden = true,
-        prompt_prefix = " 󱡴  ",
-        prompt_title = "All Files",
-      })
-    end, { desc = "Telescope all files (hidden + ignored)" })
+    map(
+      "n",
+      "<leader>fa",
+      function()
+        pickers.files("find", {
+          layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+          previewer = true,
+          follow = true,
+          no_ignore = true,
+          hidden = true,
+          prompt_prefix = " 󱡴  ",
+          prompt_title = "All Files",
+        })
+      end,
+      { desc = "Telescope all files (hidden + ignored)" }
+    )
 
     -- map("n", "<leader>ff", function()
     --   pickers.files("find", {
@@ -43,13 +60,18 @@ return {
 
     map("n", "<leader>fg", "<cmd>Telescope git_files<CR>", { desc = "Telescope git files (tracked only)" })
 
-    map("n", "<leader>fo", function()
-      pickers.files("old", {
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-        prompt_title = "Recent Files",
-      })
-    end, { desc = "Telescope recent files" })
+    map(
+      "n",
+      "<leader>fo",
+      function()
+        pickers.files("old", {
+          layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+          previewer = true,
+          prompt_title = "Recent Files",
+        })
+      end,
+      { desc = "Telescope recent files" }
+    )
 
     -- ── Grep / text search ────────────────────────────────────────────────
     -- map("n", "<leader>fw", function()
@@ -97,12 +119,17 @@ return {
     map("n", "<leader>fG", fff.refresh_git_status, { desc = "Refresh finder git status" })
 
     -- ── Buffers / navigation ──────────────────────────────────────────────
-    map("n", "<leader>fb", function()
-      pickers.buffers(true, {
-        layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
-        previewer = true,
-      })
-    end, { desc = "Telescope open buffers" })
+    map(
+      "n",
+      "<leader>fb",
+      function()
+        pickers.buffers(true, {
+          layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
+          previewer = true,
+        })
+      end,
+      { desc = "Telescope open buffers" }
+    )
 
     map("n", "<leader>fc", "<cmd>Telescope current_buffer_fuzzy_find<CR>", { desc = "Telescope fuzzy find in current buffer" })
 

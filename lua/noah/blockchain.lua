@@ -16,9 +16,7 @@ function M.is_blockchain_project()
   }
 
   for _, file in ipairs(indicators) do
-    if vim.fn.filereadable(cwd .. "/" .. file) == 1 then
-      return true
-    end
+    if vim.fn.filereadable(cwd .. "/" .. file) == 1 then return true end
   end
 
   return false
@@ -31,9 +29,7 @@ function M.run_rust_miri()
     cmd = "cargo +nightly miri test",
     direction = "float",
     float_opts = { border = "rounded" },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   miri_term:toggle()
 end
@@ -45,9 +41,7 @@ function M.run_rust_asan()
     cmd = "RUSTFLAGS='-Z sanitizer=address' cargo +nightly test",
     direction = "float",
     float_opts = { border = "rounded" },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   asan_term:toggle()
 end
@@ -60,9 +54,7 @@ function M.run_valgrind()
     cmd = "valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./" .. file,
     direction = "float",
     float_opts = { border = "rounded" },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   valgrind_term:toggle()
 end
@@ -76,9 +68,7 @@ function M.compile_with_asan()
     cmd = string.format("gcc -fsanitize=address -g -O1 %s -o %s && ./%s", file, output, output),
     direction = "float",
     float_opts = { border = "rounded" },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   asan_term:toggle()
 end
@@ -90,9 +80,7 @@ function M.foundry_gas_report()
     cmd = "forge test --gas-report",
     direction = "float",
     float_opts = { border = "rounded", width = 150, height = 40 },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   gas_term:toggle()
 end
@@ -104,9 +92,7 @@ function M.foundry_coverage()
     cmd = "forge coverage",
     direction = "float",
     float_opts = { border = "rounded", width = 150, height = 40 },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   cov_term:toggle()
 end
@@ -118,9 +104,7 @@ function M.run_slither()
     cmd = "slither . --print human-summary",
     direction = "float",
     float_opts = { border = "rounded", width = 150, height = 40 },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   slither_term:toggle()
 end
@@ -143,9 +127,7 @@ function M.rust_memory_profile()
     cmd = "cargo build --release && heaptrack ./target/release/$(cargo metadata --no-deps --format-version 1 | jq -r '.packages[0].name')",
     direction = "float",
     float_opts = { border = "rounded" },
-    on_open = function(term)
-      vim.cmd "startinsert!"
-    end,
+    on_open = function(term) vim.cmd "startinsert!" end,
   }
   prof_term:toggle()
 end
@@ -172,9 +154,7 @@ function M.setup_autocmds()
   vim.api.nvim_create_autocmd("FileType", {
     group = group,
     pattern = "rust",
-    callback = function()
-      M.highlight_unsafe_rust()
-    end,
+    callback = function() M.highlight_unsafe_rust() end,
   })
 
   -- Auto-format Solidity on save with forge fmt
@@ -240,9 +220,7 @@ function M.setup()
   M.setup_commands()
   M.setup_keymaps()
 
-  if M.is_blockchain_project() then
-    vim.notify("Blockchain development mode enabled", vim.log.levels.INFO)
-  end
+  if M.is_blockchain_project() then vim.notify("Blockchain development mode enabled", vim.log.levels.INFO) end
 end
 
 return M

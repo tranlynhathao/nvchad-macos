@@ -2,9 +2,7 @@
 return {
   "tris203/precognition.nvim",
   event = "VeryLazy",
-  init = function()
-    vim.keymap.set("n", "<leader>pc", "<cmd>Precognition toggle<CR>", { desc = "Precognition toggle" })
-  end,
+  init = function() vim.keymap.set("n", "<leader>pc", "<cmd>Precognition toggle<CR>", { desc = "Precognition toggle" }) end,
   opts = {
     startVisible = false,
     showBlankVirtLine = false,
@@ -28,7 +26,5 @@ return {
       NextParagraph = { text = "}", prio = 8 },
     },
   },
-  config = function(_, opts)
-    require("precognition").setup(opts)
-  end,
+  config = function(_, opts) require("precognition").setup(opts) end,
 }

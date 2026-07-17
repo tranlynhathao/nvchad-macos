@@ -1,4 +1,19 @@
 ---@type NvPluginSpec
+--
+-- Tier-3 LSP orchestrator.
+--
+-- Per-server configs live in `~/.config/nvim/lsp/<name>.lua` and are auto-
+-- discovered by Neovim (0.11+) whenever `vim.lsp.enable("<name>")` runs.
+-- nvim-lspconfig ships defaults (cmd / filetypes / root_markers) for every
+-- server through the same runtime dir mechanism; user files merge on top.
+--
+-- This file only does orchestration:
+--   * global capabilities via `vim.lsp.config("*", ...)`
+--   * LspAttach autocmd: buffer keymaps + per-server capability tweaks
+--   * filetype -> servers enable-on-first-open (lazy startup)
+--   * zls auto-restart on crash
+--   * diagnostic UI (vim.diagnostic.config)
+--
 return {
   "neovim/nvim-lspconfig",
   dependencies = {
@@ -8,450 +23,187 @@ return {
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     "hrsh7th/cmp-cmdline",
-    "jcha0713/cmp-tw2css",
+    -- cmp-tw2css removed: was declared as dep but never registered as a cmp
+    -- source. Every unused source still costs disk load + lazy resolution.
     "hrsh7th/nvim-cmp",
     "hoffs/omnisharp-extended-lsp.nvim",
+    "b0o/schemastore.nvim",
   },
 
   config = function()
     dofile(vim.g.base46_cache .. "lsp")
 
-    -- Apply diagnostic UI immediately so it is ready when opening files
-    local x = vim.diagnostic.severity
-    vim.diagnostic.config {
-      virtual_text = false,
-      signs = { text = { [x.ERROR] = "", [x.WARN] = "", [x.INFO] = "", [x.HINT] = "󰌵" } },
-      float = { border = "rounded" },
-      underline = true,
+    local nlsp = require "noah.lsp"
+
+    -- 1) Wildcard: default capabilities applied to every enabled server.
+    --    Per-server `lsp/<name>.lua` files can still override.
+    vim.lsp.config("*", {
+      capabilities = nlsp.capabilities,
+    })
+
+    -- 2) LspAttach: buffer keymaps + per-server capability tweaks.
+    --    Runs once per (client, buffer) pair. Replaces the old
+    --    per-server on_attach spread across noah/LSP/languages/*.lua.
+    local no_format = {
+      -- Servers whose formatting we bypass in favour of conform.nvim.
+      astro = true,
+      clangd = true,
+      cssls = true,
+      denols = true,
+      gopls = true,
+      html = true,
+      intelephense = true,
+      lua_ls = true,
+      omnisharp = true,
+      pyright = true,
+      ruff = true,
+      svelte = true,
+      ts_ls = true,
+      volar = true,
+      vtsls = true,
     }
-    vim.fn.sign_define("CodeActionSign", { text = "󰉁", texthl = "CodeActionSignHl" })
 
-    -- Defer full LSP config for faster startup; enable LSP per filetype when opening a file
-    vim.defer_fn(function()
-      local on_attach = require("noah.lsp").on_attach
-      local capabilities = require("noah.lsp").capabilities
+    vim.api.nvim_create_autocmd("LspAttach", {
+      group = vim.api.nvim_create_augroup("UserLspAttach", { clear = true }),
+      callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then return end
 
-      local lsp = require "noah.lsp"
-      local util = require "lspconfig.util"
+        -- ruff hover is empty; let pyright provide hover.
+        if client.name == "ruff" then client.server_capabilities.hoverProvider = false end
 
-      local vue_language_server_path = vim.fn.stdpath "data" .. "/mason/packages/vue-language-server/node_modules/@vue/language-server"
-      local mason_tsdk = vim.fn.stdpath "data" .. "/mason/packages/typescript-language-server/node_modules/typescript/lib"
-
-      local function resolve_tsdk(root_dir)
-        return util.get_typescript_server_path(root_dir) or (vim.fn.isdirectory(mason_tsdk) == 1 and mason_tsdk or nil)
-      end
-
-      local function organize_imports()
-        local params = {
-          command = "_typescript.organizeImports",
-          arguments = { vim.api.nvim_buf_get_name(0) },
-        }
-        vim.lsp.execute_command(params)
-      end
-
-      vim.lsp.config("gopls", {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        cmd = { "gopls", "serve" },
-        filetypes = { "go", "gomod", "gowork", "gotmpl" },
-        root_dir = function(bufnr, on_dir)
-          local fname = vim.api.nvim_buf_get_name(bufnr)
-          on_dir(util.root_pattern("go.work", "go.mod", ".git")(fname))
-        end,
-        settings = {
-          gopls = {
-            completeUnimported = true,
-            usePlaceholders = true,
-            analyses = {
-              unusedparams = true,
-              shadow = true,
-            },
-            staticcheck = true,
-          },
-        },
-      })
-
-      vim.lsp.config("ts_ls", {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        init_options = {
-          typescript = {
-            tsdk = resolve_tsdk(vim.uv.cwd()),
-          },
-          preferences = {
-            disableSuggestions = true,
-          },
-          plugins = {
-            {
-              name = "@vue/typescript-plugin",
-              location = vue_language_server_path,
-              languages = { "vue" },
-            },
-          },
-        },
-        commands = {
-          OrganizeImports = {
-            organize_imports,
-            description = "Organize Imports",
-          },
-        },
-        on_new_config = function(new_config, new_root_dir)
-          new_config.init_options = new_config.init_options or {}
-          new_config.init_options.typescript = new_config.init_options.typescript or {}
-          new_config.init_options.typescript.tsdk = resolve_tsdk(new_root_dir)
-        end,
-        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-      })
-
-      vim.lsp.config("astro", {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        init_options = {
-          typescript = {
-            tsdk = resolve_tsdk(vim.uv.cwd()),
-          },
-        },
-        before_init = function(_, config)
-          config.init_options = config.init_options or {}
-          config.init_options.typescript = config.init_options.typescript or {}
-          config.init_options.typescript.tsdk = config.init_options.typescript.tsdk or resolve_tsdk(config.root_dir)
-        end,
-      })
-
-      -- tailwindcss: only spawn when the project actually uses Tailwind.
-      -- Avoids "language server not installed" errors on every plain CSS buffer
-      -- and stops a heavy LSP from starting for projects that do not need it.
-      vim.lsp.config("tailwindcss", {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        root_dir = function(bufnr, on_dir)
-          local fname = vim.api.nvim_buf_get_name(bufnr)
-          local root = require("lspconfig.util").root_pattern(
-            "tailwind.config.js",
-            "tailwind.config.cjs",
-            "tailwind.config.mjs",
-            "tailwind.config.ts",
-            "postcss.config.js",
-            "postcss.config.cjs",
-            "postcss.config.mjs",
-            "postcss.config.ts"
-          )(fname)
-          if root then
-            on_dir(root)
-          end
-          -- No tailwind config found: do nothing -> LSP does not attach.
-        end,
-      })
-
-      vim.lsp.config("eslint", {
-        on_attach = on_attach,
-        capabilities = capabilities,
-      })
-
-      vim.lsp.config("pyright", {
-        on_attach = on_attach,
-        capabilities = capabilities,
-        filetypes = { "python" },
-      })
-
-      local servers = {
-        astro = {},
-        bashls = {
-          on_attach = function(client, bufnr)
-            local filename = vim.api.nvim_buf_get_name(bufnr)
-            if filename:match "%.env$" then
-              vim.lsp.stop_client(client.id)
-            end
-          end,
-        },
-        -- clangd = {
-        --   cmd = {
-        --     "clangd",
-        --     "--background-index",
-        --     "--clang-tidy",
-        --     "--completion-style=detailed",
-        --     -- "-std=c++14",
-        --     "-std=c11",
-        --   },
-        --   init_options = {
-        --     fallbackFlags = { "-std=c14" },
-        --   },
-        --   settings = {
-        --     clangd = {
-        --       completion = { enableSnippets = true },
-        --     },
-        --   },
-        -- },
-        clangd = {},
-        css_variables = {},
-        cssls = {},
-        eslint = {},
-        html = {},
-        hls = {},
-        gopls = {
-          -- config for gopls (Go)
-          settings = {
-            gopls = {
-              analyses = {
-                unusedparams = true,
-                shadow = true,
-              },
-              staticcheck = true,
-            },
-          },
-        },
-        jsonls = {
-          settings = {
-            json = {
-              schemas = require("schemastore").json.schemas(),
-              validate = { enable = true },
-            },
-          },
-          initializationOptions = {
-            editorInfo = {
-              name = "Neovim",
-              version = "0.10.4",
-            },
-            editorPluginInfo = {
-              name = "nvim-lspconfig",
-              version = "1.7.0",
-            },
-          },
-        },
-        lua_ls = {
-          settings = {
-            Lua = {
-              hint = { enable = true },
-              telemetry = { enable = false },
-              diagnostics = { globals = { "bit", "vim", "it", "describe", "before_each", "after_each" } },
-            },
-          },
-          initializationOptions = {
-            editorInfo = {
-              name = "Neovim",
-              version = "0.10.4",
-            },
-            editorPluginInfo = {
-              name = "nvim-lspconfig",
-              version = "1.7.0",
-            },
-          },
-        },
-        marksman = {},
-        ocamllsp = {},
-        pyright = {},
-        ruff = {
-          on_attach = function(client, _)
-            client.server_capabilities.hoverProvider = false
-          end,
-        },
-        somesass_ls = {},
-        taplo = {},
-        vtsls = {
-          settings = {
-            javascript = {
-              inlayHints = lsp.inlay_hints_settings,
-            },
-            typescript = {
-              inlayHints = lsp.inlay_hints_settings,
-            },
-            vtsls = {
-              tsserver = {
-                globalPlugins = {
-                  "@styled/typescript-styled-plugin",
-                },
-              },
-              experimental = {
-                completion = {
-                  enableServerSideFuzzyMatch = true,
-                },
-              },
-            },
-          },
-        },
-        yamlls = {},
-        zls = {
-          -- Reduce crashes: disable build-on-save when build.zig is missing or build fails
-          init_options = {
-            enable_build_on_save = false,
-          },
-        },
-        dartls = {
-          cmd = { "dart", "language-server", "--protocol=lsp" },
-          on_attach = lsp.create_on_attach(),
-          capabilities = lsp.capabilities,
-          settings = {
-            dart = {
-              analysisExcludedFolders = { "/path/to/your/excluded/folder" },
-            },
-          },
-        },
-        -- rust_analyzer intentionally omitted: rustaceanvim manages it exclusively.
-        -- Enabling it here invokes nvim-lspconfig's root_dir -> default_sysroot_src,
-        -- which shells out to `rustc` and errors with ENOENT when Rust isn't installed.
-        -- Solidity LSP (solidity-ls)
-        solidity_ls = {
-          root_dir = util.root_pattern("foundry.toml", "hardhat.config.js", "hardhat.config.ts", "truffle-config.js", ".git"),
-          settings = {
-            solidity = {
-              includePath = "",
-              remapping = {},
-            },
-          },
-        },
-        solargraph = {
-          settings = {
-            solargraph = {
-              diagnostics = true,
-            },
-          },
-        },
-      }
-
-      for name, opts in pairs(servers) do
-        opts.on_init = lsp.on_init
-        opts.on_attach = lsp.create_on_attach(opts.on_attach)
-        opts.capabilities = lsp.capabilities
-        -- Convert root_dir from util.root_pattern() to function(bufnr, on_dir) for Neovim 0.11 API
-        if opts.root_dir and type(opts.root_dir) == "function" then
-          local root_pattern_fn = opts.root_dir
-          opts.root_dir = function(bufnr, on_dir)
-            local fname = vim.api.nvim_buf_get_name(bufnr)
-            on_dir(root_pattern_fn(fname))
-          end
-        end
-        vim.lsp.config(name, opts)
-      end
-
-      -- Enable LSP per filetype when opening a file (faster startup, diagnostics on open)
-      local filetype_to_servers = {
-        go = { "gopls" },
-        gomod = { "gopls" },
-        gowork = { "gopls" },
-        gotmpl = { "gopls" },
-        typescript = { "ts_ls", "eslint" },
-        javascript = { "ts_ls", "eslint" },
-        javascriptreact = { "ts_ls", "eslint" },
-        typescriptreact = { "ts_ls", "eslint" },
-        python = { "pyright", "ruff" },
-        lua = { "lua_ls" },
-        -- rust intentionally omitted: rustaceanvim manages the rust LSP client.
-        json = { "jsonls" },
-        yaml = { "yamlls" },
-        sh = { "bashls" },
-        bash = { "bashls" },
-        html = { "html" },
-        css = { "cssls", "tailwindcss" },
-        scss = { "cssls", "somesass_ls", "tailwindcss" },
-        markdown = { "marksman" },
-        toml = { "taplo" },
-        zig = { "zls" },
-        dart = { "dartls" },
-        solidity = { "solidity_ls" },
-        ruby = { "solargraph" },
-        astro = { "astro" },
-        c = { "clangd" },
-        cpp = { "clangd" },
-        objc = { "clangd" },
-        haskell = { "hls" },
-        ocaml = { "ocamllsp" },
-        sass = { "somesass_ls" },
-
-        -- Added to close coverage gaps:
-        cs = { "omnisharp" }, -- C# / .NET
-        kotlin = { "kotlin_language_server" },
-        terraform = { "terraformls" },
-        hcl = { "terraformls" },
-        php = { "intelephense" },
-        svelte = { "svelte", "ts_ls" },
-        vue = { "ts_ls", "eslint", "volar" }, -- add volar alongside ts_ls
-        elixir = { "elixirls" },
-        erlang = { "erlangls" },
-      }
-
-      local enabled_servers = {}
-      vim.api.nvim_create_autocmd("FileType", {
-        group = vim.api.nvim_create_augroup("LspLazyEnable", { clear = true }),
-        callback = function(ev)
-          local ft = ev.match
-          local servers_to_enable = filetype_to_servers[ft]
-          if not servers_to_enable then
+        -- bashls: stop the client when the buffer is a dotenv file.
+        if client.name == "bashls" then
+          local filename = vim.api.nvim_buf_get_name(args.buf)
+          if filename:match "%.env$" then
+            vim.schedule(function() vim.lsp.stop_client(client.id) end)
             return
           end
-          for _, name in ipairs(servers_to_enable) do
-            if not enabled_servers[name] then
-              enabled_servers[name] = true
-              pcall(vim.lsp.enable, name)
-            end
-          end
-        end,
-      })
+        end
 
-      -- Enable LSP for already-open buffers when defer runs
-      for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_loaded(bufnr) then
-          local ft = vim.bo[bufnr].filetype
-          if ft and filetype_to_servers[ft] then
-            for _, name in ipairs(filetype_to_servers[ft]) do
-              if not enabled_servers[name] then
-                enabled_servers[name] = true
-                pcall(vim.lsp.enable, name)
-              end
-            end
-          end
+        -- Turn off formatting for servers that shouldn't own it (conform does).
+        if no_format[client.name] then
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end
+
+        -- Historical behaviour: strip semantic tokens to keep highlight groups
+        -- driven by treesitter. Reduces flicker on servers that push
+        -- semanticTokens updates aggressively.
+        if client:supports_method "textDocument/semanticTokens" then client.server_capabilities.semanticTokensProvider = nil end
+
+        -- Shared keymaps (K, gd, gi, <leader>rn, <leader>ca, etc.).
+        -- noah.lsp exposes create_on_attach() -> returns the real handler.
+        nlsp.create_on_attach()(client, args.buf)
+      end,
+    })
+
+    -- 3) Diagnostic UI. Owned here so it applies before any client attaches.
+    --    tiny-inline-diagnostic renders the inline message (see its spec),
+    --    so we disable Neovim's built-in virtual_text to avoid overlap.
+    vim.diagnostic.config {
+      virtual_text = false,
+      signs = true,
+      underline = true,
+      update_in_insert = false,
+      severity_sort = true,
+      float = {
+        border = "rounded",
+        source = true,
+        header = "",
+        prefix = "",
+      },
+    }
+
+    -- Signs used by ancillary handlers. noah/utils.lua's code-action gear
+    -- indicator calls sign_place("CodeActionSign", ...) — define it here so
+    -- the first LSP response that carries codeAction hints does not fail
+    -- with E155 "Unknown sign".
+    vim.fn.sign_define("CodeActionSign", { text = "󰉁", texthl = "CodeActionSignHl" })
+
+    -- 4) Enable-on-first-open: keeps startup fast while still auto-attaching
+    --    the right server the moment the user opens a matching filetype.
+    local filetype_to_servers = {
+      go = { "gopls" },
+      gomod = { "gopls" },
+      gowork = { "gopls" },
+      gotmpl = { "gopls" },
+      typescript = { "ts_ls", "eslint" },
+      javascript = { "ts_ls", "eslint" },
+      javascriptreact = { "ts_ls", "eslint" },
+      typescriptreact = { "ts_ls", "eslint" },
+      python = { "pyright", "ruff" },
+      lua = { "lua_ls" },
+      json = { "jsonls" },
+      yaml = { "yamlls" },
+      sh = { "bashls" },
+      bash = { "bashls" },
+      html = { "html" },
+      css = { "cssls", "tailwindcss" },
+      scss = { "cssls", "somesass_ls", "tailwindcss" },
+      markdown = { "marksman" },
+      toml = { "taplo" },
+      zig = { "zls" },
+      dart = { "dartls" },
+      solidity = { "solidity_ls" },
+      ruby = { "solargraph" },
+      astro = { "astro" },
+      c = { "clangd" },
+      cpp = { "clangd" },
+      objc = { "clangd" },
+      haskell = { "hls" },
+      ocaml = { "ocamllsp" },
+      sass = { "somesass_ls" },
+      cs = { "omnisharp" },
+      kotlin = { "kotlin_language_server" },
+      terraform = { "terraformls" },
+      hcl = { "terraformls" },
+      php = { "intelephense" },
+      svelte = { "svelte", "ts_ls" },
+      vue = { "ts_ls", "eslint", "volar" },
+      elixir = { "elixirls" },
+      erlang = { "erlangls" },
+      nim = { "nimls" },
+      -- rust intentionally omitted: rustaceanvim manages the rust LSP client.
+    }
+
+    local enabled = {}
+    local function enable_for_ft(ft)
+      local list = filetype_to_servers[ft]
+      if not list then return end
+      for _, name in ipairs(list) do
+        if not enabled[name] then
+          enabled[name] = true
+          pcall(vim.lsp.enable, name)
         end
       end
-    end, 0) -- defer 0ms = run after startup, does not block UI
+    end
 
-    -- When zls exits (e.g. exit 1): try to restart; also re-enable when re-entering Zig buffer
-    local zls_restart_cooldown = 0
+    vim.api.nvim_create_autocmd("FileType", {
+      group = vim.api.nvim_create_augroup("LspLazyEnable", { clear = true }),
+      callback = function(ev) enable_for_ft(ev.match) end,
+    })
+
+    -- Handle buffers that were already open before this config ran.
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.api.nvim_buf_is_loaded(bufnr) then enable_for_ft(vim.bo[bufnr].filetype) end
+    end
+
+    -- 5) zls auto-restart. zls occasionally exits with error 1 mid-session;
+    --    re-enable on next Zig buffer entry with a small cooldown.
+    local zls_cd = 0
     local function try_restart_zls()
-      local now = vim.loop.now()
-      if now - zls_restart_cooldown < 3000 then
-        return
-      end
-      zls_restart_cooldown = now
-      -- Prefer LspRestart (nvim-lspconfig), fallback to vim.lsp.enable
+      local now = vim.uv.now()
+      if now - zls_cd < 3000 then return end
+      zls_cd = now
       local ok = pcall(vim.cmd, "LspRestart zls")
-      if not ok then
-        pcall(vim.lsp.enable, "zls")
-      end
+      if not ok then pcall(vim.lsp.enable, "zls") end
     end
 
     vim.api.nvim_create_autocmd("LspDetach", {
       group = vim.api.nvim_create_augroup("ZlsAutoRestart", { clear = true }),
       callback = function(ev)
-        if vim.bo[ev.buf].filetype ~= "zig" then
-          return
-        end
-        local client_id = ev.data and ev.data.client_id
-        if client_id then
-          local c = vim.lsp.get_client_by_id(client_id)
-          if c and c.name ~= "zls" then
-            return
-          end
-        end
-        vim.defer_fn(try_restart_zls, 800)
-      end,
-    })
-
-    -- On BufEnter for Zig: if zls is not attached, try to enable it (e.g. after crash, switch buffer and back)
-    vim.api.nvim_create_autocmd("BufEnter", {
-      group = vim.api.nvim_create_augroup("ZlsBufEnterRestart", { clear = true }),
-      callback = function(ev)
-        if vim.bo[ev.buf].filetype ~= "zig" then
-          return
-        end
-        local has_zls = false
-        for _, c in ipairs(vim.lsp.get_clients { bufnr = ev.buf }) do
-          if c.name == "zls" then
-            has_zls = true
-            break
-          end
-        end
-        if not has_zls then
-          vim.defer_fn(try_restart_zls, 200)
-        end
+        if vim.bo[ev.buf].filetype == "zig" then vim.defer_fn(try_restart_zls, 1000) end
       end,
     })
   end,

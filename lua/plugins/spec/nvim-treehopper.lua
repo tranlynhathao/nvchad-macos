@@ -8,9 +8,7 @@ return {
     {
       "m",
       mode = { "o", "x" },
-      function()
-        require("tsht").nodes()
-      end,
+      function() require("tsht").nodes() end,
       desc = "Treehopper select",
     },
   },

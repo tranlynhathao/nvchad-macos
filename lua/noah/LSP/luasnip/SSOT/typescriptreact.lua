@@ -11,9 +11,7 @@ local S = {
     },
     node.fmt("const [{1}, set{2}] = useState{3}({4});", {
       node.i(1, "state"),
-      node.f(function(args)
-        return args[1][1]:gsub("^%l", string.upper)
-      end, { 1 }),
+      node.f(function(args) return args[1][1]:gsub("^%l", string.upper) end, { 1 }),
       node.c(2, {
         node.fmt("<{}>", {
           node.i(1, "T"),

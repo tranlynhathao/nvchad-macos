@@ -1,7 +1,5 @@
 if vim.fn.exists ":LspInfo" == 0 then
-  vim.api.nvim_create_user_command("LspInfo", function()
-    require("noah.lspinfo").show()
-  end, { desc = "Show active LSP info for current buffer" })
+  vim.api.nvim_create_user_command("LspInfo", function() require("noah.lspinfo").show() end, { desc = "Show active LSP info for current buffer" })
 end
 
 vim.cmd [[

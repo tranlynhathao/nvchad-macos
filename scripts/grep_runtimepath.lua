@@ -14,9 +14,7 @@ local function os_capture(command, raw)
   local s = assert(f:read "*a")
   f:close()
 
-  if raw then
-    return s
-  end
+  if raw then return s end
 
   s = s:gsub("^%s+", ""):gsub("%s+$", ""):gsub("[\n\r]+", "\n")
   return s

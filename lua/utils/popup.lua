@@ -3,9 +3,7 @@ local M = {}
 local popup_winid = nil
 local source_bufnr = nil
 
-local function is_valid_line(line)
-  return type(line) == "number" and line >= 0 and line < vim.api.nvim_buf_line_count(0)
-end
+local function is_valid_line(line) return type(line) == "number" and line >= 0 and line < vim.api.nvim_buf_line_count(0) end
 
 function M.close()
   if popup_winid and vim.api.nvim_win_is_valid(popup_winid) then
@@ -23,14 +21,10 @@ function M.show_range(start_line, end_line)
     return
   end
 
-  if M.close() then
-    return
-  end
+  if M.close() then return end
 
   local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
-  if #lines == 0 then
-    return
-  end
+  if #lines == 0 then return end
 
   source_bufnr = vim.api.nvim_get_current_buf()
   local buf = vim.api.nvim_create_buf(false, false)
@@ -59,16 +53,12 @@ function M.show_range(start_line, end_line)
 
   popup_winid = vim.api.nvim_open_win(buf, false, opts)
 
-  vim.keymap.set("n", "q", function()
-    M.close()
-  end, { buffer = buf, nowait = true })
+  vim.keymap.set("n", "q", function() M.close() end, { buffer = buf, nowait = true })
 
   vim.api.nvim_create_autocmd({ "BufLeave", "QuitPre", "WinLeave" }, {
     buffer = source_bufnr,
     once = true,
-    callback = function()
-      M.close()
-    end,
+    callback = function() M.close() end,
   })
 end
 

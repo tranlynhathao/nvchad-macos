@@ -18,7 +18,5 @@ return {
     vim.keymap.set("n", "<leader>grs", "<cmd>GoTagRm sql<CR>", { desc = "Remove sql struct tags" })
     vim.keymap.set("n", "<leader>grv", "<cmd>GoTagRm validate<CR>", { desc = "Remove validate struct tags" })
   end,
-  build = function()
-    vim.cmd [[silent! GoInstallDeps]]
-  end,
+  build = function() vim.cmd [[silent! GoInstallDeps]] end,
 }

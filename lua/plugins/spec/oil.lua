@@ -95,9 +95,7 @@ return {
           local dir = require("oil").get_current_dir(bufnr)
           local is_dotfile = vim.startswith(name, ".") and name ~= ".."
           -- if no local directory (e.g. for ssh connections), just hide dotfiles
-          if not dir then
-            return is_dotfile
-          end
+          if not dir then return is_dotfile end
           -- dotfiles are considered hidden unless tracked
           if is_dotfile then
             return not git_status[dir].tracked[name]
@@ -142,15 +140,11 @@ return {
       },
     }
 
-    map("n", "<localleader><localleader>", function()
-      toggle_oil()
-    end, { desc = "Open Oil" })
+    map("n", "<localleader><localleader>", function() toggle_oil() end, { desc = "Open Oil" })
 
     opts = vim.tbl_deep_extend("force", opts, new_opts)
 
-    vim.defer_fn(function()
-      vim.g.maplocalleader = prev_localleader
-    end, 0)
+    vim.defer_fn(function() vim.g.maplocalleader = prev_localleader end, 0)
 
     return opts
   end,

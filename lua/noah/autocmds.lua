@@ -3,6 +3,50 @@ local autocmd = vim.api.nvim_create_autocmd
 local utils = require "noah.utils"
 local buf_map = utils.buf_map
 
+-- ────────────────────────────────────────────────────────────────────────────
+-- Large-file guard
+--
+-- On `BufReadPre` we peek at the file size and, above a threshold, mark the
+-- buffer as "large" and turn off the most expensive per-buffer features
+-- (syntax, treesitter, swap, undo). Prevents multi-second freezes when a
+-- 500 KB+ log/blob/minified.js is opened - either directly (`nvim file.log`)
+-- or as a side effect of :grep / telescope / `:args **/*`.
+--
+-- Threshold: 512 KiB. Raise if you routinely edit larger source files.
+-- ────────────────────────────────────────────────────────────────────────────
+local LARGE_FILE_BYTES = 512 * 1024
+
+autocmd("BufReadPre", {
+  group = augroup("LargeFileGuard", { clear = true }),
+  desc = "Disable heavy per-buffer features for large files",
+  callback = function(args)
+    local ok, stat = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+    if not ok or not stat or stat.size <= LARGE_FILE_BYTES then return end
+    vim.b[args.buf].large_file = true
+    -- Editor-level knobs (syntax highlighter engine, undofile, swap).
+    vim.opt_local.syntax = "off"
+    vim.opt_local.foldmethod = "manual"
+    vim.opt_local.wrap = false
+    vim.opt_local.swapfile = false
+    vim.opt_local.undofile = false
+    vim.opt_local.spell = false
+    vim.opt_local.list = false
+  end,
+})
+
+autocmd("FileType", {
+  group = augroup("LargeFileTS", { clear = true }),
+  desc = "Stop treesitter parser + LSP attach for large-file buffers",
+  callback = function(args)
+    if not vim.b[args.buf].large_file then return end
+    pcall(vim.treesitter.stop, args.buf)
+    -- Detach any LSP client that may have already attached.
+    for _, client in ipairs(vim.lsp.get_clients { bufnr = args.buf }) do
+      vim.lsp.buf_detach_client(args.buf, client.id)
+    end
+  end,
+})
+
 autocmd("LspAttach", {
   desc = "Display code action sign in gutter if available.",
   pattern = "*",
@@ -11,9 +55,7 @@ autocmd("LspAttach", {
     autocmd({ "CursorMoved", "CursorMovedI" }, {
       group = augroup("CodeActionSign", { clear = true }),
       callback = function()
-        vim.schedule(function()
-          utils.code_action_listener()
-        end)
+        vim.schedule(function() utils.code_action_listener() end)
       end,
     })
   end,
@@ -24,9 +66,7 @@ autocmd("BufLeave", {
   pattern = "*",
   group = augroup("TabuflineHide", { clear = true }),
   callback = function()
-    if not vim.g.tabufline_enabled then
-      return
-    end
+    if not vim.g.tabufline_enabled then return end
 
     vim.schedule(function()
       if #vim.t.bufs <= 1 and #vim.api.nvim_list_tabpages() <= 1 then
@@ -56,9 +96,7 @@ autocmd("FileType", {
   desc = "Workaround for NvCheatsheet's zindex being higher than Mason's.",
   pattern = "nvcheatsheet",
   group = augroup("FixCheatsheetZindex", { clear = true }),
-  callback = function()
-    vim.api.nvim_win_set_config(0, { zindex = 44 })
-  end,
+  callback = function() vim.api.nvim_win_set_config(0, { zindex = 44 }) end,
 })
 
 autocmd("FileType", {
@@ -66,9 +104,7 @@ autocmd("FileType", {
   pattern = "NvMenu",
   group = augroup("FixNvMenuZindex", { clear = true }),
   callback = function()
-    if vim.bo.ft == "NvMenu" then
-      vim.api.nvim_win_set_config(0, { zindex = 99 })
-    end
+    if vim.bo.ft == "NvMenu" then vim.api.nvim_win_set_config(0, { zindex = 99 }) end
   end,
 })
 
@@ -85,9 +121,7 @@ autocmd({ "BufNewFile", "BufRead" }, {
   desc = "Add support for .mdx files.",
   pattern = { "*.mdx" },
   group = augroup("MdxSupport", { clear = true }),
-  callback = function()
-    vim.api.nvim_set_option_value("filetype", "markdown", { scope = "local" })
-  end,
+  callback = function() vim.api.nvim_set_option_value("filetype", "markdown", { scope = "local" }) end,
 })
 
 autocmd("VimResized", {
@@ -102,45 +136,35 @@ autocmd("VimLeavePre", {
   pattern = "*",
   group = augroup("NvimTreeCloseOnExit", { clear = true }),
   callback = function()
-    if vim.bo.filetype == "NvimTree" then
-      vim.api.nvim_buf_delete(0, { force = true })
-    end
+    if vim.bo.filetype == "NvimTree" then vim.api.nvim_buf_delete(0, { force = true }) end
   end,
 })
 
 autocmd("TextYankPost", {
   desc = "Highlight on yank.",
   group = augroup("HighlightOnYank", { clear = true }),
-  callback = function()
-    vim.highlight.on_yank { higroup = "YankVisual", timeout = 50, on_visual = true }
-  end,
+  callback = function() vim.highlight.on_yank { higroup = "YankVisual", timeout = 50, on_visual = true } end,
 })
 
 autocmd("ModeChanged", {
   desc = "Strategically disable diagnostics to focus on editing tasks.",
   pattern = { "n:i", "n:v", "i:v" },
   group = augroup("UserDiagnostic", { clear = true }),
-  callback = function()
-    vim.diagnostic.enable(false)
-  end,
+  callback = function() vim.diagnostic.enable(false) end,
 })
 
 autocmd({ "BufRead", "BufNewFile" }, {
   desc = "Disable diagnostics in node_modules.",
   pattern = "*/node_modules/*",
   group = augroup("UserDiagnostic", { clear = true }),
-  callback = function()
-    vim.diagnostic.enable(false)
-  end,
+  callback = function() vim.diagnostic.enable(false) end,
 })
 
 autocmd("ModeChanged", {
   desc = "Enable diagnostics upon exiting insert mode to resume feedback.",
   pattern = "i:n",
   group = augroup("UserDiagnostic", { clear = true }),
-  callback = function()
-    vim.diagnostic.enable(true)
-  end,
+  callback = function() vim.diagnostic.enable(true) end,
 })
 
 autocmd("BufWritePre", {
@@ -175,9 +199,7 @@ autocmd("BufHidden", {
   group = augroup("DeleteNoNameBuffer", { clear = true }),
   callback = function(event)
     if event.file == "" and vim.bo[event.buf].buftype == "" and not vim.bo[event.buf].modified then
-      vim.schedule(function()
-        pcall(vim.api.nvim_buf_delete, event.buf, {})
-      end)
+      vim.schedule(function() pcall(vim.api.nvim_buf_delete, event.buf, {}) end)
     end
   end,
 })
@@ -191,9 +213,7 @@ autocmd("ModeChanged", {
     local ls = require "luasnip"
     local bufnr = vim.api.nvim_get_current_buf()
 
-    if ls.session.current_nodes[bufnr] and not ls.session.jump_active then
-      ls.unlink_current()
-    end
+    if ls.session.current_nodes[bufnr] and not ls.session.jump_active then ls.unlink_current() end
   end,
 })
 
@@ -220,9 +240,7 @@ autocmd("User", {
   desc = "Enable line number in Telescope preview.",
   pattern = "TelescopePreviewerLoaded",
   group = augroup("CustomTelescopePreview", { clear = true }),
-  callback = function()
-    vim.opt_local.number = true
-  end,
+  callback = function() vim.opt_local.number = true end,
 })
 
 autocmd("TermOpen", {
@@ -257,9 +275,7 @@ autocmd("FileType", {
   pattern = "chat-dialog",
   callback = function()
     if vim.bo.ft == "chat-dialog" then
-      vim.schedule(function()
-        vim.opt.conceallevel = 2
-      end)
+      vim.schedule(function() vim.opt.conceallevel = 2 end)
     else
       vim.opt.conceallevel = 0
     end
@@ -270,9 +286,7 @@ autocmd({ "UIEnter", "ColorScheme" }, {
   desc = "Set background color for nvim to match terminal's background.",
   callback = function()
     local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
-    if not normal.bg then
-      return
-    end
+    if not normal.bg then return end
     io.write(string.format("\027]11;#%06x\027\\", normal.bg))
   end,
 })

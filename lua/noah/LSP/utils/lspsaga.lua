@@ -1,9 +1,7 @@
 local ok = require("noah.utils.check_requires").check {
   "lspsaga",
 }
-if not ok then
-  return
-end
+if not ok then return end
 local lspsaga = require "lspsaga"
 
 lspsaga.setup {

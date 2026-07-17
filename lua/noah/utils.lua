@@ -13,9 +13,7 @@
 ---@field format_file fun(file_path: string)
 local M = {}
 
-M.add_alias = function(target_cmd, alias)
-  vim.cmd("ca " .. alias .. " " .. target_cmd)
-end
+M.add_alias = function(target_cmd, alias) vim.cmd("ca " .. alias .. " " .. target_cmd) end
 
 M.is_tbl = function(v)
   if type(v) == "table" then
@@ -28,9 +26,7 @@ end
 M.glb_map = function(mode, lhs, rhs, opts)
   local options = { noremap = true, silent = true }
 
-  if opts then
-    options = vim.tbl_extend("force", options, opts)
-  end
+  if opts then options = vim.tbl_extend("force", options, opts) end
 
   if M.is_tbl(lhs) then
     ---@cast lhs table
@@ -80,33 +76,25 @@ M.del_map = function(mode, trigger)
   if case == 1 then
     ---@cast mode string
     ---@cast trigger string
-    if map_exists(trigger, mode) then
-      del(mode, trigger)
-    end
+    if map_exists(trigger, mode) then del(mode, trigger) end
   elseif case == 2 then
     ---@cast mode string
     ---@cast trigger table
     for _, triggerval in ipairs(trigger) do
-      if map_exists(triggerval, mode) then
-        del(mode, triggerval)
-      end
+      if map_exists(triggerval, mode) then del(mode, triggerval) end
     end
   elseif case == 3 then
     ---@cast mode table
     ---@cast trigger string
     for _, modeval in ipairs(mode) do
-      if map_exists(trigger, modeval) then
-        del(modeval, trigger)
-      end
+      if map_exists(trigger, modeval) then del(modeval, trigger) end
     end
   elseif case == 4 then
     ---@cast mode table
     ---@cast trigger table
     for _, modeval in ipairs(mode) do
       for _, triggerval in ipairs(trigger) do
-        if map_exists(triggerval, modeval) then
-          del(modeval, triggerval)
-        end
+        if map_exists(triggerval, modeval) then del(modeval, triggerval) end
       end
     end
   end
@@ -116,9 +104,7 @@ local is_inspect_tree_open = function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local buf = vim.api.nvim_win_get_buf(win)
     local buf_name = vim.api.nvim_get_option_value("filetype", { buf = buf })
-    if buf_name and buf_name == "query" then
-      return true, win
-    end
+    if buf_name and buf_name == "query" then return true, win end
   end
   return false, nil
 end
@@ -140,9 +126,7 @@ M.go_to_github_link = function()
   local ts = vim.treesitter
   local node = ts.get_node()
 
-  if not node then
-    return
-  end
+  if not node then return end
 
   local string = ts.get_node_text(node, 0)
 
@@ -178,11 +162,7 @@ M.format_file = function(file_path)
     bufnr = bufnr,
   }
 
-  if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then
-    vim.api.nvim_buf_call(bufnr, function()
-      vim.cmd "w"
-    end)
-  end
+  if vim.api.nvim_get_option_value("modified", { buf = bufnr }) then vim.api.nvim_buf_call(bufnr, function() vim.cmd "w" end) end
 
   vim.api.nvim_buf_delete(bufnr, { force = true })
 end
@@ -192,13 +172,9 @@ M.code_action_listener = function()
   local buffer = vim.api.nvim_get_current_buf()
   local clients = vim.lsp.get_clients { bufnr = buffer }
 
-  if clients == nil or #clients == 0 then
-    return
-  end
+  if clients == nil or #clients == 0 then return end
 
-  local has_code_action_support = vim.tbl_filter(function(client)
-    return client.server_capabilities.codeActionProvider
-  end, clients)[1] ~= nil
+  local has_code_action_support = vim.tbl_filter(function(client) return client.server_capabilities.codeActionProvider end, clients)[1] ~= nil
 
   if has_code_action_support then
     local context = { diagnostics = vim.diagnostic.get(buffer) }
@@ -228,9 +204,7 @@ M.handle_copy = function()
   end
 end
 
-M.handle_paste = function()
-  vim.cmd.normal '"+p'
-end
+M.handle_paste = function() vim.cmd.normal '"+p' end
 
 M.menus = {
   main = {
@@ -252,9 +226,7 @@ M.menus = {
     {
       name = "  Color Picker",
       hl = "Exred",
-      cmd = function()
-        require("minty.huefy").open()
-      end,
+      cmd = function() require("minty.huefy").open() end,
     },
   },
 }

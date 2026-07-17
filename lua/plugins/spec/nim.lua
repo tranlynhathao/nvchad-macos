@@ -1,17 +1,8 @@
 ---@type NvPluginSpec
 return {
 
-  {
-    "neovim/nvim-lspconfig",
-    config = function()
-      local util = require "lspconfig.util"
-      vim.lsp.config("nimls", {
-        cmd = { "nim", "nimlsp" },
-        filetypes = { "nim" },
-        root_dir = util.root_pattern "nim.cfg",
-      })
-    end,
-  },
+  -- nimls config moved to ~/.config/nvim/lsp/nimls.lua (tier-3 API).
+  -- Enabling happens through lspconfig.lua's filetype_to_servers table.
 
   {
     "hrsh7th/nvim-cmp",
@@ -20,9 +11,7 @@ return {
 
       cmp.setup {
         snippet = {
-          expand = function(args)
-            require("luasnip").lsp_expand(args.body)
-          end,
+          expand = function(args) require("luasnip").lsp_expand(args.body) end,
         },
         mapping = cmp.mapping.preset.insert {
           ["<C-Space>"] = cmp.mapping.complete(),
@@ -48,8 +37,6 @@ return {
 
   {
     "ray-x/lsp_signature.nvim",
-    config = function()
-      require("lsp_signature").on_attach()
-    end,
+    config = function() require("lsp_signature").on_attach() end,
   },
 }

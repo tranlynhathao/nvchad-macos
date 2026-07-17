@@ -2,9 +2,7 @@ local ok = require("noah.utils.check_requires").check {
   "cmp",
   "luasnip",
 }
-if not ok then
-  return
-end
+if not ok then return end
 
 local cmp = require "cmp"
 local luasnip = require "luasnip"
@@ -39,9 +37,7 @@ local icons = {
 
 cmp.setup {
   snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
+    expand = function(args) luasnip.lsp_expand(args.body) end,
   },
   window = {
     completion = cmp.config.window.bordered(),

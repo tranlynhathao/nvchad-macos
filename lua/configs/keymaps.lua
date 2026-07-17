@@ -7,21 +7,15 @@ P = vim.print
 vim.g["quarto_is_r_mode"] = nil
 vim.g["reticulate_running"] = false
 
-local nmap = function(key, effect)
-  vim.keymap.set("n", key, effect, { silent = true, noremap = true })
-end
+local nmap = function(key, effect) vim.keymap.set("n", key, effect, { silent = true, noremap = true }) end
 
 -- local vmap = function(key, effect)
 --   vim.keymap.set("v", key, effect, { silent = true, noremap = true })
 -- end
 
-local imap = function(key, effect)
-  vim.keymap.set("i", key, effect, { silent = true, noremap = true })
-end
+local imap = function(key, effect) vim.keymap.set("i", key, effect, { silent = true, noremap = true }) end
 
-local cmap = function(key, effect)
-  vim.keymap.set("c", key, effect, { silent = true, noremap = true })
-end
+local cmap = function(key, effect) vim.keymap.set("c", key, effect, { silent = true, noremap = true }) end
 
 -- move in command line
 cmap("<C-a>", "<Home>")
@@ -145,29 +139,17 @@ local insert_code_chunk = function(lang)
   vim.api.nvim_feedkeys(keys, "n", false)
 end
 
-local insert_r_chunk = function()
-  insert_code_chunk "r"
-end
+local insert_r_chunk = function() insert_code_chunk "r" end
 
-local insert_py_chunk = function()
-  insert_code_chunk "python"
-end
+local insert_py_chunk = function() insert_code_chunk "python" end
 
-local insert_lua_chunk = function()
-  insert_code_chunk "lua"
-end
+local insert_lua_chunk = function() insert_code_chunk "lua" end
 
-local insert_julia_chunk = function()
-  insert_code_chunk "julia"
-end
+local insert_julia_chunk = function() insert_code_chunk "julia" end
 
-local insert_bash_chunk = function()
-  insert_code_chunk "bash"
-end
+local insert_bash_chunk = function() insert_code_chunk "bash" end
 
-local insert_ojs_chunk = function()
-  insert_code_chunk "ojs"
-end
+local insert_ojs_chunk = function() insert_code_chunk "ojs" end
 
 --show kepbindings with whichkey
 --add your own here if you want them to
@@ -216,29 +198,17 @@ wk.add({
   { "<c-x><c-x>", "<c-x><c-o>", desc = "omnifunc completion" },
 }, { mode = "i" })
 
-local function new_terminal(lang)
-  vim.cmd("vsplit term://" .. lang)
-end
+local function new_terminal(lang) vim.cmd("vsplit term://" .. lang) end
 
-local function new_terminal_python()
-  new_terminal "python"
-end
+local function new_terminal_python() new_terminal "python" end
 
-local function new_terminal_r()
-  new_terminal "R --no-save"
-end
+local function new_terminal_r() new_terminal "R --no-save" end
 
-local function new_terminal_ipython()
-  new_terminal "ipython --no-confirm-exit"
-end
+local function new_terminal_ipython() new_terminal "ipython --no-confirm-exit" end
 
-local function new_terminal_julia()
-  new_terminal "julia"
-end
+local function new_terminal_julia() new_terminal "julia" end
 
-local function new_terminal_shell()
-  new_terminal "$SHELL"
-end
+local function new_terminal_shell() new_terminal "$SHELL" end
 
 local function get_otter_symbols_lang()
   local otterkeeper = require "otter.keeper"
@@ -323,9 +293,7 @@ wk.add({
     {
       {
         "<localleader>ldd",
-        function()
-          vim.diagnostic.enable(false)
-        end,
+        function() vim.diagnostic.enable(false) end,
         desc = "[d]isable",
       },
       { "<localleader>lde", vim.diagnostic.enable, desc = "[e]nable" },
@@ -359,9 +327,7 @@ wk.add({
     { "<localleader>qe", require("otter").export, desc = "[e]xport" },
     {
       "<localleader>qE",
-      function()
-        require("otter").export(true)
-      end,
+      function() require("otter").export(true) end,
       desc = "[E]xport with overwrite",
     },
   },
@@ -386,32 +352,24 @@ wk.add({
   {
     {
       "<localleader>wi",
-      function()
-        require("noah.web3").show_project_info()
-      end,
+      function() require("noah.web3").show_project_info() end,
       desc = "project [i]nfo",
     },
     { "<localleader>wt", group = "[t]est" },
     {
       {
         "<localleader>wtt",
-        function()
-          require("noah.web3").run_foundry_test()
-        end,
+        function() require("noah.web3").run_foundry_test() end,
         desc = "[t]est (Foundry)",
       },
       {
         "<localleader>wtv",
-        function()
-          require("noah.web3").run_foundry_test_verbose(2)
-        end,
+        function() require("noah.web3").run_foundry_test_verbose(2) end,
         desc = "test [v]erbose",
       },
       {
         "<localleader>wth",
-        function()
-          require("noah.web3").run_hardhat_test()
-        end,
+        function() require("noah.web3").run_hardhat_test() end,
         desc = "test [h]ardhat",
       },
     },
@@ -419,24 +377,18 @@ wk.add({
     {
       {
         "<localleader>wcf",
-        function()
-          require("noah.web3").compile_foundry()
-        end,
+        function() require("noah.web3").compile_foundry() end,
         desc = "[f]oundry compile",
       },
       {
         "<localleader>wch",
-        function()
-          require("noah.web3").compile_hardhat()
-        end,
+        function() require("noah.web3").compile_hardhat() end,
         desc = "[h]ardhat compile",
       },
     },
     {
       "<localleader>wf",
-      function()
-        require("noah.web3").format_solidity_forge()
-      end,
+      function() require("noah.web3").format_solidity_forge() end,
       desc = "[f]ormat (forge fmt)",
     },
   },

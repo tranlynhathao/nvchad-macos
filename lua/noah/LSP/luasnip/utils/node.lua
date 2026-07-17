@@ -1,9 +1,7 @@
 local ok = require("noah.utils.check_requires").check {
   "luasnip",
 }
-if not ok then
-  return
-end
+if not ok then return end
 
 local ls = require "luasnip"
 local events = require "luasnip.util.events"

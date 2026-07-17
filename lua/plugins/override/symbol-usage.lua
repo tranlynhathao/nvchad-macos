@@ -3,9 +3,7 @@ return {
   "Wansmer/symbol-usage.nvim",
   event = "LspAttach",
   config = function()
-    local function h(name)
-      return vim.api.nvim_get_hl(0, { name = name })
-    end
+    local function h(name) return vim.api.nvim_get_hl(0, { name = name }) end
 
     -- hl-groups can have any name
     vim.api.nvim_set_hl(0, "SymbolUsageRounding", { fg = h("CursorLine").bg, italic = true })
@@ -33,9 +31,7 @@ return {
       end
 
       if symbol.definition then
-        if #res > 0 then
-          table.insert(res, { " ", "NonText" })
-        end
+        if #res > 0 then table.insert(res, { " ", "NonText" }) end
         table.insert(res, round_start)
         table.insert(res, { "󰳽 ", "SymbolUsageDef" })
         table.insert(res, { symbol.definition .. " defs", "SymbolUsageContent" })
@@ -43,9 +39,7 @@ return {
       end
 
       if symbol.implementation then
-        if #res > 0 then
-          table.insert(res, { " ", "NonText" })
-        end
+        if #res > 0 then table.insert(res, { " ", "NonText" }) end
         table.insert(res, round_start)
         table.insert(res, { "󰡱 ", "SymbolUsageImpl" })
         table.insert(res, { symbol.implementation .. " impls", "SymbolUsageContent" })
@@ -53,9 +47,7 @@ return {
       end
 
       if stacked_functions_content ~= "" then
-        if #res > 0 then
-          table.insert(res, { " ", "NonText" })
-        end
+        if #res > 0 then table.insert(res, { " ", "NonText" }) end
         table.insert(res, round_start)
         table.insert(res, { " ", "SymbolUsageImpl" })
         table.insert(res, { stacked_functions_content, "SymbolUsageContent" })

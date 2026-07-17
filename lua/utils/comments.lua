@@ -32,9 +32,7 @@ local function toggle_pug_comment(ft)
     local content = vim.fn.getline(line)
     if vim.startswith(content, prefix) then
       content = content:gsub(vim.pesc(prefix), "", 1)
-      if suffix ~= "" then
-        content = content:gsub(vim.pesc(suffix) .. "$", "", 1)
-      end
+      if suffix ~= "" then content = content:gsub(vim.pesc(suffix) .. "$", "", 1) end
     else
       content = prefix .. content .. suffix
     end

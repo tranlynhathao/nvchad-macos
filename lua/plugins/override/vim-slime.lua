@@ -4,9 +4,7 @@ return {
   keys = {
     {
       "<leader>s",
-      function()
-        vim.fn["slime#send_op"](vim.fn.visualmode(), 1)
-      end,
+      function() vim.fn["slime#send_op"](vim.fn.visualmode(), 1) end,
       mode = "v",
     },
     {

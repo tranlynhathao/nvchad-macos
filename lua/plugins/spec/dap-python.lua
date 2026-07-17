@@ -12,8 +12,6 @@ return {
 
     dap_py.setup(path)
 
-    vim.keymap.set("n", "<leader>pdr", function()
-      dap_py.test_method()
-    end, { desc = "Run Python debug" })
+    vim.keymap.set("n", "<leader>pdr", function() dap_py.test_method() end, { desc = "Run Python debug" })
   end,
 }

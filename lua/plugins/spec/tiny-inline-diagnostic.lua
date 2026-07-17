@@ -12,20 +12,40 @@ return {
       preset = "modern",
 
       options = {
-        -- Show diagnostic source (e.g. "eslint", "typescript")
-        show_source = true,
+        -- Show diagnostic source only when there are multiple sources on the
+        -- same line (matches vim.diagnostic native "if_many" idea).
+        show_source = { enabled = true, if_many = true },
 
-        -- Prefer showing multiple diagnostics on the same line
-        multilines = true,
-
-        -- Overflow: how to handle messages that are too long
-        overflow = {
-          mode = "wrap", -- "wrap" | "none"
+        -- Only render on the cursor line — other lines get sign + underline
+        -- only. Prevents long diagnostic boxes covering multiple lines of
+        -- code (was the top complaint for pwntools files).
+        multiple_diag_under_cursor = true,
+        multilines = {
+          enabled = true,
+          always_show = false, -- only expand when cursor is on the line
         },
 
-        -- Only show diagnostic on the line under the cursor
-        -- false = show all, true = current line only
-        throttle = 20, -- milliseconds
+        -- Truncate long messages instead of wrapping — keeps line height
+        -- constant.
+        overflow = {
+          mode = "wrap",
+          padding = 4,
+        },
+
+        -- Debounce cursor movement redraws.
+        throttle = 20,
+
+        -- Break the message and virtual text below the line if it would
+        -- push past the window edge.
+        softwrap = 30,
+
+        -- Priority ordering: ERROR first, then WARN, INFO, HINT.
+        severity = {
+          vim.diagnostic.severity.ERROR,
+          vim.diagnostic.severity.WARN,
+          vim.diagnostic.severity.INFO,
+          vim.diagnostic.severity.HINT,
+        },
       },
 
       -- Signs for different severity levels

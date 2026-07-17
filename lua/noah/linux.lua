@@ -1,10 +1,6 @@
-if vim.fn.has "unix" ~= 1 or vim.fn.has "macunix" == 1 or vim.fn.has "wsl" == 1 then
-  return
-end
+if vim.fn.has "unix" ~= 1 or vim.fn.has "macunix" == 1 or vim.fn.has "wsl" == 1 then return end
 
-local function command_exists(cmd)
-  return vim.fn.executable(cmd) == 1
-end
+local function command_exists(cmd) return vim.fn.executable(cmd) == 1 end
 
 local function detect_clipboard_tool()
   if command_exists "xclip" then
@@ -26,9 +22,7 @@ local function detect_clipboard_tool()
 end
 
 local tool = detect_clipboard_tool()
-if not tool then
-  return
-end
+if not tool then return end
 
 vim.g.clipboard = {
   name = "linux-clipboard",

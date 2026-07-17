@@ -5,9 +5,7 @@ return {
   "stevearc/conform.nvim",
   event = "BufWritePre",
   init = function()
-    vim.keymap.set("n", "<leader>fm", function()
-      require("conform").format { lsp_fallback = true }
-    end, { desc = "Format file" })
+    vim.keymap.set("n", "<leader>fm", function() require("conform").format { lsp_fallback = true } end, { desc = "Format file" })
 
     -- Toggle format-on-save (per-buffer or global).
     -- `:FormatOff` / `:FormatOn` for quick on/off.
@@ -127,9 +125,7 @@ return {
     format_on_save = function(bufnr)
       -- Allow disabling format-on-save globally (vim.g) or per-buffer (vim.b)
       -- via `:FormatOff` / `:FormatOff!` (see the init function).
-      if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-        return
-      end
+      if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then return end
       return { timeout_ms = 2000, lsp_fallback = true }
     end,
 
@@ -222,20 +218,16 @@ return {
         timeout_ms = 3000,
       },
 
+      -- No inline args on purpose: let stylua discover its config file so
+      -- every entry point (nvim `:w`, `stylua file.lua` from the terminal,
+      -- pre-commit hooks, CI) applies the identical rules. Search order:
+      --   1. `.stylua.toml` walking up from the file (e.g. nvim config's
+      --      own .stylua.toml overrides to column_width=150)
+      --   2. `~/.config/stylua/stylua.toml` global baseline (column_width=120)
+      --   3. built-in stylua defaults
+      -- Conform's default arg set already passes --search-parent-directories
+      -- and --stdin-filepath, so nothing to add here.
       stylua = {
-        command = "stylua",
-        args = {
-          "--column-width",
-          "120",
-          "--collapse-simple-statement",
-          "Always",
-          "--quote-style",
-          "AutoPreferDouble",
-          "--call-parentheses",
-          "Always",
-          "-",
-        },
-        stdin = true,
         timeout_ms = 3000,
       },
 
@@ -258,30 +250,20 @@ return {
         args = { "fix", "--dialect", "postgres", "--disable-progress-bar", "-" },
         stdin = true,
         cwd = function(ctx)
-          if ctx.filename == nil or ctx.filename == "" then
-            return vim.loop.cwd()
-          end
+          if ctx.filename == nil or ctx.filename == "" then return vim.uv.cwd() end
           return vim.fn.fnamemodify(ctx.filename, ":h")
         end,
         timeout_ms = 8000,
         -- Skip files with templating (dbt, jinja, ...) since sqlfluff fails to parse them.
         condition = function(ctx)
           local filename = ctx.filename or ""
-          if filename == "" then
-            return true
-          end
+          if filename == "" then return true end
           local path_lower = filename:lower()
-          if path_lower:match "models/" or path_lower:match "dbt/" or path_lower:match "jinja" then
-            return false
-          end
+          if path_lower:match "models/" or path_lower:match "dbt/" or path_lower:match "jinja" then return false end
           local ok, lines = pcall(vim.fn.readfile, filename, "", 100)
-          if not ok or not lines then
-            return true
-          end
+          if not ok or not lines then return true end
           for _, line in ipairs(lines) do
-            if line:match "{{" or line:match "{%" or line:match "${" or line:match "jinja" or line:match "dbt" then
-              return false
-            end
+            if line:match "{{" or line:match "{%" or line:match "${" or line:match "jinja" or line:match "dbt" then return false end
           end
           return true
         end,
@@ -293,11 +275,9 @@ return {
         stdin = false,
         cwd = function(ctx)
           local filename = ctx.filename or ""
-          local dir = filename ~= "" and vim.fn.fnamemodify(filename, ":h") or vim.loop.cwd()
+          local dir = filename ~= "" and vim.fn.fnamemodify(filename, ":h") or vim.uv.cwd()
           local found = vim.fn.findfile("foundry.toml", dir .. ";")
-          if found ~= "" then
-            return vim.fn.fnamemodify(found, ":h")
-          end
+          if found ~= "" then return vim.fn.fnamemodify(found, ":h") end
           return dir
         end,
         timeout_ms = 5000,

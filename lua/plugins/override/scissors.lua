@@ -12,9 +12,7 @@ return {
     },
     config = function()
       local present, wk = pcall(require, "which-key")
-      if not present then
-        return
-      end
+      if not present then return end
 
       wk.add {
         { "<leader>as", group = "Snippets", nowait = false, remap = false },

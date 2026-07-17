@@ -4,11 +4,13 @@ return {
   event = "VeryLazy",
   config = function()
     local lint = require "lint"
-    local markdownlint_config = vim.fn.stdpath "config" .. "/.markdownlint.json"
+    -- markdownlint-cli2 config lives inside the nvim config dir so it's
+    -- version-controlled alongside the rest of the setup.
+    -- .jsonc supports comments; plain .json is also accepted as a fallback.
+    local mdlint_config = vim.fn.stdpath "config" .. "/.markdownlint-cli2.jsonc"
+    if vim.fn.filereadable(mdlint_config) == 0 then mdlint_config = vim.fn.stdpath "config" .. "/.markdownlint.json" end
 
-    if lint.linters["markdownlint-cli2"] then
-      lint.linters["markdownlint-cli2"].args = { "--config", markdownlint_config, "-" }
-    end
+    if lint.linters["markdownlint-cli2"] then lint.linters["markdownlint-cli2"].args = { "--config", mdlint_config, "-" } end
 
     -- Rule: only add a linter for languages the LSP does NOT cover.
     -- Example: TS/JS skipped here because eslint-lsp lints via LSP;
@@ -18,8 +20,11 @@ return {
       -- solidity_ls_nomicfoundation misses.
       solidity = { "solhint" },
 
-      -- Python: ruff (same tool as ruff_format in conform).
-      python = { "ruff" },
+      -- Python: ruff runs as an LSP client (see lspconfig.lua opts.servers.ruff),
+      -- diagnostics arrive through vim.lsp.diagnostic. Running the ruff CLI via
+      -- nvim-lint here would duplicate every F403/F405/E501/etc. In previous
+      -- setup, each finding appeared twice under sources "Ruff" and "ruff".
+      -- python = { "ruff" },
 
       -- Shell
       sh = { "shellcheck" },
@@ -61,9 +66,7 @@ return {
     local group = vim.api.nvim_create_augroup("UserNvimLint", { clear = true })
     vim.api.nvim_create_autocmd("BufWritePost", {
       group = group,
-      callback = function()
-        lint.try_lint()
-      end,
+      callback = function() lint.try_lint() end,
     })
   end,
 }

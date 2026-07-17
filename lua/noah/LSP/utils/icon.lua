@@ -1,18 +1,8 @@
 vim.opt.signcolumn = "yes"
 
-vim.diagnostic.config {
-  virtual_text = true,
-  signs = true,
-  underline = true,
-  update_in_insert = false,
-  severity_sort = false,
-  float = {
-    show_header = true,
-    source = true,
-    border = "rounded",
-  },
-}
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+-- Diagnostic UI (virtual_text/signs/float) is owned by plugins/override/lspconfig.lua.
+-- Only sign icons live here.
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })

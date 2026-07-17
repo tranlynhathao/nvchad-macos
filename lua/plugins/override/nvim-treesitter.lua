@@ -1,13 +1,15 @@
 ---@type NvPluginSpec
 return {
   "nvim-treesitter/nvim-treesitter",
+  -- Load only when a real file buffer opens, not at startup. Saves ~500ms.
+  -- Plugins that need treesitter still load it via dependencies chain.
+  event = { "BufReadPost", "BufNewFile" },
+  cmd = { "TSUpdate", "TSInstall", "TSUpdateSync", "TSBufEnable", "TSBufDisable", "TSInstallInfo", "TSPlaygroundToggle" },
   dependencies = { "nvim-treesitter/nvim-treesitter-textobjects", "nvim-treesitter/playground" },
   config = function(_, opts)
     local function patch_playground_query_linter()
       local ok, linter = pcall(require, "nvim-treesitter-playground.query_linter")
-      if not ok or linter._noah_symbols_patch then
-        return
-      end
+      if not ok or linter._noah_symbols_patch then return end
 
       local api = vim.api
       local ts = require "nvim-treesitter.compat"
@@ -21,16 +23,19 @@ return {
 
       local function show_lints(buf, lints)
         if linter.use_diagnostics then
-          local diagnostics = vim.tbl_map(function(lint)
-            return {
-              lnum = lint.range[1],
-              end_lnum = lint.range[3],
-              col = lint.range[2],
-              end_col = lint.range[4],
-              severity = vim.diagnostic.ERROR,
-              message = lint.message,
-            }
-          end, lints)
+          local diagnostics = vim.tbl_map(
+            function(lint)
+              return {
+                lnum = lint.range[1],
+                end_lnum = lint.range[3],
+                col = lint.range[2],
+                end_col = lint.range[4],
+                severity = vim.diagnostic.ERROR,
+                message = lint.message,
+              }
+            end,
+            lints
+          )
           vim.diagnostic.set(namespace, buf, diagnostics)
         end
       end
@@ -48,15 +53,11 @@ return {
       end
 
       local function symbols_contain(symbols, node_type, is_named)
-        if type(symbols) ~= "table" then
-          return false
-        end
+        if type(symbols) ~= "table" then return false end
 
         if vim.islist(symbols) then
           for _, entry in ipairs(symbols) do
-            if type(entry) == "table" and node_type == entry[1] and is_named == entry[2] then
-              return true
-            end
+            if type(entry) == "table" and node_type == entry[1] and is_named == entry[2] then return true end
           end
           return false
         end
@@ -71,25 +72,19 @@ return {
 
         local query_lang = linter.guess_query_lang(query_buf)
         local ok_inspect, parser_info = pcall(vim.treesitter.language.inspect, query_lang)
-        if not ok_inspect then
-          return
-        end
+        if not ok_inspect then return end
 
         local matches = queries.get_matches(query_buf, "query-linter-queries")
 
         for _, m in pairs(matches) do
           local error_node = utils.get_at_path(m, "error.node")
-          if error_node then
-            add_lint_for_node(error_node, query_buf, "Syntax Error")
-          end
+          if error_node then add_lint_for_node(error_node, query_buf, "Syntax Error") end
 
           local toplevel_node = utils.get_at_path(m, "toplevel-query.node")
           if toplevel_node and query_lang then
             local query_text = ts_compat.get_node_text(toplevel_node, query_buf)
             local ok_query, err = pcall(ts.parse_query, query_lang, query_text)
-            if not ok_query then
-              add_lint_for_node(toplevel_node, query_buf, "Invalid Query", err)
-            end
+            if not ok_query then add_lint_for_node(toplevel_node, query_buf, "Invalid Query", err) end
           end
 
           if parser_info and parser_info.symbols then
@@ -99,24 +94,18 @@ return {
             if node then
               local node_type = ts_compat.get_node_text(node, query_buf)
 
-              if anonymous_node then
-                node_type = node_type:gsub('"(.*)".*$', "%1"):gsub("\\(.)", "%1")
-              end
+              if anonymous_node then node_type = node_type:gsub('"(.*)".*$', "%1"):gsub("\\(.)", "%1") end
 
               local is_named = named_node ~= nil
               local found = vim.tbl_contains(MAGIC_NODE_NAMES, node_type) or symbols_contain(parser_info.symbols, node_type, is_named)
 
-              if not found then
-                add_lint_for_node(node, query_buf, "Invalid Node Type")
-              end
+              if not found then add_lint_for_node(node, query_buf, "Invalid Node Type") end
             end
 
             local field_node = utils.get_at_path(m, "field.node")
             if field_node then
               local field_name = ts_compat.get_node_text(field_node, query_buf)
-              if not vim.tbl_contains(parser_info.fields, field_name) then
-                add_lint_for_node(field_node, query_buf, "Invalid Field")
-              end
+              if not vim.tbl_contains(parser_info.fields, field_name) then add_lint_for_node(field_node, query_buf, "Invalid Field") end
             end
           end
         end
@@ -137,12 +126,8 @@ return {
       local major, minor, patch = parse_version(version)
       local req_major, req_minor, req_patch = parse_version(minimum)
 
-      if major ~= req_major then
-        return major > req_major
-      end
-      if minor ~= req_minor then
-        return minor > req_minor
-      end
+      if major ~= req_major then return major > req_major end
+      if minor ~= req_minor then return minor > req_minor end
       return patch >= req_patch
     end
 
@@ -169,31 +154,21 @@ return {
         uxn = "uxntal",
         ts = "typescript",
       }
-      local function resolve_lang(alias)
-        return vim.filetype.match { filename = "a." .. alias } or non_filetype_aliases[alias] or alias
-      end
-      local function unwrap(v)
-        return type(v) == "table" and v[1] or v
-      end
+      local function resolve_lang(alias) return vim.filetype.match { filename = "a." .. alias } or non_filetype_aliases[alias] or alias end
+      local function unwrap(v) return type(v) == "table" and v[1] or v end
 
       vim.treesitter.query.add_directive("set-lang-from-info-string!", function(match, _, bufnr, pred, metadata)
         local node = unwrap(match[pred[2]])
-        if not node then
-          return
-        end
+        if not node then return end
         metadata["injection.language"] = resolve_lang(vim.treesitter.get_node_text(node, bufnr):lower())
       end, { force = true })
 
       vim.treesitter.query.add_directive("downcase!", function(match, _, bufnr, pred, metadata)
         local id = pred[2]
         local node = unwrap(match[id])
-        if not node then
-          return
-        end
+        if not node then return end
         local text = vim.treesitter.get_node_text(node, bufnr, { metadata = metadata[id] }) or ""
-        if not metadata[id] then
-          metadata[id] = {}
-        end
+        if not metadata[id] then metadata[id] = {} end
         metadata[id].text = string.lower(text)
       end, { force = true })
     end

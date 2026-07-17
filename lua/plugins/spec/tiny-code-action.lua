@@ -8,9 +8,7 @@ return {
   config = function()
     local map = require("noah.utils").glb_map
 
-    map({ "n", "v" }, "<leader>ca", function()
-      require("tiny-code-action").code_action()
-    end, { desc = "Tiny code action" })
+    map({ "n", "v" }, "<leader>ca", function() require("tiny-code-action").code_action() end, { desc = "Tiny code action" })
 
     require("tiny-code-action").setup()
   end,

@@ -12,9 +12,9 @@ require "noah.macos"
 -- Setup UTF-8 encoding
 require("noah.encoding").setup()
 
-local is_mac = vim.loop.os_uname().sysname == "Darwin"
-local is_linux = vim.loop.os_uname().sysname == "Linux"
-local is_windows = vim.loop.os_uname().sysname:find "Windows" ~= nil
+local is_mac = vim.uv.os_uname().sysname == "Darwin"
+local is_linux = vim.uv.os_uname().sysname == "Linux"
+local is_windows = vim.uv.os_uname().sysname:find "Windows" ~= nil
 
 if is_mac then
   require "noah.macos"

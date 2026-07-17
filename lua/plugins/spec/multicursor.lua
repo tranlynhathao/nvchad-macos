@@ -8,37 +8,41 @@ return {
 
     local map = require("noah.utils").glb_map
 
-    map({ "n", "v" }, "<up>", function()
-      mc.lineAddCursor(-1)
-    end, { desc = "Multicursor add cursor above main cursor." })
+    map({ "n", "v" }, "<up>", function() mc.lineAddCursor(-1) end, { desc = "Multicursor add cursor above main cursor." })
 
-    map({ "n", "v" }, "<down>", function()
-      mc.lineAddCursor(1)
-    end, { desc = "Multicursor add cursor below main cursor." })
+    map({ "n", "v" }, "<down>", function() mc.lineAddCursor(1) end, { desc = "Multicursor add cursor below main cursor." })
 
-    map({ "n", "v" }, "<leader><up>", function()
-      mc.lineSkipCursor(-1)
-    end, { desc = "Multicursor skip cursor above main cursor." })
+    map({ "n", "v" }, "<leader><up>", function() mc.lineSkipCursor(-1) end, { desc = "Multicursor skip cursor above main cursor." })
 
-    map({ "n", "v" }, "<leader><down>", function()
-      mc.lineSkipCursor(1)
-    end, { desc = "Multicursor skip cursor below main cursor." })
+    map({ "n", "v" }, "<leader><down>", function() mc.lineSkipCursor(1) end, { desc = "Multicursor skip cursor below main cursor." })
 
-    map({ "n", "v" }, "<leader>n", function()
-      mc.matchAddCursor(1)
-    end, { desc = "Multicursor add cursor below main cursor by matching word/selection." })
+    map(
+      { "n", "v" },
+      "<leader>n",
+      function() mc.matchAddCursor(1) end,
+      { desc = "Multicursor add cursor below main cursor by matching word/selection." }
+    )
 
-    map({ "n", "v" }, "<leader>s", function()
-      mc.matchSkipCursor(1)
-    end, { desc = "Multicursor skip cursor below main cursor by matching word/selection." })
+    map(
+      { "n", "v" },
+      "<leader>s",
+      function() mc.matchSkipCursor(1) end,
+      { desc = "Multicursor skip cursor below main cursor by matching word/selection." }
+    )
 
-    map({ "n", "v" }, "<leader>N", function()
-      mc.matchAddCursor(-1)
-    end, { desc = "Multicursor add cursor above main cursor by matching word/selection." })
+    map(
+      { "n", "v" },
+      "<leader>N",
+      function() mc.matchAddCursor(-1) end,
+      { desc = "Multicursor add cursor above main cursor by matching word/selection." }
+    )
 
-    map({ "n", "v" }, "<leader>S", function()
-      mc.matchSkipCursor(-1)
-    end, { desc = "Multicursor skip cursor above main cursor by matching word/selection." })
+    map(
+      { "n", "v" },
+      "<leader>S",
+      function() mc.matchSkipCursor(-1) end,
+      { desc = "Multicursor skip cursor above main cursor by matching word/selection." }
+    )
 
     -- You can also add cursors with any motion you prefer:
     -- set("n", "<right>", function()
@@ -75,13 +79,9 @@ return {
     map("v", "A", mc.appendVisual, { desc = "Multicursor append for each line of visual selections." })
     map("v", "M", mc.matchCursors, { desc = "Multicursor match new cursors within visual selections by regex." })
 
-    map("v", "<leader>t", function()
-      mc.transposeCursors(1)
-    end, { desc = "Multicursor rotate visual selection contents to the right." })
+    map("v", "<leader>t", function() mc.transposeCursors(1) end, { desc = "Multicursor rotate visual selection contents to the right." })
 
-    map("v", "<leader>T", function()
-      mc.transposeCursors(-1)
-    end, { desc = "Multicursor rotate visual selection contents to the left." })
+    map("v", "<leader>T", function() mc.transposeCursors(-1) end, { desc = "Multicursor rotate visual selection contents to the left." })
 
     local hl = vim.api.nvim_set_hl
     hl(0, "MultiCursorCursor", { link = "Cursor" })

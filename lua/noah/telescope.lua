@@ -62,9 +62,7 @@ local files = function(filetype, opts)
     }
   end
 
-  if type(picker_data) ~= "table" or picker_data.picker == nil then
-    return
-  end
+  if type(picker_data) ~= "table" or picker_data.picker == nil then return end
 
   local options = picker_data.options or {}
   local base_entry_maker = make_entry.gen_from_file(options)
@@ -156,9 +154,7 @@ local grep = function(search, default_text, filetype, opts)
       ["%"] = [[\%]],
     }
 
-    return text:gsub(".", function(c)
-      return escapes[c] or c
-    end)
+    return text:gsub(".", function(c) return escapes[c] or c end)
   end
 
   if default_text then
@@ -169,9 +165,7 @@ local grep = function(search, default_text, filetype, opts)
       local escaped_text = escape_for_ripgrep(default_text)
       local reformated_body = escaped_text:gsub("%s*\r?\n%s*", " ")
 
-      if filetype == "rust" then
-        filetype = "rs"
-      end
+      if filetype == "rust" then filetype = "rs" end
 
       if filetype ~= "" then
         picker_data.options.default_text = "`" .. filetype .. " " .. reformated_body
@@ -183,9 +177,7 @@ local grep = function(search, default_text, filetype, opts)
     end
   end
 
-  if type(picker_data) ~= "table" or picker_data.picker == nil then
-    return
-  end
+  if type(picker_data) ~= "table" or picker_data.picker == nil then return end
 
   local options = picker_data.options or {}
   local base_entry_maker = make_entry.gen_from_vimgrep(options)
@@ -210,9 +202,7 @@ local grep = function(search, default_text, filetype, opts)
       local coordinates = ""
 
       if not options.disable_coordinates then
-        if entry.lnum then
-          coordinates = string.format(":%s", entry.lnum)
-        end
+        if entry.lnum then coordinates = string.format(":%s", entry.lnum) end
       end
 
       -- Append coordinates to tail
@@ -268,13 +258,9 @@ local buffers = function(previewer, opts)
     },
   }
 
-  if previewer then
-    buf_opts = opts and vim.tbl_deep_extend("force", buf_opts, opts) or buf_opts
-  end
+  if previewer then buf_opts = opts and vim.tbl_deep_extend("force", buf_opts, opts) or buf_opts end
 
-  if buf_opts ~= nil and type(buf_opts) ~= "table" then
-    return
-  end
+  if buf_opts ~= nil and type(buf_opts) ~= "table" then return end
 
   local options = buf_opts or {}
   local base_entry_maker = make_entry.gen_from_buffer(options)

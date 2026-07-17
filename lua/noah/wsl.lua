@@ -1,6 +1,4 @@
-if not vim.fn.has "wsl" then
-  return
-end
+if not vim.fn.has "wsl" then return end
 
 -- set a global value to indicate that we are in WSL
 vim.g.is_wsl = true

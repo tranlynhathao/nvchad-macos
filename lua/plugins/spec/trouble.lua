@@ -26,16 +26,12 @@ return {
     },
     {
       "[t",
-      function()
-        require("trouble").prev { skip_groups = true, jump = true }
-      end,
+      function() require("trouble").prev { skip_groups = true, jump = true } end,
       desc = "Previous trouble item",
     },
     {
       "]t",
-      function()
-        require("trouble").next { skip_groups = true, jump = true }
-      end,
+      function() require("trouble").next { skip_groups = true, jump = true } end,
       desc = "Next trouble item",
     },
   },

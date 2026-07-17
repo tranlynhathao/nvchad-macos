@@ -6,12 +6,14 @@ local function keychain(service, opts)
   local out = vim.fn.system { "security", "find-generic-password", "-s", service, "-a", user, "-w" }
   if vim.v.shell_error ~= 0 then
     if not (opts and opts.silent) then
-      vim.schedule(function()
-        vim.notify(
-          ("mcphub: Keychain entry '%s' not found. Store it with: security add-generic-password -s %s -a $USER -w"):format(service, service),
-          vim.log.levels.WARN
-        )
-      end)
+      vim.schedule(
+        function()
+          vim.notify(
+            ("mcphub: Keychain entry '%s' not found. Store it with: security add-generic-password -s %s -a $USER -w"):format(service, service),
+            vim.log.levels.WARN
+          )
+        end
+      )
     end
     return nil
   end

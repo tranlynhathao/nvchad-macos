@@ -13,19 +13,11 @@ return {
 
     dapui.setup()
 
-    dap.listeners.after.event_initialized["dapui_config"] = function()
-      dapui.open()
-    end
-    dap.listeners.before.event_terminated["dapui_config"] = function()
-      dapui.close()
-    end
-    dap.listeners.before.event_exited["dapui_config"] = function()
-      dapui.close()
-    end
+    dap.listeners.after.event_initialized["dapui_config"] = function() dapui.open() end
+    dap.listeners.before.event_terminated["dapui_config"] = function() dapui.close() end
+    dap.listeners.before.event_exited["dapui_config"] = function() dapui.close() end
 
     map("n", "<leader>db", "<cmd>DapToggleBreakpoint<CR>", { desc = "DAP Toggle breakpoint" })
-    map("n", "<leader>dt", function()
-      sidebar.toggle()
-    end, { desc = "DAP Toggle sidebar" })
+    map("n", "<leader>dt", function() sidebar.toggle() end, { desc = "DAP Toggle sidebar" })
   end,
 }

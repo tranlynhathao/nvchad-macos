@@ -15,9 +15,7 @@ return {
       "<leader>E",
       function()
         local path = vim.api.nvim_buf_get_name(0)
-        if path == "" or vim.fn.filereadable(path) == 0 then
-          path = vim.fn.getcwd()
-        end
+        if path == "" or vim.fn.filereadable(path) == 0 then path = vim.fn.getcwd() end
         require("mini.files").open(path, true)
       end,
       desc = "Open file manager popup",

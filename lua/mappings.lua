@@ -55,22 +55,16 @@ local function get_visual_popup_range()
     end_line = vim.fn.getpos("'>")[2]
   end
 
-  if start_line == 0 or end_line == 0 then
-    return nil
-  end
+  if start_line == 0 or end_line == 0 then return nil end
 
   return math.min(start_line, end_line) - 1, math.max(start_line, end_line)
 end
 
-local function get_line(bufnr, lnum)
-  return vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, false)[1] or ""
-end
+local function get_line(bufnr, lnum) return vim.api.nvim_buf_get_lines(bufnr, lnum - 1, lnum, false)[1] or "" end
 
 local function parse_open_fence(line)
   local marker = line:match "^%s*([`~][`~][`~]+)"
-  if not marker then
-    return nil
-  end
+  if not marker then return nil end
 
   return marker:sub(1, 1), #marker
 end
@@ -80,9 +74,7 @@ local function is_closing_fence(line, fence_char, fence_len)
 end
 
 local function get_fenced_codeblock_range()
-  if not popup_codeblock_filetypes[vim.bo.filetype] then
-    return nil
-  end
+  if not popup_codeblock_filetypes[vim.bo.filetype] then return nil end
 
   local bufnr = vim.api.nvim_get_current_buf()
   local cursor = vim.api.nvim_win_get_cursor(0)[1]
@@ -100,9 +92,7 @@ local function get_fenced_codeblock_range()
         fence_len = len
       end
     elseif is_closing_fence(line, fence_char, fence_len) then
-      if cursor >= open_line and cursor <= lnum then
-        return open_line - 1, lnum
-      end
+      if cursor >= open_line and cursor <= lnum then return open_line - 1, lnum end
 
       open_line = nil
       fence_char = nil
@@ -138,9 +128,7 @@ vim.keymap.set("n", "<leader>pP", function()
   popup.show_range(cur - 1, cur + 10)
 end, { desc = "Popup 10 lines from current line" })
 
-vim.keymap.set("n", "<leader>ph", function()
-  popup.show_range(0, 15)
-end, { desc = "Popup file header" })
+vim.keymap.set("n", "<leader>ph", function() popup.show_range(0, 15) end, { desc = "Popup file header" })
 
 vim.keymap.set("n", "<leader>pf", show_popup_for_context, { desc = "Popup fold/code block content" })
 
@@ -153,9 +141,7 @@ vim.keymap.set("x", "<leader>pv", function()
 
   local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
   vim.api.nvim_feedkeys(esc, "nx", false)
-  vim.schedule(function()
-    popup.show_range(start_line, end_line)
-  end)
+  vim.schedule(function() popup.show_range(start_line, end_line) end)
 end, { desc = "Popup visual selection" })
 
 -- DAP
@@ -219,9 +205,12 @@ vim.keymap.set("i", ";", ";<c-g>u", { silent = true, noremap = true })
 -- Command mode mappings (from configs/keymaps.lua)
 vim.keymap.set("c", "<C-a>", "<Home>", { silent = true, noremap = true })
 
-vim.keymap.set("n", "<C-g>", function()
-  vim.notify(vim.fn.expand "%:p", vim.log.levels.INFO, { title = "Current File" })
-end, { desc = "Show absolute file path" })
+vim.keymap.set(
+  "n",
+  "<C-g>",
+  function() vim.notify(vim.fn.expand "%:p", vim.log.levels.INFO, { title = "Current File" }) end,
+  { desc = "Show absolute file path" }
+)
 
 -- Resize window
 map("n", "<C-w><left>", "<C-w><")
@@ -260,9 +249,7 @@ local function move_line_or_block(direction, count)
   vim.cmd "normal! =="
 end
 
-local function move_line_or_block_with_count(direction)
-  move_line_or_block(direction, vim.v.count1)
-end
+local function move_line_or_block_with_count(direction) move_line_or_block(direction, vim.v.count1) end
 
 local function move_line_or_block_from_insert(direction)
   local count = vim.v.count1
@@ -271,26 +258,14 @@ local function move_line_or_block_from_insert(direction)
   vim.cmd "startinsert"
 end
 
-map("n", "<leader>j", function()
-  move_line_or_block_with_count "down"
-end, { desc = "Move line down" })
-map("n", "<leader>k", function()
-  move_line_or_block_with_count "up"
-end, { desc = "Move line up" })
+map("n", "<leader>j", function() move_line_or_block_with_count "down" end, { desc = "Move line down" })
+map("n", "<leader>k", function() move_line_or_block_with_count "up" end, { desc = "Move line up" })
 
-map("i", "<C-g>j", function()
-  move_line_or_block_from_insert "down"
-end, { desc = "Move line down" })
-map("i", "<C-g>k", function()
-  move_line_or_block_from_insert "up"
-end, { desc = "Move line up" })
+map("i", "<C-g>j", function() move_line_or_block_from_insert "down" end, { desc = "Move line down" })
+map("i", "<C-g>k", function() move_line_or_block_from_insert "up" end, { desc = "Move line up" })
 
-map("v", "<leader>j", function()
-  move_line_or_block_with_count "down"
-end, { desc = "Move selection down" })
-map("v", "<leader>k", function()
-  move_line_or_block_with_count "up"
-end, { desc = "Move selection up" })
+map("v", "<leader>j", function() move_line_or_block_with_count "down" end, { desc = "Move selection down" })
+map("v", "<leader>k", function() move_line_or_block_with_count "up" end, { desc = "Move selection up" })
 
 -- OR
 
@@ -382,9 +357,7 @@ end, { desc = "Wrap selection with plain code block" })
 -- Normal mode: Insert code block with language prompt
 vim.keymap.set("n", "<leader>~", function()
   local lang = vim.fn.input "Language: "
-  if lang == "" then
-    lang = "plaintext"
-  end
+  if lang == "" then lang = "plaintext" end
   local lines = {
     "```" .. lang,
     "",
@@ -397,9 +370,7 @@ end, { desc = "Insert code block with language" })
 -- Visual mode: Wrap selected lines with code block
 vim.keymap.set("x", "<leader>~", function()
   local lang = vim.fn.input "Language: "
-  if lang == "" then
-    lang = "plaintext"
-  end
+  if lang == "" then lang = "plaintext" end
 
   local esc = vim.api.nvim_replace_termcodes("<ESC>", true, false, true)
   vim.api.nvim_feedkeys(esc, "x", false)
@@ -448,16 +419,12 @@ map("n", "<leader>cs", "<cmd><CR>", { desc = "General clear statusline" })
 map("n", "<leader><F10>", "<cmd>stop<CR>", { desc = "Genaral stop NVIM" })
 
 map("n", "<leader>cm", "<cmd>mes clear<CR>", { desc = "General clear messages" })
-map("n", "<leader>cn", function()
-  require("notify").dismiss { silent = true, pending = true }
-end, { desc = "Clear notifications" })
+map("n", "<leader>cn", function() require("notify").dismiss { silent = true, pending = true } end, { desc = "Clear notifications" })
 
 -- https://github.com/neovim/neovim/issues/2054
 map("i", "<A-BS>", "<C-w>", { desc = "General remove word" })
 
-map("n", "<leader>ol", function()
-  vim.ui.open(vim.fn.expand "%:p:h")
-end, { desc = "General open file location in file explorer" })
+map("n", "<leader>ol", function() vim.ui.open(vim.fn.expand "%:p:h") end, { desc = "General open file location in file explorer" })
 
 -- Yank/Paste/Delete/Cut improvements
 -- https://github.com/neovim/neovim/issues/29718
@@ -533,13 +500,9 @@ map("n", "<C-A-j>", "11<C-w>-", { desc = "Window decrease height by 5" })
 
 vim.keymap.set("n", "<leader>raa", function()
   local old = vim.fn.input "Replace: "
-  if old == "" then
-    return
-  end
+  if old == "" then return end
   local new = vim.fn.input "With: "
-  if new == "" then
-    return
-  end
+  if new == "" then return end
 
   vim.cmd("vimgrep /" .. old .. "/gj **/*")
 
@@ -667,18 +630,14 @@ end, { desc = "Replace string in all files of project" })
 
 local M = {}
 
-local function escape_lua_pattern(s)
-  return s:gsub("([%%%^%$%(%)%.%[%]%*%+%-%?])", "%%%1")
-end
+local function escape_lua_pattern(s) return s:gsub("([%%%^%$%(%)%.%[%]%*%+%-%?])", "%%%1") end
 
 local function replace_in_range(start_line, end_line, search, replace, use_regex)
   local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
 
   for i, line in ipairs(lines) do
     if use_regex then
-      local ok, new_line = pcall(function()
-        return line:gsub(search, replace)
-      end)
+      local ok, new_line = pcall(function() return line:gsub(search, replace) end)
       if ok then
         lines[i] = new_line
       else
@@ -742,15 +701,9 @@ end
 package.loaded.replace_text = M
 
 local map_replace = vim.keymap.set
-map_replace("n", "<leader>r", function()
-  require("replace_text").ReplaceCurrentLine()
-end, { desc = "Replace text on line" })
-map_replace("n", "<leader>R", function()
-  require("replace_text").ReplaceInFile()
-end, { desc = "Replace text in file" })
-map_replace("v", "<leader>r", function()
-  require("replace_text").ReplaceInSelection()
-end, { desc = "Replace text in selection" })
+map_replace("n", "<leader>r", function() require("replace_text").ReplaceCurrentLine() end, { desc = "Replace text on line" })
+map_replace("n", "<leader>R", function() require("replace_text").ReplaceInFile() end, { desc = "Replace text in file" })
+map_replace("v", "<leader>r", function() require("replace_text").ReplaceInSelection() end, { desc = "Replace text in selection" })
 
 -- Togglers
 map("n", "<leader>n", "<cmd>set nu!<CR>", { desc = "Toggle line number" })
@@ -763,40 +716,22 @@ map("n", "<leader>ds", vim.diagnostic.setloclist, { desc = "LSP diagnostic locli
 map("n", "<leader>de", vim.diagnostic.open_float, { desc = "LSP show diagnostic float" })
 
 -- Diagnostic navigation
-map("n", "[d", function()
-  vim.diagnostic.jump { count = -1 }
-end, { desc = "Go to previous diagnostic" })
-map("n", "]d", function()
-  vim.diagnostic.jump { count = 1 }
-end, { desc = "Go to next diagnostic" })
-map("n", "[e", function()
-  vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR }
-end, { desc = "Go to previous error" })
-map("n", "]e", function()
-  vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR }
-end, { desc = "Go to next error" })
-map("n", "[w", function()
-  vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.WARN }
-end, { desc = "Go to previous warning" })
-map("n", "]w", function()
-  vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.WARN }
-end, { desc = "Go to next warning" })
+map("n", "[d", function() vim.diagnostic.jump { count = -1 } end, { desc = "Go to previous diagnostic" })
+map("n", "]d", function() vim.diagnostic.jump { count = 1 } end, { desc = "Go to next diagnostic" })
+map("n", "[e", function() vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.ERROR } end, { desc = "Go to previous error" })
+map("n", "]e", function() vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.ERROR } end, { desc = "Go to next error" })
+map("n", "[w", function() vim.diagnostic.jump { count = -1, severity = vim.diagnostic.severity.WARN } end, { desc = "Go to previous warning" })
+map("n", "]w", function() vim.diagnostic.jump { count = 1, severity = vim.diagnostic.severity.WARN } end, { desc = "Go to next warning" })
 
 -- Minty
-map("n", "<leader>cp", function()
-  require("minty.huefy").open()
-end, { desc = "Open color picker" })
+map("n", "<leader>cp", function() require("minty.huefy").open() end, { desc = "Open color picker" })
 
 -- NvChad
-map("n", "<leader>th", function()
-  require("nvchad.themes").open { style = "flat" }
-end, { desc = "Open theme picker" })
+map("n", "<leader>th", function() require("nvchad.themes").open { style = "flat" } end, { desc = "Open theme picker" })
 
 -- NvMenu
 local menus = utils.menus
-map({ "n", "v" }, "<C-t>", function()
-  require("menu").open(menus.main)
-end, { desc = "Open NvChad menu" })
+map({ "n", "v" }, "<C-t>", function() require("menu").open(menus.main) end, { desc = "Open NvChad menu" })
 
 map({ "n", "v" }, "<RightMouse>", function()
   vim.cmd.exec '"normal! \\<RightMouse>"'
@@ -832,61 +767,50 @@ map({ "n", "t" }, "<leader>h", function()
   }
 end, { desc = "Term toggle horizontal split in buffer location" })
 
-map({ "n", "t" }, "<leader>tf", function()
-  require("nvchad.term").toggle { pos = "float", id = "floatTerm" }
-end, { desc = "Term toggle floating" })
+map({ "n", "t" }, "<leader>tf", function() require("nvchad.term").toggle { pos = "float", id = "floatTerm" } end, { desc = "Term toggle floating" })
 
-map({ "n", "t" }, "<A-S-i>", function()
-  require("nvchad.term").toggle {
-    pos = "float",
-    id = "floatTermLoc",
-    cmd = "cd " .. vim.fn.expand "%:p:h",
-  }
-end, { desc = "Term toggle floating in buffer location" })
+map(
+  { "n", "t" },
+  "<A-S-i>",
+  function()
+    require("nvchad.term").toggle {
+      pos = "float",
+      id = "floatTermLoc",
+      cmd = "cd " .. vim.fn.expand "%:p:h",
+    }
+  end,
+  { desc = "Term toggle floating in buffer location" }
+)
 
 -- TreeSitter
-map({ "n", "v" }, "<leader>it", function()
-  utils.toggle_inspect_tree()
-end, { desc = "TreeSitter toggle inspect tree" })
+map({ "n", "v" }, "<leader>it", function() utils.toggle_inspect_tree() end, { desc = "TreeSitter toggle inspect tree" })
 
 map("n", "<leader>ii", "<cmd>Inspect<CR>", { desc = "TreeSitter inspect under cursor" })
 
 --- Tabufline
 local tabufline = require "nvchad.tabufline"
 
-map("n", "<Tab>", function()
-  tabufline.next()
-end, { desc = "Buffer go to next" })
+map("n", "<Tab>", function() tabufline.next() end, { desc = "Buffer go to next" })
 
-map("n", "<S-Tab>", function()
-  tabufline.prev()
-end, { desc = "Buffer go to prev" })
+map("n", "<S-Tab>", function() tabufline.prev() end, { desc = "Buffer go to prev" })
 
 map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
 map("n", "<leader>bh", "<cmd>split | enew<CR>", { desc = "Buffer new horizontal split" })
 map("n", "<leader>bv", "<cmd>vsplit | enew<CR>", { desc = "Buffer new vertical split" })
 
-map("n", "<leader>x", function()
-  tabufline.close_buffer()
-end, { desc = "Buffer close" })
+map("n", "<leader>x", function() tabufline.close_buffer() end, { desc = "Buffer close" })
 
 for i = 7, 9 do
   map("n", "<A-" .. i .. ">", i .. "gt", { desc = "Tab go to tab " .. i })
 end
 
-map("n", "<A-Left>", function()
-  tabufline.move_buf(5)
-end, { desc = "Tabufline move buffer to the left" })
+map("n", "<A-Left>", function() tabufline.move_buf(5) end, { desc = "Tabufline move buffer to the left" })
 
-map("n", "<A-Right>", function()
-  tabufline.move_buf(7)
-end, { desc = "Tabufline move buffer to the right" })
+map("n", "<A-Right>", function() tabufline.move_buf(7) end, { desc = "Tabufline move buffer to the right" })
 
 map("n", "<A-|>", "<cmd>TabuflineToggle<CR>", { desc = "Tabufline toggle visibility" })
 
-map("n", "gh", function()
-  utils.go_to_github_link()
-end, { desc = "Go to GitHub link generated from string" })
+map("n", "gh", function() utils.go_to_github_link() end, { desc = "Go to GitHub link generated from string" })
 
 -- ============================================================================
 -- Helper Functions from configs/keymaps.lua
@@ -929,53 +853,29 @@ local insert_code_chunk = function(lang)
   vim.api.nvim_feedkeys(keys, "n", false)
 end
 
-local insert_r_chunk = function()
-  insert_code_chunk "r"
-end
+local insert_r_chunk = function() insert_code_chunk "r" end
 
-local insert_py_chunk = function()
-  insert_code_chunk "python"
-end
+local insert_py_chunk = function() insert_code_chunk "python" end
 
-local insert_lua_chunk = function()
-  insert_code_chunk "lua"
-end
+local insert_lua_chunk = function() insert_code_chunk "lua" end
 
-local insert_julia_chunk = function()
-  insert_code_chunk "julia"
-end
+local insert_julia_chunk = function() insert_code_chunk "julia" end
 
-local insert_bash_chunk = function()
-  insert_code_chunk "bash"
-end
+local insert_bash_chunk = function() insert_code_chunk "bash" end
 
-local insert_ojs_chunk = function()
-  insert_code_chunk "ojs"
-end
+local insert_ojs_chunk = function() insert_code_chunk "ojs" end
 
-local function new_terminal(lang)
-  vim.cmd("vsplit term://" .. lang)
-end
+local function new_terminal(lang) vim.cmd("vsplit term://" .. lang) end
 
-local function new_terminal_python()
-  new_terminal "python"
-end
+local function new_terminal_python() new_terminal "python" end
 
-local function new_terminal_r()
-  new_terminal "R --no-save"
-end
+local function new_terminal_r() new_terminal "R --no-save" end
 
-local function new_terminal_ipython()
-  new_terminal "ipython --no-confirm-exit"
-end
+local function new_terminal_ipython() new_terminal "ipython --no-confirm-exit" end
 
-local function new_terminal_julia()
-  new_terminal "julia"
-end
+local function new_terminal_julia() new_terminal "julia" end
 
-local function new_terminal_shell()
-  new_terminal "$SHELL"
-end
+local function new_terminal_shell() new_terminal "$SHELL" end
 
 local function get_otter_symbols_lang()
   local otterkeeper = require "otter.keeper"
@@ -1103,9 +1003,7 @@ wk.add({
     {
       {
         "<localleader>ldd",
-        function()
-          vim.diagnostic.enable(false)
-        end,
+        function() vim.diagnostic.enable(false) end,
         desc = "[d]isable",
       },
       { "<localleader>lde", vim.diagnostic.enable, desc = "[e]nable" },
@@ -1139,9 +1037,7 @@ wk.add({
     { "<localleader>qe", require("otter").export, desc = "[e]xport" },
     {
       "<localleader>qE",
-      function()
-        require("otter").export(true)
-      end,
+      function() require("otter").export(true) end,
       desc = "[E]xport with overwrite",
     },
   },
@@ -1166,32 +1062,24 @@ wk.add({
   {
     {
       "<localleader>wi",
-      function()
-        require("noah.web3").show_project_info()
-      end,
+      function() require("noah.web3").show_project_info() end,
       desc = "project [i]nfo",
     },
     { "<localleader>wt", group = "[t]est" },
     {
       {
         "<localleader>wtt",
-        function()
-          require("noah.web3").run_foundry_test()
-        end,
+        function() require("noah.web3").run_foundry_test() end,
         desc = "[t]est (Foundry)",
       },
       {
         "<localleader>wtv",
-        function()
-          require("noah.web3").run_foundry_test_verbose(2)
-        end,
+        function() require("noah.web3").run_foundry_test_verbose(2) end,
         desc = "test [v]erbose",
       },
       {
         "<localleader>wth",
-        function()
-          require("noah.web3").run_hardhat_test()
-        end,
+        function() require("noah.web3").run_hardhat_test() end,
         desc = "test [h]ardhat",
       },
     },
@@ -1199,24 +1087,18 @@ wk.add({
     {
       {
         "<localleader>wcf",
-        function()
-          require("noah.web3").compile_foundry()
-        end,
+        function() require("noah.web3").compile_foundry() end,
         desc = "[f]oundry compile",
       },
       {
         "<localleader>wch",
-        function()
-          require("noah.web3").compile_hardhat()
-        end,
+        function() require("noah.web3").compile_hardhat() end,
         desc = "[h]ardhat compile",
       },
     },
     {
       "<localleader>wf",
-      function()
-        require("noah.web3").format_solidity_forge()
-      end,
+      function() require("noah.web3").format_solidity_forge() end,
       desc = "[f]ormat (forge fmt)",
     },
   },
@@ -1245,9 +1127,7 @@ map("n", "gx", [[:silent execute '!open ' . shellescape(expand('<cfile>'), 1)<CR
 local function my_on_attach(bufnr)
   local api = require "nvim-tree.api"
 
-  local function opts(desc)
-    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-  end
+  local function opts(desc) return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true } end
 
   -- default mappings
   api.config.mappings.default_on_attach(bufnr)

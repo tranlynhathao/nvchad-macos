@@ -1,8 +1,6 @@
 local keymap = vim.keymap
 
-local function get_term(cmd)
-  return string.format("<cmd>ToggleTerm direction=float cmd='%s'<cr>", cmd)
-end
+local function get_term(cmd) return string.format("<cmd>ToggleTerm direction=float cmd='%s'<cr>", cmd) end
 
 -- C/C++
 keymap.set("n", "<leader>cb", get_term "make", { noremap = true, silent = true, desc = "Build C/C++ project" })

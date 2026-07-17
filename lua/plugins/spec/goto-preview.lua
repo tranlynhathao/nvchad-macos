@@ -33,9 +33,7 @@ return {
     local map = vim.keymap.set
     local opts = { noremap = true, silent = true }
 
-    local function d(desc)
-      return vim.tbl_extend("force", opts, { desc = desc })
-    end
+    local function d(desc) return vim.tbl_extend("force", opts, { desc = desc }) end
 
     map("n", "gp", gtp.goto_preview_definition, d "Preview Definition")
     map("n", "gI", gtp.goto_preview_implementation, d "Preview Implementation")
@@ -43,9 +41,7 @@ return {
     map("n", "gR", gtp.goto_preview_references, d "Preview References")
     map("n", "gP", gtp.close_all_win, d "Close all previews")
 
-    map("n", "<leader>q", function()
-      gtp.dismiss_preview(0)
-    end, { desc = "Close current preview" })
+    map("n", "<leader>q", function() gtp.dismiss_preview(0) end, { desc = "Close current preview" })
   end,
 }
 

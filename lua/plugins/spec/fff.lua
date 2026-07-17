@@ -1,15 +1,18 @@
 ---@type NvPluginSpec
 return {
   "dmtrKovalenko/fff.nvim",
-  lazy = true,
-  build = function()
-    require("fff.download").download_or_build_binary()
-  end,
+  -- Load triggers: user commands from plugin/fff.lua + keys defined in
+  -- lua/noah/fff.lua. Without these, `nvim .` (no file argument) would leave
+  -- the plugin dormant and `<cmd>FFF*<cr>` keymaps would fail with E492.
+  cmd = { "FFFFind", "FFFResume", "FFFScan", "FFFRefreshGit", "FFFClearCache" },
+  keys = {
+    { "<leader>ff", "<cmd>FFFFind<cr>", desc = "FFF: find files" },
+    { "<leader>fF", "<cmd>FFFResume<cr>", desc = "FFF: resume last" },
+  },
+  build = function() require("fff.download").download_or_build_binary() end,
   opts = function()
     local threads = 4
-    if vim.uv.available_parallelism then
-      threads = vim.uv.available_parallelism()
-    end
+    if vim.uv.available_parallelism then threads = vim.uv.available_parallelism() end
 
     return {
       -- prompt = " ",
@@ -24,29 +27,19 @@ return {
       layout = {
         -- height = 0.9,
         height = function(_, lines)
-          if lines >= 56 then
-            return 0.82
-          end
+          if lines >= 56 then return 0.82 end
 
-          if lines >= 44 then
-            return 0.88
-          end
+          if lines >= 44 then return 0.88 end
 
           return 0.94
         end,
         -- width = 0.9,
         width = function(columns)
-          if columns >= 220 then
-            return 0.78
-          end
+          if columns >= 220 then return 0.78 end
 
-          if columns >= 180 then
-            return 0.84
-          end
+          if columns >= 180 then return 0.84 end
 
-          if columns >= 140 then
-            return 0.9
-          end
+          if columns >= 140 then return 0.9 end
 
           return 0.96
         end,
@@ -55,13 +48,9 @@ return {
         preview_position = "right",
         -- preview_size = 0.55,
         preview_size = function(columns)
-          if columns >= 220 then
-            return 0.56
-          end
+          if columns >= 220 then return 0.56 end
 
-          if columns >= 160 then
-            return 0.52
-          end
+          if columns >= 160 then return 0.52 end
 
           return 0.48
         end,

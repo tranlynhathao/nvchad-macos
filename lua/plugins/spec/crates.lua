@@ -14,8 +14,6 @@ return {
     }
     crates.show()
 
-    vim.keymap.set("n", "<leader>cu", function()
-      crates.upgrade_all_crates()
-    end, { desc = "Update crates" })
+    vim.keymap.set("n", "<leader>cu", function() crates.upgrade_all_crates() end, { desc = "Update crates" })
   end,
 }

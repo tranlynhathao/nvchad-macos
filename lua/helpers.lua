@@ -11,12 +11,8 @@ vim.keymap.set("n", "<leader>ce", function()
 end, { noremap = true, silent = true })
 
 -- go to errors in a file
-vim.keymap.set("n", "<leader>ne", function()
-  vim.diagnostic.jump { count = 1 }
-end) -- next err
-vim.keymap.set("n", "<leader>pe", function()
-  vim.diagnostic.jump { count = -1 }
-end) -- previous err
+vim.keymap.set("n", "<leader>ne", function() vim.diagnostic.jump { count = 1 } end) -- next err
+vim.keymap.set("n", "<leader>pe", function() vim.diagnostic.jump { count = -1 } end) -- previous err
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
@@ -60,7 +56,7 @@ vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
 -- set language based on vim mode
 -- requires macism https://github.com/laishulu/macism
 -- recommend installing it by brew
-local sysname = vim.loop.os_uname().sysname
+local sysname = vim.uv.os_uname().sysname
 local is_mac = sysname == "Darwin"
 local is_linux = sysname == "Linux"
 
@@ -87,15 +83,11 @@ if is_mac then
   })
 
   vim.api.nvim_create_autocmd({ "CmdlineEnter" }, {
-    callback = function()
-      os.execute("macism " .. english_layout)
-    end,
+    callback = function() os.execute("macism " .. english_layout) end,
   })
 
   vim.api.nvim_create_autocmd("InsertEnter", {
-    callback = function()
-      os.execute("macism " .. last_insert_layout)
-    end,
+    callback = function() os.execute("macism " .. last_insert_layout) end,
   })
 
   vim.api.nvim_create_autocmd("FocusGained", {
@@ -115,16 +107,12 @@ elseif is_linux then
     if f ~= nil then
       local result = f:read "*all"
       f:close()
-      if result then
-        return result:gsub("%s+", "")
-      end
+      if result then return result:gsub("%s+", "") end
     end
     return "keyboard-us" -- fallback English
   end
 
-  local function set_fcitx_layout(layout)
-    os.execute("fcitx5-remote -s " .. layout)
-  end
+  local function set_fcitx_layout(layout) os.execute("fcitx5-remote -s " .. layout) end
 
   vim.api.nvim_create_autocmd("InsertLeave", {
     callback = function()
@@ -134,9 +122,7 @@ elseif is_linux then
   })
 
   vim.api.nvim_create_autocmd("InsertEnter", {
-    callback = function()
-      set_fcitx_layout(last_layout)
-    end,
+    callback = function() set_fcitx_layout(last_layout) end,
   })
 
   vim.api.nvim_create_autocmd("FocusGained", {
@@ -180,9 +166,7 @@ vim.api.nvim_create_user_command("ShowTree", function()
         end
       end
     end,
-    on_exit = function()
-      vim.api.nvim_win_close(win, true)
-    end,
+    on_exit = function() vim.api.nvim_win_close(win, true) end,
   })
   print("Job ID: " .. job_id)
 end, {})

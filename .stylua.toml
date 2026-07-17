@@ -1,6 +1,13 @@
+# Local override for the Neovim config only.
+# Plugin specs, colorscheme tables and LSP options frequently have long
+# signatures, so we widen the column budget here compared to the global
+# ~/.config/stylua/stylua.toml (which uses 120). All other options match
+# the global baseline so behaviour stays predictable.
+
 column_width = 150
 line_endings = "Unix"
 indent_type = "Spaces"
 indent_width = 2
 quote_style = "AutoPreferDouble"
 call_parentheses = "None"
+collapse_simple_statement = "Always"

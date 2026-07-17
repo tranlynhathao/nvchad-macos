@@ -4,15 +4,11 @@ return {
   keys = {
     {
       "]h",
-      function()
-        require("notebook-navigator").move_cell "d"
-      end,
+      function() require("notebook-navigator").move_cell "d" end,
     },
     {
       "[h",
-      function()
-        require("notebook-navigator").move_cell "u"
-      end,
+      function() require("notebook-navigator").move_cell "u" end,
     },
     { "<leader>X", "<cmd>lua require('notebook-navigator').run_cell()<cr>" },
     { "<leader><leader>x", "<cmd>lua require('notebook-navigator').run_and_move()<cr>" },

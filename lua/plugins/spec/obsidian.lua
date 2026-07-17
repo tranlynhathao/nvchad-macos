@@ -20,9 +20,7 @@ return {
     }
     for _, ws in ipairs(workspaces) do
       local path = vim.fn.fnamemodify(ws.path, ":p")
-      if vim.fn.isdirectory(path) == 0 then
-        vim.fn.mkdir(path, "p")
-      end
+      if vim.fn.isdirectory(path) == 0 then vim.fn.mkdir(path, "p") end
     end
     return {
       workspaces = workspaces,

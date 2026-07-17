@@ -1,3 +1,7 @@
+-- Enable Neovim's Lua bytecode cache before anything else.
+-- Saves ~100-300ms on subsequent startups by caching compiled modules.
+if vim.loader then vim.loader.enable() end
+
 require "compat"
 require "bootstrap"
 require "noah"
@@ -6,7 +10,6 @@ require "mappings"
 require "helpers"
 require "help_floating"
 require "floating_term"
-require "configs.autocmd"
 require "configs.keymaps"
 require "functions"
 
@@ -17,9 +20,7 @@ vim.api.nvim_create_autocmd("User", {
   once = true,
   callback = function()
     local ok, blockchain = pcall(require, "noah.blockchain")
-    if ok then
-      blockchain.setup()
-    end
+    if ok then blockchain.setup() end
   end,
 })
 

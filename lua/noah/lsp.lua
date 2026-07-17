@@ -5,43 +5,45 @@ local M = {}
 
 ---@type OnAttach
 local on_attach = function(client, bufnr)
-  local map = function(mode, lhs, rhs, opts)
-    local options = { buffer = bufnr }
-    if opts then
-      options = vim.tbl_deep_extend("force", options, opts)
-    end
-    vim.keymap.set(mode, lhs, rhs, options)
-  end
+  -- Small helper: single-line buffer keymap with optional overrides.
+  local map = function(mode, lhs, rhs, opts) vim.keymap.set(mode, lhs, rhs, vim.tbl_extend("force", { buffer = bufnr }, opts or {})) end
 
-  -- Keymaps
-  if client.server_capabilities.hoverProvider then
-    map("n", "K", vim.lsp.buf.hover, {})
-  end
-  if client.server_capabilities.definitionProvider then
-    map("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition" })
-  end
-  if client.server_capabilities.implementationProvider then
-    map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP go to implementation" })
-  end
-  if client.server_capabilities.declarationProvider then
-    map("n", "<leader>gd", vim.lsp.buf.declaration, { desc = "LSP go to declaration" })
-  end
-  if client.server_capabilities.signatureHelpProvider then
+  -- Capability-gated keymaps. `client:supports_method(...)` (Neovim 0.11+)
+  -- is the canonical way to probe LSP support - it walks
+  -- server_capabilities + resolved_capabilities + dynamic registration,
+  -- so it stays correct even when a server registers a capability
+  -- lazily via `client/registerCapability`.
+  local ms = vim.lsp.protocol.Methods
+
+  if client:supports_method(ms.textDocument_hover) then map("n", "K", vim.lsp.buf.hover) end
+  if client:supports_method(ms.textDocument_definition) then map("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition" }) end
+  if client:supports_method(ms.textDocument_implementation) then map("n", "gi", vim.lsp.buf.implementation, { desc = "LSP go to implementation" }) end
+  if client:supports_method(ms.textDocument_declaration) then map("n", "<leader>gd", vim.lsp.buf.declaration, { desc = "LSP go to declaration" }) end
+  if client:supports_method(ms.textDocument_signatureHelp) then
     map("n", "<leader>sh", vim.lsp.buf.signature_help, { desc = "LSP show signature help" })
   end
+
+  -- Unconditional keymaps (function exists on any attached client).
   map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, { desc = "LSP add workspace folder" })
   map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, { desc = "LSP remove workspace folder" })
   map("n", "<leader>gr", vim.lsp.buf.references, { desc = "LSP show references" })
   map("n", "<leader>gt", vim.lsp.buf.type_definition, { desc = "LSP go to type definition" })
 
-  -- Custom keymaps
-  map("n", "<leader>wl", function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-  end, { desc = "LSP list workspace folders" })
+  -- Workspace list: use vim.notify instead of raw print so it lands in noice
+  -- history and respects diagnostic UI. `vim.iter()` flattens the paths and
+  -- joins with a newline in one chain.
+  map(
+    "n",
+    "<leader>wl",
+    function()
+      vim.notify(vim.iter(vim.lsp.buf.list_workspace_folders()):join "\n", vim.log.levels.INFO, {
+        title = "LSP workspace folders",
+      })
+    end,
+    { desc = "LSP list workspace folders" }
+  )
 
-  map("n", "<leader>ra", function()
-    require "nvchad.lsp.renamer"()
-  end, { desc = "LSP rename" })
+  map("n", "<leader>ra", function() require "nvchad.lsp.renamer"() end, { desc = "LSP rename" })
 
   vim.keymap.set("n", "<leader>me", function()
     local filetype = vim.bo.filetype
@@ -63,17 +65,13 @@ end
 M.create_on_attach = function(custom_on_attach)
   return function(client, bufnr)
     on_attach(client, bufnr)
-    if custom_on_attach then
-      custom_on_attach(client, bufnr)
-    end
+    if custom_on_attach then custom_on_attach(client, bufnr) end
   end
 end
 
 ---@type OnInit
 M.on_init = function(client, _)
-  if client:supports_method "textDocument/semanticTokens" then
-    client.server_capabilities.semanticTokensProvider = nil
-  end
+  if client:supports_method "textDocument/semanticTokens" then client.server_capabilities.semanticTokensProvider = nil end
 end
 
 -- Capabilities
@@ -96,37 +94,5 @@ capabilities.textDocument.completion.completionItem = {
   },
 }
 M.capabilities = capabilities
-
--- Rust Analyzer configuration
--- COMMENTED OUT: rustaceanvim plugin handles this
--- vim.lsp.config("rust_analyzer", {
---   on_attach = function(client, bufnr)
---     on_attach(client, bufnr) -- Use shared on_attach
---     vim.api.nvim_create_autocmd("BufWritePre", {
---       pattern = "*.rs",
---       callback = function()
---         if client.server_capabilities.documentFormattingProvider then
---           vim.lsp.buf.format { async = true }
---         end
---       end,
---     })
---   end,
---   settings = {
---     ["rust-analyzer"] = {
---       cargo = {
---         allFeatures = true,
---         loadOutDirsFromCheck = true,
---         runBuildScripts = true,
---       },
---       checkOnSave = {
---         command = "clippy",
---       },
---       rustfmt = {
---         enable = true,
---         extraArgs = { "--edition=2021" },
---       },
---     },
---   },
--- })
 
 return M

@@ -14,20 +14,14 @@ local root_markers = {
 
 local function current_anchor()
   local path = vim.api.nvim_buf_get_name(0)
-  if path ~= "" then
-    return path
-  end
+  if path ~= "" then return path end
 
   return vim.uv.cwd()
 end
 
-local function project_root()
-  return vim.fs.root(current_anchor(), root_markers) or vim.uv.cwd()
-end
+local function project_root() return vim.fs.root(current_anchor(), root_markers) or vim.uv.cwd() end
 
-local function picker()
-  return require "fff"
-end
+local function picker() return require "fff" end
 
 local function sync_root()
   local root = project_root()
@@ -35,24 +29,16 @@ local function sync_root()
   return root
 end
 
-local function root_label(root)
-  return vim.fs.basename(root) or root
-end
+local function root_label(root) return vim.fs.basename(root) or root end
 
-local function merge_opts(defaults, opts)
-  return vim.tbl_deep_extend("force", defaults, opts or {})
-end
+local function merge_opts(defaults, opts) return vim.tbl_deep_extend("force", defaults, opts or {}) end
 
-local function picker_title(icon, label, root)
-  return string.format(" %s %s  %s ", icon, label, root_label(root))
-end
+local function picker_title(icon, label, root) return string.format(" %s %s  %s ", icon, label, root_label(root)) end
 
 local function clean_hl_spec(spec)
   local cleaned = {}
   for key, value in pairs(spec) do
-    if value ~= nil then
-      cleaned[key] = value
-    end
+    if value ~= nil then cleaned[key] = value end
   end
 
   return cleaned
@@ -60,21 +46,15 @@ end
 
 local function get_hl(name)
   local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = name, link = false })
-  if ok then
-    return hl
-  end
+  if ok then return hl end
 
   return {}
 end
 
 local function as_hex(value)
-  if value == nil then
-    return nil
-  end
+  if value == nil then return nil end
 
-  if type(value) == "number" then
-    return string.format("#%06x", value)
-  end
+  if type(value) == "number" then return string.format("#%06x", value) end
 
   return value
 end
@@ -82,9 +62,7 @@ end
 local function pick_color(...)
   for index = 1, select("#", ...) do
     local value = select(index, ...)
-    if value ~= nil then
-      return as_hex(value)
-    end
+    if value ~= nil then return as_hex(value) end
   end
 
   return nil
@@ -92,23 +70,17 @@ end
 
 local function base46_palette()
   local ok, base46 = pcall(require, "base46")
-  if not ok then
-    return {}
-  end
+  if not ok then return {} end
 
   local ok_palette, palette = pcall(base46.get_theme_tb, "base_30")
-  if not ok_palette then
-    return {}
-  end
+  if not ok_palette then return {} end
 
   return palette
 end
 
 local function ui_transparency()
   local ok, chadrc = pcall(require, "chadrc")
-  if not ok then
-    return false
-  end
+  if not ok then return false end
 
   return chadrc.base46 and chadrc.base46.transparency or false
 end
@@ -491,9 +463,7 @@ local function visual_selection()
   local selection = vim.fn.getreg "s"
   vim.fn.setreg("s", saved)
 
-  if selection == "" then
-    return nil
-  end
+  if selection == "" then return nil end
 
   return selection
 end
@@ -534,21 +504,15 @@ function M.fuzzy_grep(opts)
   }, opts))
 end
 
-function M.grep_cword()
-  M.live_grep { query = vim.fn.expand "<cword>" }
-end
+function M.grep_cword() M.live_grep { query = vim.fn.expand "<cword>" } end
 
 function M.grep_visual_selection()
   local selection = visual_selection()
-  if not selection then
-    return
-  end
+  if not selection then return end
 
   local esc = vim.api.nvim_replace_termcodes("<Esc>", true, false, true)
   vim.api.nvim_feedkeys(esc, "nx", false)
-  vim.schedule(function()
-    M.live_grep { query = selection }
-  end)
+  vim.schedule(function() M.live_grep { query = selection } end)
 end
 
 function M.scan_files()

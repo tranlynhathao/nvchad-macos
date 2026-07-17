@@ -15,7 +15,5 @@ return {
     },
     -- ignore_cb = nil,
   },
-  config = function(_, opts)
-    require("highlight-undo").setup(opts)
-  end,
+  config = function(_, opts) require("highlight-undo").setup(opts) end,
 }

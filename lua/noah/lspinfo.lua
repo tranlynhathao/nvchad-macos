@@ -2,17 +2,13 @@ local M = {}
 
 local function target_bufnr()
   local winid = vim.g.statusline_winid
-  if type(winid) == "number" and winid > 0 and vim.api.nvim_win_is_valid(winid) then
-    return vim.api.nvim_win_get_buf(winid)
-  end
+  if type(winid) == "number" and winid > 0 and vim.api.nvim_win_is_valid(winid) then return vim.api.nvim_win_get_buf(winid) end
 
   return vim.api.nvim_get_current_buf()
 end
 
 local function shorten(path)
-  if not path or path == "" then
-    return "[No Name]"
-  end
+  if not path or path == "" then return "[No Name]" end
 
   return vim.fn.fnamemodify(path, ":~")
 end

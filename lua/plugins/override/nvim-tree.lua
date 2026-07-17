@@ -3,9 +3,7 @@ return {
   "nvim-tree/nvim-tree.lua",
   enabled = true, -- disable by default
   auto_close = false,
-  init = function()
-    vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
-  end,
+  init = function() vim.keymap.set("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree" }) end,
   config = function()
     -- dofile(vim.g.base47_cache .. "nvimtree")
 
@@ -14,9 +12,7 @@ return {
 
     -- Add custom mappings
     local function custom_on_attach(bufnr)
-      local function opts(desc)
-        return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
-      end
+      local function opts(desc) return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true } end
 
       api.config.mappings.default_on_attach(bufnr)
       local map = vim.keymap.set
@@ -40,13 +36,9 @@ return {
 
     local path_sep = package.config:sub(1, 1)
 
-    local function trim_sep(path)
-      return path:gsub(path_sep .. "$", "")
-    end
+    local function trim_sep(path) return path:gsub(path_sep .. "$", "") end
 
-    local function uri_from_path(path)
-      return vim.uri_from_fname(trim_sep(path))
-    end
+    local function uri_from_path(path) return vim.uri_from_fname(trim_sep(path)) end
 
     local function is_sub_path(path, folder)
       path = trim_sep(path)
@@ -60,9 +52,7 @@ return {
 
     local function check_folders_contains(folders, path)
       for _, folder in pairs(folders) do
-        if is_sub_path(path, folder.name) then
-          return true
-        end
+        if is_sub_path(path, folder.name) then return true end
       end
       return false
     end
@@ -75,28 +65,20 @@ return {
       local pattern = filter.pattern
       local matches = pattern.matches
 
-      if type ~= matches then
-        return false
-      end
+      if type ~= matches then return false end
 
       local regex_str = vim.fn.glob2regpat(pattern.glob)
-      if vim.tbl_get(pattern, "options", "ignoreCase") then
-        regex_str = "\\c" .. regex_str
-      end
+      if vim.tbl_get(pattern, "options", "ignoreCase") then regex_str = "\\c" .. regex_str end
       return vim.regex(regex_str):match_str(name) ~= nil
     end
 
     -- Automatically open file upon creation
-    api.events.subscribe(api.events.Event.FileCreated, function(file)
-      vim.cmd("edit " .. file.fname)
-    end)
+    api.events.subscribe(api.events.Event.FileCreated, function(file) vim.cmd("edit " .. file.fname) end)
 
     -- Automatically detect and update renamed paths
     api.events.subscribe(api.events.Event.NodeRenamed, function(data)
       local stat = vim.uv.fs_stat(data.new_name)
-      if not stat then
-        return
-      end
+      if not stat then return end
       local type = ({ file = "file", directory = "folder" })[stat.type]
       local clients = vim.lsp.get_clients {}
       for _, client in ipairs(clients) do
@@ -199,9 +181,7 @@ return {
             }
           end,
         },
-        width = function()
-          return math.floor(vim.opt.columns:get() * SIZES.WIDTH)
-        end,
+        width = function() return math.floor(vim.opt.columns:get() * SIZES.WIDTH) end,
       },
       actions = {
         open_file = {

@@ -6,7 +6,8 @@ return {
   event = { "InsertEnter", "CmdlineEnter" },
   dependencies = {
     { "hrsh7th/cmp-cmdline" },
-    { "hrsh7th/cmp-emoji" },
+    -- cmp-emoji removed: emoji completion is niche and every registered source
+    -- adds latency on each keystroke because cmp queries all sources in parallel.
     { "brenoprata10/nvim-highlight-colors" },
     { "onsails/lspkind-nvim" },
   },
@@ -14,12 +15,8 @@ return {
     ---@type cmp.ConfigSchema
     local custom_opts = {
       mapping = {
-        ["<Tab>"] = function(fallback)
-          fallback()
-        end,
-        ["<S-Tab>"] = function(fallback)
-          fallback()
-        end,
+        ["<Tab>"] = function(fallback) fallback() end,
+        ["<S-Tab>"] = function(fallback) fallback() end,
       },
       window = {
         completion = {
@@ -49,17 +46,13 @@ return {
       sources = {
         { name = "cmdline" },
         { name = "path" },
-        { name = "emoji" },
-        {
-          name = "lazydev",
-          group_index = 0, -- set group index to 0 to skip loading LuaLS completions
-        },
+        -- Skip LuaLS completions in lazydev-managed buffers.
+        { name = "lazydev", group_index = 0 },
       },
     })
 
     cmp.setup {
       sources = {
-        { name = "emoji" },
         { name = "buffer" },
         { name = "path" },
       },
@@ -81,19 +74,13 @@ return {
         item.kind = string.format("%s%s ", icon, item.kind)
 
         local entryItem = entry:get_completion_item()
-        if entryItem == nil then
-          return item
-        end
+        if entryItem == nil then return item end
 
         local entryDoc = entryItem.documentation
-        if entryDoc == nil or type(entryDoc) ~= "string" then
-          return item
-        end
+        if entryDoc == nil or type(entryDoc) ~= "string" then return item end
 
         local color_hex = colors.get_color_value(entryDoc)
-        if color_hex == nil then
-          return item
-        end
+        if color_hex == nil then return item end
 
         local highlight_group = utils.create_highlight_name("fg-" .. color_hex)
         vim.api.nvim_set_hl(0, highlight_group, { fg = color_hex, default = true })

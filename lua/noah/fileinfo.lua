@@ -17,24 +17,18 @@ local function format_size(bytes)
 end
 
 local function ts_sec(ts)
-  if not ts then
-    return nil
-  end
+  if not ts then return nil end
   return type(ts) == "table" and ts.sec or ts
 end
 
 local function format_date(ts)
   local sec = ts_sec(ts)
-  if not sec or sec == 0 then
-    return "—"
-  end
+  if not sec or sec == 0 then return "—" end
   return os.date("%Y-%m-%d %H:%M:%S", sec)
 end
 
 local function format_permissions(mode)
-  if not mode then
-    return "—"
-  end
+  if not mode then return "—" end
   local bits = { "---", "--x", "-w-", "-wx", "r--", "r-x", "rw-", "rwx" }
   local owner = bit.band(bit.rshift(mode, 6), 7) + 1
   local group = bit.band(bit.rshift(mode, 3), 7) + 1
@@ -57,9 +51,7 @@ end
 
 local function get_line_count(path)
   local ok, lines = pcall(vim.fn.readfile, path)
-  if ok and lines then
-    return tostring(#lines)
-  end
+  if ok and lines then return tostring(#lines) end
   return "—"
 end
 
@@ -67,9 +59,7 @@ local function get_git_status(path)
   local result = vim.fn.systemlist(
     "git -C " .. vim.fn.shellescape(vim.fn.fnamemodify(path, ":h")) .. " status --porcelain -- " .. vim.fn.shellescape(path) .. " 2>/dev/null"
   )
-  if vim.v.shell_error ~= 0 or #result == 0 then
-    return "tracked (clean)"
-  end
+  if vim.v.shell_error ~= 0 or #result == 0 then return "tracked (clean)" end
   local code = result[1]:sub(1, 2)
   local status_map = {
     ["??"] = "untracked",
@@ -92,18 +82,14 @@ end
 
 local function get_mime_type(path)
   local result = vim.fn.system("file --brief --mime-type " .. vim.fn.shellescape(path) .. " 2>/dev/null")
-  if vim.v.shell_error ~= 0 then
-    return "—"
-  end
+  if vim.v.shell_error ~= 0 then return "—" end
   return vim.trim(result)
 end
 
 -- ── Close / Toggle ───────────────────────────────────────
 
 function M.close()
-  if current_popup and vim.api.nvim_win_is_valid(current_popup.win) then
-    vim.api.nvim_win_close(current_popup.win, true)
-  end
+  if current_popup and vim.api.nvim_win_is_valid(current_popup.win) then vim.api.nvim_win_close(current_popup.win, true) end
   pcall(vim.api.nvim_del_augroup_by_name, "FileInfoAutoClose")
   current_popup = nil
 end
@@ -111,9 +97,7 @@ end
 ---@param path? string
 function M.toggle(path)
   path = path or vim.api.nvim_buf_get_name(0)
-  if not path or path == "" then
-    return
-  end
+  if not path or path == "" then return end
   path = vim.fn.fnamemodify(path, ":p")
 
   if current_popup and current_popup.path == path then
@@ -123,9 +107,7 @@ function M.toggle(path)
   M.close()
 
   local stat = vim.uv.fs_stat(path)
-  if not stat then
-    return
-  end
+  if not stat then return end
 
   local is_dir = stat.type == "directory"
   local is_file = stat.type == "file"
@@ -149,14 +131,10 @@ function M.toggle(path)
   local size_content = {
     { "Size", is_dir and "—" or format_size(stat.size) },
   }
-  if is_file then
-    table.insert(size_content, { "Lines", get_line_count(path) })
-  end
+  if is_file then table.insert(size_content, { "Lines", get_line_count(path) }) end
   if is_dir then
     local ok, entries = pcall(vim.fn.readdir, path)
-    if ok and entries then
-      table.insert(size_content, { "Entries", tostring(#entries) })
-    end
+    if ok and entries then table.insert(size_content, { "Entries", tostring(#entries) }) end
   end
   table.insert(sections, { title = "SIZE", rows = size_content })
 
@@ -206,9 +184,7 @@ function M.toggle(path)
       local pad = string.rep(" ", label_w - #label)
       table.insert(lines, "  " .. label .. pad .. value)
     end
-    if si < #sections then
-      table.insert(lines, "")
-    end
+    if si < #sections then table.insert(lines, "") end
   end
   table.insert(lines, "")
 
@@ -314,9 +290,7 @@ function M.toggle(path)
 
   vim.api.nvim_create_autocmd("CursorMoved", {
     group = vim.api.nvim_create_augroup("FileInfoAutoClose", {}),
-    callback = function()
-      M.close()
-    end,
+    callback = function() M.close() end,
   })
 end
 
