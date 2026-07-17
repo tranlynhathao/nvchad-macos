@@ -16,3 +16,4 @@ markdown-nvim.lua
 
 *.log
 nix-neovim/
+.claude/
