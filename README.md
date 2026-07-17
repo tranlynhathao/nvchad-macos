@@ -21,9 +21,14 @@
 - features [nvchad v2.5](https://nvchad.com/news/v2.5_release)
 - target os: wsl2/linux/macos
 - modularised setup of plugins and configurations
+- LSP via Neovim 0.11+ tier-3 API (`lsp/<server>.lua` auto-discovery);
+  formatting via [conform.nvim](https://github.com/stevearc/conform.nvim),
+  linting via [nvim-lint](https://github.com/mfussenegger/nvim-lint) — one
+  source of truth per language, no null-ls
 - scripting with bash, lua and toml as smooth as it gets
 - web development with js/ts, react and astro **fully covered**
-- development with rust, c and go
+- development with rust (via [rustaceanvim](https://github.com/mrcjkb/rustaceanvim)),
+  c and go
 - git integrated using [neogit](https://github.com/neogitorg/neogit),
   [gitsigns](https://github.com/lewis6991/gitsigns.nvim),
   [diffview](https://github.com/sindrets/diffview.nvim),
@@ -31,6 +36,8 @@
   and [vimfugitive](https://github.com/tpope/vim-fugitive)
 - [markdown preview](https://github.com/iamcco/markdown-preview.nvim) with live
   changes in browser
+- MCP servers wired via [mcphub.nvim](https://github.com/ravitemer/mcphub.nvim)
+  (GitHub PAT stored in macOS Keychain, not disk)
 - round borders as a priority over sharp borders
 
 > [!WARNING]
@@ -45,33 +52,44 @@
 
 Required:
 
-- NVIM Stable v0.10.1+ (Nightlies might work)
+- NVIM Stable v0.11.0+ (tier-3 `lsp/` folder and `vim.lsp.enable()` are 0.11 APIs)
 - NvChad v2.5
 - Python 3.11.7+ & pip
 - pip: `pynvim==0.4.3+`
-- Node.js v22+
+- Node.js v22+ (also used by `mcp-hub`, installed on first mcphub build)
 - npm: `neovim@4.10.1+`
 
 Recommended:
 
-- Cargo 1.74.1+
+- Cargo 1.74.1+ (rustaceanvim + rust-analyzer)
+- `security` CLI on macOS if you use the GitHub MCP server (keychain-backed PAT)
 
 ### Checklist
 
-- [ ] Require plugin module
-  - officer
-  - savior
-  - gotest
-  - Auto-session
-  - nvim-tree-text-objects
-- [ ] Fix:
-  - Format Rust, Ruby,...
-  - Attempt to call local 'module' (a nil value) [issue 2](https://github.com/tranlynhathao/nvchad-macos/issues/2)
-  - Change UI theme [issue 3](https://github.com/tranlynhathao/nvchad-macos/issues/3)
-- [ ] Optimize plugin
-- [ ] Rebuild module structure
-- [ ] Add LSP
-- [ ] Adjust keymaps: abolish
+- [x] Require plugin module
+  - [x] officer
+  - [x] savior
+  - [x] gotest
+  - [x] abolish
+  - [ ] Auto-session
+  - [ ] nvim-tree-text-objects
+- [x] Fix:
+  - [x] Format Rust, Ruby,... (conform.nvim: rustfmt + rubocop)
+  - [x] Attempt to call local 'module' (a nil value) — resolved by null-ls
+        removal + dead `noah/<lang>.lua` cleanup
+  - [ ] Change UI theme [issue 3](https://github.com/tranlynhathao/nvchad-macos/issues/3)
+- [x] Optimize plugin (perf tier-1: cold start ~1700ms → ~394ms — cmp deps
+      trimmed, `vim.loader.enable()`, >512 KiB large-file guard, telescope/fff
+      lazy triggers)
+- [x] Rebuild module structure (tier-3 `lsp/` folder; 22 dead `noah/<lang>.lua`
+      files + `configs/autocmd.lua` removed)
+- [x] Add LSP (15 servers via tier-3 auto-discovery + `filetype_to_servers`
+      lazy enable)
+- [ ] Adjust keymaps: dedup `<leader>ch` / `<leader>cp` / `<leader>ts`
+      collisions in `lua/mappings.lua`
+- [ ] Merge `lua/mappings.lua` (1197 lines) with `lua/configs/keymaps.lua`
+      (443 lines) — currently loaded in parallel from `init.lua`
+- [ ] Prune plugin overlap: git (6), markdown (6), UI (noice + dressing + edgy + notify)
 
 ### Pre-commit Hooks
 
