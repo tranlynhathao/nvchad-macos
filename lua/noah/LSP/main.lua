@@ -17,9 +17,6 @@ M.setup = function()
   require "noah.LSP.luasnip.main"
 end
 
--- Legacy top-level auto-run. Kept because require("noah.LSP.main") at file
--- load time can happen from multiple call sites; the guard prevents nested
--- setup during require-of-require.
 if not pcall(debug.getlocal, 4, 1) then M.setup() end
 
 return M

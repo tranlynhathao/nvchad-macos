@@ -1,15 +1,16 @@
 return {
   "rachartier/tiny-code-action.nvim",
-  event = "LspAttach",
+  keys = {
+    {
+      "<leader>ca",
+      function() require("tiny-code-action").code_action() end,
+      mode = { "n", "v" },
+      desc = "Tiny code action",
+    },
+  },
   dependencies = {
     { "nvim-lua/plenary.nvim" },
     { "nvim-telescope/telescope.nvim" },
   },
-  config = function()
-    local map = require("noah.utils").glb_map
-
-    map({ "n", "v" }, "<leader>ca", function() require("tiny-code-action").code_action() end, { desc = "Tiny code action" })
-
-    require("tiny-code-action").setup()
-  end,
+  config = function() require("tiny-code-action").setup() end,
 }

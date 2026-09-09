@@ -5,10 +5,9 @@ return {
   event = "VeryLazy",
   dependencies = { "nvim-tree/nvim-web-devicons" },
   opts = function(_, opts)
-    -- Set localleader to "," for oil
-    local prev_localleader = vim.g.maplocalleader
-    vim.g.maplocalleader = ","
-
+    -- maplocalleader is already "," (set in init.lua before lazy.setup) — the
+    -- previous save/restore dance here triggered lazy's "set BEFORE loading
+    -- lazy" warning twice per startup.
     local util = require "oil.util"
     local map = require("noah.utils").glb_map
 
@@ -72,12 +71,13 @@ return {
 
     local git_status = new_git_status()
 
-    -- Clear git status cache on refresh
+    -- Clear git status cache on refresh; also re-fire directory aggregation.
     local refresh = require("oil.actions").refresh
     local orig_refresh = refresh.callback
     refresh.callback = function(...)
       git_status = new_git_status()
       orig_refresh(...)
+      vim.schedule(function() pcall(vim.api.nvim_exec_autocmds, "User", { pattern = "OilDirGitAggRefresh" }) end)
     end
 
     ---@type oil.SetupOpts
@@ -88,7 +88,10 @@ return {
       cleanup_delay_ms = 0,
       win_options = {
         winbar = "%!v:lua.get_oil_winbar()",
-        signcolumn = "yes:1",
+        -- No signcolumn: oil-vcs-status is off, and the single Git renderer
+        -- (noah.oil_git_agg) paints one EOL virt_text badge per entry. The
+        -- gutter was previously used for git symbols; that channel is retired.
+        signcolumn = "no",
       },
       view_options = {
         is_hidden_file = function(name, bufnr)
@@ -110,11 +113,15 @@ return {
         ["<CR>"] = "actions.select",
         ["<Tab>"] = "actions.select",
         ["<C-s>"] = false,
+        -- <C-h> / <C-l> reserved for smart-splits.nvim pane navigation
+        -- (see plugins/spec/smart-splits.lua). Oil's original bindings
+        -- moved: horizontal split -> <C-x>, refresh -> R. Matches
+        -- Telescope's <C-x>/<C-v>/<C-t> split-family convention.
         ["<C-v>"] = { "actions.select", opts = { vertical = true }, desc = "Open the entry in a vertical split" },
-        ["<C-h>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
+        ["<C-x>"] = { "actions.select", opts = { horizontal = true }, desc = "Open the entry in a horizontal split" },
         ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open the entry in new tab" },
         ["<C-p>"] = "actions.preview",
-        ["<C-l>"] = "actions.refresh",
+        ["R"] = "actions.refresh",
         ["<C-c>"] = false,
         ["q"] = "actions.close",
         ["-"] = "actions.parent",
@@ -143,8 +150,6 @@ return {
     map("n", "<localleader><localleader>", function() toggle_oil() end, { desc = "Open Oil" })
 
     opts = vim.tbl_deep_extend("force", opts, new_opts)
-
-    vim.defer_fn(function() vim.g.maplocalleader = prev_localleader end, 0)
 
     return opts
   end,

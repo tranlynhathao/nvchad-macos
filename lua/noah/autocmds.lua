@@ -51,12 +51,16 @@ autocmd("LspAttach", {
   desc = "Display code action sign in gutter if available.",
   pattern = "*",
   group = augroup("UserLspConfig", { clear = true }),
-  callback = function()
-    autocmd({ "CursorMoved", "CursorMovedI" }, {
-      group = augroup("CodeActionSign", { clear = true }),
-      callback = function()
-        vim.schedule(function() utils.code_action_listener() end)
-      end,
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client or not client:supports_method("textDocument/codeAction", args.buf) then return end
+
+    -- Query only after the cursor has settled. CursorMoved generated an LSP
+    -- request for every keystroke/movement and caused visible request churn.
+    autocmd("CursorHold", {
+      buffer = args.buf,
+      group = augroup("CodeActionSign" .. args.buf, { clear = true }),
+      callback = function() utils.code_action_listener(args.buf) end,
     })
   end,
 })
@@ -146,25 +150,74 @@ autocmd("TextYankPost", {
   callback = function() vim.highlight.on_yank { higroup = "YankVisual", timeout = 50, on_visual = true } end,
 })
 
+-- Auto-open quickfix / location list right after :grep, :make, :vimgrep,
+-- :LspRestart-style commands populate them. `nested = true` lets triggered
+-- autocmds inside the window setup (filetype detection etc.) fire.
+autocmd("QuickFixCmdPost", {
+  desc = "Auto-open quickfix window after :grep/:make.",
+  group = augroup("AutoOpenQuickfix", { clear = true }),
+  pattern = "[^l]*",
+  nested = true,
+  command = "cwindow",
+})
+
+autocmd("QuickFixCmdPost", {
+  desc = "Auto-open location list after :lgrep/:lmake.",
+  group = augroup("AutoOpenLoclist", { clear = true }),
+  pattern = "l*",
+  nested = true,
+  command = "lwindow",
+})
+
+-- hlsearch auto-clear: keep hlsearch ON only while actively searching.
+-- Toggles the option based on the last normal-mode key so search stays
+-- highlighted through n/N/*/#/?// and clears the moment you move away.
+do
+  local search_keys = { n = true, N = true, ["*"] = true, ["#"] = true, ["?"] = true, ["/"] = true }
+  vim.on_key(function(char)
+    if vim.fn.mode() == "n" then
+      local want = search_keys[vim.fn.keytrans(char)] == true
+      if vim.opt.hlsearch:get() ~= want then vim.opt.hlsearch = want end
+    end
+  end)
+end
+
+local user_diagnostic = augroup("UserDiagnostic", { clear = true })
+
+local diag_running = false
+local function guarded(fn)
+  return function(args)
+    if diag_running then return end
+    if args.buf and vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].buftype ~= "" then
+      -- Skip UI/scratch buffers (notify, nui popups, quickfix, terminal, etc.)
+      return
+    end
+    diag_running = true
+    local ok, err = pcall(fn)
+    diag_running = false
+    if not ok then vim.schedule(function() vim.notify(tostring(err), vim.log.levels.ERROR) end) end
+  end
+end
+
 autocmd("ModeChanged", {
   desc = "Strategically disable diagnostics to focus on editing tasks.",
   pattern = { "n:i", "n:v", "i:v" },
-  group = augroup("UserDiagnostic", { clear = true }),
-  callback = function() vim.diagnostic.enable(false) end,
+  group = user_diagnostic,
+  callback = guarded(function() vim.diagnostic.enable(false) end),
 })
 
 autocmd({ "BufRead", "BufNewFile" }, {
   desc = "Disable diagnostics in node_modules.",
   pattern = "*/node_modules/*",
-  group = augroup("UserDiagnostic", { clear = true }),
-  callback = function() vim.diagnostic.enable(false) end,
+  group = user_diagnostic,
+  callback = function(args) vim.diagnostic.enable(false, { bufnr = args.buf }) end,
 })
 
 autocmd("ModeChanged", {
   desc = "Enable diagnostics upon exiting insert mode to resume feedback.",
   pattern = "i:n",
-  group = augroup("UserDiagnostic", { clear = true }),
-  callback = function() vim.diagnostic.enable(true) end,
+  group = user_diagnostic,
+  callback = guarded(function() vim.diagnostic.enable(true) end),
 })
 
 autocmd("BufWritePre", {
@@ -204,22 +257,28 @@ autocmd("BufHidden", {
   end,
 })
 
+local snip_running = false
 autocmd("ModeChanged", {
   -- https://github.com/L3MON4D3/LuaSnip/issues/258
   desc = "Prevent weird snippet jumping behavior.",
   pattern = { "s:n", "i:*" },
   group = augroup("PreventSnippetJump", { clear = true }),
-  callback = function()
-    local ls = require "luasnip"
-    local bufnr = vim.api.nvim_get_current_buf()
-
-    if ls.session.current_nodes[bufnr] and not ls.session.jump_active then ls.unlink_current() end
+  callback = function(args)
+    if snip_running then return end
+    if args.buf and vim.api.nvim_buf_is_valid(args.buf) and vim.bo[args.buf].buftype ~= "" then return end
+    snip_running = true
+    local ok, ls = pcall(require, "luasnip")
+    if ok then
+      local bufnr = vim.api.nvim_get_current_buf()
+      if ls.session.current_nodes[bufnr] and not ls.session.jump_active then pcall(ls.unlink_current) end
+    end
+    snip_running = false
   end,
 })
 
 -- https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
 -- https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
-autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+autocmd({ "FocusGained", "BufEnter" }, {
   desc = "Automatically update changed file in nvim.",
   group = augroup("AutoupdateOnFileChange", { clear = true }),
   command = [[
@@ -299,6 +358,10 @@ autocmd("UILeave", {
   end,
 })
 
+-- Floating UI polish (which-key + telescope highlight groups) lives in its
+-- own module for clarity; see lua/noah/ui.lua.
+require("noah.ui").setup()
+
 -- local augroup = vim.api.nvim_create_augroup
 -- local autocmd = vim.api.nvim_create_autocmd
 -- local vault_location = vim.fn.expand "~/Documents/ObsidianVault" .. "/**/*.md"
@@ -319,3 +382,15 @@ autocmd("UILeave", {
 --     vim.lsp.buf.format { async = false }
 --   end,
 -- })
+
+autocmd("FileType", {
+  group = augroup("NoahMarkdownGx", { clear = true }),
+  pattern = { "markdown", "quarto", "rmd" },
+  callback = function(ev)
+    vim.keymap.set("n", "gx", function() require("noah.markdown_open").open() end, {
+      buffer = ev.buf,
+      silent = true,
+      desc = "Open URL under cursor (Markdown-aware)",
+    })
+  end,
+})

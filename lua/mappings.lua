@@ -2,8 +2,26 @@ local utils = require "noah.utils"
 local map = utils.glb_map
 local comments = require "utils.comments"
 local popup = require "utils.popup"
-local wk = require "which-key"
 local ms = vim.lsp.protocol.Methods
+
+-- Queue WhichKey metadata until Lazy's post-startup phase. The actual keymaps
+-- below remain available; only the popup index is deferred.
+local pending_which_key = {}
+local wk = {
+  add = function(spec, opts) pending_which_key[#pending_which_key + 1] = { spec, opts } end,
+}
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "VeryLazy",
+  once = true,
+  callback = function()
+    local real_wk = require "which-key"
+    for _, entry in ipairs(pending_which_key) do
+      real_wk.add(entry[1], entry[2])
+    end
+    pending_which_key = nil
+  end,
+})
 
 P = vim.print
 
@@ -18,6 +36,7 @@ vim.g["reticulate_running"] = vim.g["reticulate_running"] or false
 -- ge or E: move to previous end of word
 map("n", "E", "ge")
 map("n", "yw", "yiw")
+map("n", "Q", "<Nop>")
 
 -- Movement
 -- h: move to left
@@ -154,7 +173,6 @@ map("n", "<leader>sn", ":Telescope scissors<CR>", { noremap = true, silent = tru
 
 -- Keymaps for general functionality
 -- Navigation & File
-map("n", "<C-o>", ":lua OpenMarkdownLink()<CR>", { noremap = true, silent = true }) -- Open markdown links
 map("n", "<leader>w", ":lua ToggleWrap()<CR>", { noremap = true, silent = true }) -- Toggle wrap for markdown
 map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree window" })
 -- map("n", "<leader>e", "<cmd>NvimTreeFocus<CR>", { desc = "Focus NvimTree window" })
@@ -165,23 +183,14 @@ map("n", "<C-b>", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle NvimTree window" }
 map("v", "<C-c>", "<Plug>SlimeSend", { noremap = true, silent = true })
 
 -- #################################
--- Commenting Functions
+-- Commenting Functions (Pug/HTML)
 -- #################################
-map("n", "<leader>ch", function()
-  vim.cmd "normal! I// " -- Insert HTML comment (//) in Normal mode
-end, { desc = "Insert HTML comment (//) in Normal mode" })
-
-map("n", "<leader>cp", function()
-  vim.cmd "normal! I//- " -- Insert Pug comment (//-) in Normal mode
-end, { desc = "Insert Pug comment (//-) in Normal mode" })
-
-map("v", "<leader>ch", function()
-  comments.toggle_pug_comment "html" -- Toggle HTML comments (//) in Visual mode
-end, { desc = "Toggle HTML comments (//) in Visual mode" })
-
-map("v", "<leader>cp", function()
-  comments.toggle_pug_comment "pug" -- Toggle Pug comments (//-) in Visual mode
-end, { desc = "Toggle Pug comments (//-) in Visual mode" })
+-- Visual-mode toggles only. The prior normal-mode `<leader>ch/cp` here were
+-- silently overwritten later in the file by `NvCheatsheet` / color-picker
+-- mappings (vim.keymap.set = last-write-wins), so they never fired. Removed
+-- to make the collision explicit.
+map("v", "<leader>ch", function() comments.toggle_pug_comment "html" end, { desc = "Toggle HTML comments (//) in Visual mode" })
+map("v", "<leader>cp", function() comments.toggle_pug_comment "pug" end, { desc = "Toggle Pug comments (//-) in Visual mode" })
 
 -- compress code
 map("n", "<leader>cf", "<cmd>lua vim.lsp.buf.format({ async = true })<CR>", { desc = "Compress code (all supported formats)" })
@@ -192,10 +201,13 @@ map({ "n", "i" }, "<C-s>", "<cmd>w<CR>", { desc = "Save file" })
 -- Better escape using jk in insert and terminal mode
 map("i", "jk", "<ESC>")
 map("t", "jk", "<C-\\><C-n>")
-map("t", "<C-h>", "<C-\\><C-n><C-w>h")
-map("t", "<C-j>", "<C-\\><C-n><C-w>j")
-map("t", "<C-k>", "<C-\\><C-n><C-w>k")
-map("t", "<C-l>", "<C-\\><C-n><C-w>l")
+-- Terminal-mode <C-h/j/k/l>: superseded by smart-splits.nvim which handles
+-- terminal-mode natively and also jumps across tmux pane boundaries.
+-- Kept commented for reference — remove if you prefer split-only nav.
+-- map("t", "<C-h>", "<C-\\><C-n><C-w>h")
+-- map("t", "<C-j>", "<C-\\><C-n><C-w>j")
+-- map("t", "<C-k>", "<C-\\><C-n><C-w>k")
+-- map("t", "<C-l>", "<C-\\><C-n><C-w>l")
 
 -- Add undo break-points (from configs/keymaps.lua)
 vim.keymap.set("i", ",", ",<c-g>u", { silent = true, noremap = true })
@@ -232,18 +244,32 @@ local function move_line_or_block(direction, count)
   local is_visual = mode == "v" or mode == "V" or mode == "\22"
 
   if is_visual then
+    -- Marks '<'/'>' may not be committed yet inside a visual-mode Lua callback,
+    -- causing E20. Read the range straight from live positions instead.
+    local a = vim.fn.line "v"
+    local b = vim.fn.line "."
+    local s, e = math.min(a, b), math.max(a, b)
+    local last = vim.fn.line "$"
     if direction == "down" then
-      vim.cmd(string.format(":'<,'>move '>+%d", count))
+      if e + count > last then count = last - e end
+      if count <= 0 then return end
+      vim.cmd(string.format("%d,%dmove %d", s, e, e + count))
     else
-      vim.cmd(string.format(":'<,'>move '<-%d", count + 1))
+      if s - count < 1 then count = s - 1 end
+      if count <= 0 then return end
+      vim.cmd(string.format("%d,%dmove %d", s, e, s - count - 1))
     end
     vim.cmd "normal! gv=gv"
     return
   end
 
+  local line = vim.fn.line "."
+  local last = vim.fn.line "$"
   if direction == "down" then
+    if line >= last then return end
     vim.cmd(string.format(":move .+%d", count))
   else
+    if line <= 1 then return end
     vim.cmd(string.format(":move .-%d", count + 1))
   end
   vim.cmd "normal! =="
@@ -251,18 +277,31 @@ end
 
 local function move_line_or_block_with_count(direction) move_line_or_block(direction, vim.v.count1) end
 
+-- Insert-mode variant. Uses <Cmd> mapping (see keymap defs below) so we
+-- stay in insert mode throughout — no stopinsert/startinsert dance.
+-- The old dance broke repeat: mode-transition timing left cursor on the
+-- previous line for the 2nd press, so `:move` targeted the wrong line.
 local function move_line_or_block_from_insert(direction)
-  local count = vim.v.count1
-  vim.cmd "stopinsert"
-  move_line_or_block(direction, count)
-  vim.cmd "startinsert"
+  local line = vim.fn.line "."
+  local last = vim.fn.line "$"
+  if direction == "down" and line >= last then return end
+  if direction == "up" and line <= 1 then return end
+  if direction == "down" then
+    vim.cmd "move .+1"
+  else
+    vim.cmd "move .-2"
+  end
+  vim.cmd "normal! =="
 end
 
 map("n", "<leader>j", function() move_line_or_block_with_count "down" end, { desc = "Move line down" })
 map("n", "<leader>k", function() move_line_or_block_with_count "up" end, { desc = "Move line up" })
 
-map("i", "<C-g>j", function() move_line_or_block_from_insert "down" end, { desc = "Move line down" })
-map("i", "<C-g>k", function() move_line_or_block_from_insert "up" end, { desc = "Move line up" })
+-- <Cmd> keeps us in insert mode; the callback runs then cursor is restored
+-- correctly at the new line, so repeated presses keep working.
+map("i", "<C-g>j", "<Cmd>lua _G.__move_insert('down')<CR>", { desc = "Move line down" })
+map("i", "<C-g>k", "<Cmd>lua _G.__move_insert('up')<CR>", { desc = "Move line up" })
+_G.__move_insert = move_line_or_block_from_insert
 
 map("v", "<leader>j", function() move_line_or_block_with_count "down" end, { desc = "Move selection down" })
 map("v", "<leader>k", function() move_line_or_block_with_count "up" end, { desc = "Move selection up" })
@@ -421,6 +460,32 @@ map("n", "<leader><F10>", "<cmd>stop<CR>", { desc = "Genaral stop NVIM" })
 map("n", "<leader>cm", "<cmd>mes clear<CR>", { desc = "General clear messages" })
 map("n", "<leader>cn", function() require("notify").dismiss { silent = true, pending = true } end, { desc = "Clear notifications" })
 
+-- Copy file:line reference to system clipboard.
+-- Normal mode: current line -> "path:LINE"
+-- Visual mode: selection    -> "path:START-END"
+-- Useful for pasting locations into chat, tickets, PR reviews.
+do
+  local function copy_file_ref()
+    local file = vim.fn.expand "%:."
+    if file == "" then
+      vim.notify("No file open", vim.log.levels.WARN)
+      return
+    end
+    local mode = vim.api.nvim_get_mode().mode
+    local s, e
+    if mode:match "[vV\22]" then
+      s, e = math.min(vim.fn.line "v", vim.fn.line "."), math.max(vim.fn.line "v", vim.fn.line ".")
+    else
+      s, e = vim.fn.line ".", vim.fn.line "."
+    end
+    local ref = (s == e) and string.format("%s:%d", file, s) or string.format("%s:%d-%d", file, s, e)
+    vim.fn.setreg("+", ref)
+    vim.notify("Copied: " .. ref, vim.log.levels.INFO)
+  end
+  map("n", "<leader>cy", copy_file_ref, { desc = "Copy file:line reference" })
+  map("x", "<leader>cy", copy_file_ref, { desc = "Copy file:line-range reference" })
+end
+
 -- https://github.com/neovim/neovim/issues/2054
 map("i", "<A-BS>", "<C-w>", { desc = "General remove word" })
 
@@ -487,10 +552,15 @@ map("n", "<leader>zm", "<cmd>exe 'normal! ' . line('$')/8 . 'G'<CR>", { desc = "
 -- map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move line up" })
 
 -- Switch buffers
-map("n", "<C-h>", "<C-w>h", { desc = "Buffer switch left" })
-map("n", "<C-l>", "<C-w>l", { desc = "Buffer switch right" })
-map("n", "<C-j>", "<C-w>j", { desc = "Buffer switch down" })
-map("n", "<C-k>", "<C-w>k", { desc = "Buffer switch up" })
+-- Normal-mode <C-h>/<C-l>: superseded by smart-splits.nvim (see
+-- plugins/spec/smart-splits.lua). Smart-splits falls back to `<C-w>h/l`
+-- when there's no tmux pane on the same side, so behaviour is a superset.
+-- map("n", "<C-h>", "<C-w>h", { desc = "Buffer switch left" })
+-- map("n", "<C-l>", "<C-w>l", { desc = "Buffer switch right" })
+-- Normal-mode <C-j>/<C-k>: superseded by smart-splits.nvim (falls back to
+-- <C-w>j/k when there's no tmux pane on the same side).
+-- map("n", "<C-j>", "<C-w>j", { desc = "Buffer switch down" })
+-- map("n", "<C-k>", "<C-w>k", { desc = "Buffer switch up" })
 
 -- Quick resize pane
 map("n", "<C-A-h>", "11<C-w>>", { desc = "Window increase width by 5" })
@@ -798,6 +868,34 @@ map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Buffer new" })
 map("n", "<leader>bh", "<cmd>split | enew<CR>", { desc = "Buffer new horizontal split" })
 map("n", "<leader>bv", "<cmd>vsplit | enew<CR>", { desc = "Buffer new vertical split" })
 
+-- Buffer picker → open in split. Equivalent to `:vsplit | buffer <name>`
+-- in one keystroke, but with a fuzzy picker over the buffer list. Cancelling
+-- the picker leaves NO orphan empty split (we split only on selection).
+do
+  local function pick_into(mod)
+    local ok, builtin = pcall(require, "telescope.builtin")
+    if not ok then
+      vim.notify("Telescope not loaded", vim.log.levels.ERROR)
+      return
+    end
+    local actions = require "telescope.actions"
+    local state = require "telescope.actions.state"
+    builtin.buffers {
+      attach_mappings = function()
+        actions.select_default:replace(function(prompt_bufnr)
+          local sel = state.get_selected_entry()
+          if not sel then return end
+          actions.close(prompt_bufnr)
+          vim.cmd(mod .. " | buffer " .. sel.bufnr)
+        end)
+        return true
+      end,
+    }
+  end
+  map("n", "<leader>bV", function() pick_into "vsplit" end, { desc = "Buffer picker → vsplit" })
+  map("n", "<leader>bH", function() pick_into "split" end, { desc = "Buffer picker → hsplit" })
+end
+
 map("n", "<leader>x", function() tabufline.close_buffer() end, { desc = "Buffer close" })
 
 for i = 7, 9 do
@@ -917,12 +1015,17 @@ wk.add({
   { "zl", ":Telescope spell_suggest<cr>", desc = "[l]ist spelling suggestions" },
 }, { mode = "n", silent = true })
 
--- Visual mode which-key mappings
+-- Visual mode which-key mappings.
+-- `.` uses <Cmd>normal! .<CR> instead of `:norm .<cr>`:
+--   * <Cmd> stays in the current mode (no cmdline entry / re-render)
+--   * `normal!` (bang) forbids remap → guarantees native dot-repeat
+--   * removes the recursion path where the visual `.` mapping could be re-
+--     entered while ModeChanged/BufNew callbacks (Noice/notify/nui) rendered.
 wk.add({
-  { ".", ":norm .<cr>", desc = "repat last normal mode command" },
+  { ".", "<Cmd>normal! .<CR>", desc = "repeat last normal mode command on selection" },
   { "<M-j>", ":m'>+<cr>`<my`>mzgv`yo`z", desc = "move line down" },
   { "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z", desc = "move line up" },
-  { "q", ":norm @q<cr>", desc = "repat q macro" },
+  { "q", "<Cmd>normal! @q<CR>", desc = "replay q macro on selection" },
 }, { mode = "v" })
 
 -- Visual mode with localleader
@@ -1012,8 +1115,8 @@ wk.add({
   },
   { "<localleader>o", group = "[o]tter & c[o]de" },
   {
-    { "<localleader>oa", require("otter").activate, desc = "otter [a]ctivate" },
-    { "<localleader>od", require("otter").deactivate, desc = "otter [d]eactivate" },
+    { "<localleader>oa", function() require("otter").activate() end, desc = "otter [a]ctivate" },
+    { "<localleader>od", function() require("otter").deactivate() end, desc = "otter [d]eactivate" },
     { "<localleader>oc", "O# %%<cr>", desc = "magic [c]omment code chunk # %%" },
     { "<localleader>or", insert_r_chunk, desc = "[r] code chunk" },
     { "<localleader>op", insert_py_chunk, desc = "[p]ython code chunk" },
@@ -1034,7 +1137,7 @@ wk.add({
       { "<localleader>qra", ":QuartoSendAll<cr>", desc = "run [a]ll" },
       { "<localleader>qrb", ":QuartoSendBelow<cr>", desc = "run [b]elow" },
     },
-    { "<localleader>qe", require("otter").export, desc = "[e]xport" },
+    { "<localleader>qe", function() require("otter").export() end, desc = "[e]xport" },
     {
       "<localleader>qE",
       function() require("otter").export(true) end,
@@ -1122,24 +1225,7 @@ wk.add({
 --   ]]
 -- end, { desc = "_ Mum and dad were having fun" })
 
-map("n", "gx", [[:silent execute '!open ' . shellescape(expand('<cfile>'), 1)<CR>]], { noremap = true })
-
-local function my_on_attach(bufnr)
-  local api = require "nvim-tree.api"
-
-  local function opts(desc) return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true } end
-
-  -- default mappings
-  api.config.mappings.default_on_attach(bufnr)
-
-  -- custom mappings
-  vim.keymap.set("n", "<C-;>", api.tree.change_root_to_parent, opts "Up")
-  vim.keymap.set("n", "?", api.tree.toggle_help, opts "Help")
-end
-
--- ###########################################
--- pass to setup along with your other options
--- ###########################################
-require("nvim-tree").setup {
-  on_attach = my_on_attach,
-}
+-- gx: use Neovim's native mapping (0.10+ delegates to vim.ui.open, non-blocking).
+-- Enhanced Markdown resolver (inline links, autolinks, bare URLs with trailing
+-- punctuation stripped) is attached buffer-locally in noah/autocmds.lua for
+-- FileType markdown via require("noah.markdown_open").open.

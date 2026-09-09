@@ -1,4 +1,5 @@
-vim.g.mapleader = " "
+-- mapleader / maplocalleader are set at the very top of init.lua so lazy.setup
+-- below sees the intended values (avoids the "set BEFORE loading lazy" warning).
 vim.g.base46_cache = vim.fn.stdpath "data" .. "/nvchad/base46/"
 local lazypath = vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
 
@@ -39,8 +40,12 @@ dofile(vim.g.base46_cache .. "statusline")
 
 require "nvchad.autocmds"
 
--- Re-activate providers
-for _, v in ipairs { "python3_provider", "node_provider" } do
-  vim.g["loaded_" .. v] = nil
-  vim.cmd("runtime " .. v)
-end
+-- NvChad disables remote providers in options.lua, which loads after this file.
+-- Re-enable discovery at VimEnter without eagerly sourcing either provider.
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    vim.g.loaded_python3_provider = nil
+    vim.g.loaded_node_provider = nil
+  end,
+})

@@ -1,13 +1,19 @@
 ---@type NvPluginSpec
 return {
   "iamcco/markdown-preview.nvim",
+  -- ft trigger (not cmd): mkdp defines its `:MarkdownPreview*` commands with
+  -- `-buffer` in plugin/mkdp.vim, so they are buffer-local to markdown
+  -- filetype. lazy.nvim's cmd trigger can't see them until the plugin loads,
+  -- so it never loaded. `ft = markdown` loads the plugin the moment a
+  -- markdown buffer opens; keymap+command work from there.
   ft = { "markdown" },
-  cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
   build = function()
     require("lazy").load { plugins = { "markdown-preview.nvim" } }
     vim.fn["mkdp#util#install"]()
   end,
   init = function()
+    -- Make :MarkdownPreview* callable from any buffer (not only markdown).
+    vim.g.mkdp_command_for_global = 1
     vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreviewToggle<CR>", { desc = "Toggle Markdown Preview" })
 
     -- Custom options

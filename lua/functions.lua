@@ -7,16 +7,11 @@ function InsertBackLink()
   vim.api.nvim_put({ "[" .. backlink_text .. "](" .. backlink_url .. ")" }, "c", true, true)
 end
 
--- Function to open markdown link
-function OpenMarkdownLink()
-  local line = vim.api.nvim_get_current_line()
-  local path = string.match(line, "%]%((.-)%)")
-  if path then
-    vim.cmd("edit " .. path)
-  else
-    print "No markdown link found on this line"
-  end
-end
+-- Kept for backwards compatibility with the <C-o> mapping in mappings.lua.
+-- Delegates to the single authoritative resolver in noah/markdown_open.lua so
+-- inline links, autolinks, bare URLs and trailing-punctuation handling all
+-- behave identically to the buffer-local `gx` on Markdown filetypes.
+function OpenMarkdownLink() require("noah.markdown_open").open() end
 
 -- Function to toggle wrap for markdown
 function ToggleWrap()

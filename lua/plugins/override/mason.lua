@@ -111,6 +111,7 @@ return {
       "erlang-ls",
 
       -- ── SQL ────────────────────────────────────────────────────────────
+      "sqlls", -- LSP (schema-aware completion, hover, goto def)
       "sqlfluff", -- formatter + linter
 
       -- ── Terraform / HCL ────────────────────────────────────────────────

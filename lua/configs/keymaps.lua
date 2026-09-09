@@ -173,13 +173,14 @@ wk.add({
   { "zl", ":Telescope spell_suggest<cr>", desc = "[l]ist spelling suggestions" },
 }, { mode = "n", silent = true })
 
--- visual mode
+-- visual mode. See mappings.lua for rationale on the <Cmd>normal! form —
+-- the ':norm .' route triggered E169 recursion via cmdline mode transitions.
 wk.add({
-  { ".", ":norm .<cr>", desc = "repat last normal mode command" },
+  { ".", "<Cmd>normal! .<CR>", desc = "repeat last normal mode command on selection" },
   { "<M-j>", ":m'>+<cr>`<my`>mzgv`yo`z", desc = "move line down" },
   { "<M-k>", ":m'<-2<cr>`>my`<mzgv`yo`z", desc = "move line up" },
   -- { "<cr>", send_region, desc = "run code region" },
-  { "q", ":norm @q<cr>", desc = "repat q macro" },
+  { "q", "<Cmd>normal! @q<CR>", desc = "replay q macro on selection" },
 }, { mode = "v" })
 
 -- visual with <leader>

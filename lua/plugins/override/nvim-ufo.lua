@@ -2,6 +2,10 @@
 return {
   "kevinhwang91/nvim-ufo",
   dependencies = { "kevinhwang91/promise-async" },
+  -- Load on first file open — ufo needs to attach fold providers before any
+  -- buffer renders folds. Without a trigger the plugin stays unloaded under
+  -- lazy.nvim's `defaults = { lazy = true }`.
+  event = "BufReadPost",
   config = function()
     -- Turn on code folding
     vim.o.foldcolumn = "1"

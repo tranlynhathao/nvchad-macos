@@ -16,16 +16,12 @@
 --
 return {
   "neovim/nvim-lspconfig",
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     "hrsh7th/cmp-nvim-lsp",
     { "mason-org/mason.nvim", version = "^1.0.0" },
-    { "mason-org/mason-lspconfig.nvim", version = "^1.0.0" },
-    "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-cmdline",
     -- cmp-tw2css removed: was declared as dep but never registered as a cmp
     -- source. Every unused source still costs disk load + lazy resolution.
-    "hrsh7th/nvim-cmp",
     "hoffs/omnisharp-extended-lsp.nvim",
     "b0o/schemastore.nvim",
   },
@@ -87,9 +83,6 @@ return {
           client.server_capabilities.documentRangeFormattingProvider = false
         end
 
-        -- Historical behaviour: strip semantic tokens to keep highlight groups
-        -- driven by treesitter. Reduces flicker on servers that push
-        -- semanticTokens updates aggressively.
         if client:supports_method "textDocument/semanticTokens" then client.server_capabilities.semanticTokensProvider = nil end
 
         -- Shared keymaps (K, gd, gi, <leader>rn, <leader>ca, etc.).
@@ -115,10 +108,6 @@ return {
       },
     }
 
-    -- Signs used by ancillary handlers. noah/utils.lua's code-action gear
-    -- indicator calls sign_place("CodeActionSign", ...) — define it here so
-    -- the first LSP response that carries codeAction hints does not fail
-    -- with E155 "Unknown sign".
     vim.fn.sign_define("CodeActionSign", { text = "󰉁", texthl = "CodeActionSignHl" })
 
     -- 4) Enable-on-first-open: keeps startup fast while still auto-attaching
@@ -164,6 +153,9 @@ return {
       elixir = { "elixirls" },
       erlang = { "erlangls" },
       nim = { "nimls" },
+      sql = { "sqlls" },
+      mysql = { "sqlls" },
+      plsql = { "sqlls" },
       -- rust intentionally omitted: rustaceanvim manages the rust LSP client.
     }
 

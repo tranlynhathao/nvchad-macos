@@ -63,39 +63,63 @@ local is_linux = sysname == "Linux"
 if is_mac then
   local english_layout = "com.apple.keylayout.ABC"
   local last_insert_layout = english_layout
+  local mode_generation = 0
+  local pending_set
 
-  local function get_current_layout()
-    local f = io.popen "macism"
-    local layout = nil
-    if f ~= nil then
-      layout = f:read("*all"):gsub("\n", "")
-      f:close()
-    end
-    print(layout)
-    return layout
+  local function has_ui() return #vim.api.nvim_list_uis() > 0 end
+
+  local function set_layout(layout)
+    if not has_ui() or not layout or layout == "" then return end
+
+    if pending_set then pcall(pending_set.kill, pending_set, 15) end
+
+    local process
+    process = vim.system({ "macism", layout }, { text = true }, function()
+      vim.schedule(function()
+        if pending_set == process then pending_set = nil end
+      end)
+    end)
+    pending_set = process
+  end
+
+  local function remember_layout_then_use_english()
+    if not has_ui() then return end
+    mode_generation = mode_generation + 1
+    local generation = mode_generation
+
+    -- macism can take hundreds of milliseconds on newer macOS releases.
+    -- Keep it off the editor's main loop so mode changes remain immediate.
+    vim.system({ "macism" }, { text = true }, function(result)
+      local layout = result.code == 0 and vim.trim(result.stdout or "") or ""
+      vim.schedule(function()
+        if generation ~= mode_generation then return end
+        if layout ~= "" then last_insert_layout = layout end
+        if vim.fn.mode() ~= "i" then set_layout(english_layout) end
+      end)
+    end)
   end
 
   vim.api.nvim_create_autocmd("InsertLeave", {
-    callback = function()
-      last_insert_layout = get_current_layout()
-      os.execute("macism " .. english_layout)
-    end,
+    callback = remember_layout_then_use_english,
   })
 
   vim.api.nvim_create_autocmd({ "CmdlineEnter" }, {
-    callback = function() os.execute("macism " .. english_layout) end,
+    callback = function() set_layout(english_layout) end,
   })
 
   vim.api.nvim_create_autocmd("InsertEnter", {
-    callback = function() os.execute("macism " .. last_insert_layout) end,
+    callback = function()
+      mode_generation = mode_generation + 1
+      set_layout(last_insert_layout)
+    end,
   })
 
   vim.api.nvim_create_autocmd("FocusGained", {
     callback = function()
       if vim.fn.mode() == "i" then
-        os.execute("macism " .. last_insert_layout)
+        set_layout(last_insert_layout)
       else
-        os.execute("macism " .. english_layout)
+        set_layout(english_layout)
       end
     end,
   })

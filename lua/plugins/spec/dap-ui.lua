@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "rcarriga/nvim-dap-ui",
-  event = "LspAttach",
+  -- No trigger: loaded as a dep when nvim-dap loads (via its cmd/keys).
   dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
   opts = {},
   config = function()

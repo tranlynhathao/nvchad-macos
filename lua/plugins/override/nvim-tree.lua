@@ -26,6 +26,7 @@ return {
         end
       end, opts "File info (popup)")
       map("n", "+", api.tree.change_root_to_node, opts "CD")
+      map("n", "<C-;>", api.tree.change_root_to_parent, opts "Up")
       map("n", "?", api.tree.toggle_help, opts "Help")
       map("n", "<ESC>", api.tree.close, opts "Close")
       map("n", "d", api.fs.remove, opts "Delete")
@@ -113,6 +114,20 @@ return {
       end
     end
 
+    local git_ui = require "noah.git_ui"
+
+    local function apply_nvimtree_git_hl()
+      git_ui.apply_highlights()
+      for name, target in pairs(git_ui.nvim_tree_hl_links()) do
+        vim.api.nvim_set_hl(0, name, { link = target })
+      end
+    end
+    vim.api.nvim_create_autocmd("ColorScheme", {
+      group = vim.api.nvim_create_augroup("NoahNvimTreeGitHL", { clear = true }),
+      callback = apply_nvimtree_git_hl,
+    })
+    vim.schedule(apply_nvimtree_git_hl)
+
     nvtree.setup {
       update_focused_file = {
         enable = true,
@@ -125,7 +140,7 @@ return {
         ignore = false,
       },
       renderer = {
-        highlight_git = true, -- "none"
+        highlight_git = "icon",
         icons = {
           glyphs = {
             folder = {
@@ -134,15 +149,7 @@ return {
               empty = "",
               empty_open = "",
             },
-            git = {
-              unstaged = "",
-              staged = "",
-              unmerged = "",
-              renamed = "",
-              untracked = "",
-              deleted = "",
-              ignored = "󰴲",
-            },
+            git = git_ui.nvim_tree_glyphs(),
           },
         },
         indent_markers = {

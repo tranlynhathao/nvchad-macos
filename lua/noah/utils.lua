@@ -168,27 +168,35 @@ M.format_file = function(file_path)
 end
 
 --- Listener for code actions capabilities
-M.code_action_listener = function()
-  local buffer = vim.api.nvim_get_current_buf()
-  local clients = vim.lsp.get_clients { bufnr = buffer }
+M.code_action_listener = function(buffer)
+  buffer = buffer or vim.api.nvim_get_current_buf()
+  if not vim.api.nvim_buf_is_valid(buffer) then return end
 
-  if clients == nil or #clients == 0 then return end
+  local clients = vim.tbl_filter(
+    function(client) return client.server_capabilities.codeActionProvider ~= nil end,
+    vim.lsp.get_clients { bufnr = buffer }
+  )
 
-  local has_code_action_support = vim.tbl_filter(function(client) return client.server_capabilities.codeActionProvider end, clients)[1] ~= nil
+  vim.fn.sign_unplace("code_action_gear", { buffer = buffer })
+  if #clients == 0 or buffer ~= vim.api.nvim_get_current_buf() then return end
 
-  if has_code_action_support then
-    local context = { diagnostics = vim.diagnostic.get(buffer) }
-    local params = vim.lsp.util.make_range_params(nil, vim.lsp.get_clients({ bufnr = buffer })[1].offset_encoding)
-    params.context = context
+  local line = vim.api.nvim_win_get_cursor(0)[1]
+  local sequence = (vim.b[buffer].code_action_request_sequence or 0) + 1
+  vim.b[buffer].code_action_request_sequence = sequence
 
-    vim.lsp.buf_request(buffer, "textDocument/codeAction", params, function(_, result, _, _)
-      vim.fn.sign_unplace("code_action_gear", { buffer = buffer })
+  local params = vim.lsp.util.make_range_params(0, clients[1].offset_encoding)
+  params.context = { diagnostics = vim.diagnostic.get(buffer, { lnum = line - 1 }) }
 
-      if result and next(result) then
-        vim.fn.sign_place(0, "code_action_gear", "CodeActionSign", buffer, { lnum = vim.api.nvim_win_get_cursor(0)[1], priority = 100 })
+  vim.lsp.buf_request_all(buffer, "textDocument/codeAction", params, function(results)
+    if not vim.api.nvim_buf_is_valid(buffer) or vim.b[buffer].code_action_request_sequence ~= sequence then return end
+
+    for _, response in pairs(results or {}) do
+      if response.result and not vim.tbl_isempty(response.result) then
+        vim.fn.sign_place(0, "code_action_gear", "CodeActionSign", buffer, { lnum = line, priority = 100 })
+        return
       end
-    end)
-  end
+    end
+  end)
 end
 
 M.handle_copy = function()

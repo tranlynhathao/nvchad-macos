@@ -1,11 +1,9 @@
 ---@type NvPluginSpec
--- setup() is intentionally absent here.
--- lsp/init.lua is the single authoritative caller of mason_lspconfig.setup()
--- with the merged ensure_installed list. A second setup() call here would
--- override that list before lsp/init.lua runs.
 return {
   "williamboman/mason-lspconfig.nvim",
-  lazy = false,
+  -- Native Neovim 0.11+ lsp/*.lua discovery is authoritative in this config.
+  -- Keep the bridge installed for manual use without forcing the LSP graph at startup.
+  lazy = true,
   dependencies = {
     "williamboman/mason.nvim",
     "neovim/nvim-lspconfig",

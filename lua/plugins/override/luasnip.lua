@@ -4,17 +4,24 @@ return {
   event = "InsertEnter",
   dependencies = { "rafamadriz/friendly-snippets" },
   config = function()
-    require "nvchad.configs.luasnip"
-
     local map = vim.keymap.set
     local ls = require "luasnip"
+    local data = vim.fn.stdpath "data"
+    local config = vim.fn.stdpath "config"
+
+    -- Avoid NvChad's empty-path runtime scan. Both roots below contain a
+    -- package.json manifest, so LuaSnip does no warning-producing probing.
+    require("luasnip.loaders.from_vscode").lazy_load {
+      paths = {
+        data .. "/lazy/friendly-snippets",
+        config .. "/snippets",
+      },
+    }
 
     ls.filetype_extend("javascriptreact", { "html" })
     ls.filetype_extend("typescriptreact", { "html" })
     ls.filetype_extend("javascriptreact", { "javascript" })
     ls.filetype_extend("typescriptreact", { "javascript" })
-
-    require("luasnip.loaders.from_vscode").lazy_load { paths = { vim.fn.stdpath "config" .. "/snippets/vscode" } }
 
     map({ "s", "i" }, "<C-y>", function() ls.expand() end, { desc = "Luasnip confirm snippet" })
 

@@ -295,7 +295,46 @@ local buffers = function(previewer, opts)
   require("telescope.builtin").buffers(options)
 end
 
+local function project_files(opts)
+  local root = opts and opts.cwd or require("noah.project").root()
+  local actions = require "telescope.actions"
+
+  require("telescope.builtin").find_files {
+    cwd = root,
+    prompt_title = "Project files: " .. vim.fs.basename(root),
+    results_title = "j/k browse · s jump · i filter · Tab mark · C-q quickfix",
+    initial_mode = "normal",
+    previewer = true,
+    find_command = { "rg", "--files", "--hidden", "--sort", "path", "-g", "!.git", "-g", "!.backups", "-g", "!.ruff_cache" },
+    file_ignore_patterns = {},
+    path_display = {},
+    layout_strategy = "flex",
+    layout_config = {
+      width = 0.88,
+      height = 0.80,
+      flex = { flip_columns = 120 },
+      horizontal = { preview_width = 0.55, preview_cutoff = 0 },
+      vertical = { preview_height = 0.45, preview_cutoff = 0 },
+    },
+    attach_mappings = function(_, map)
+      map({ "n", "i" }, "<C-q>", actions.smart_send_to_qflist + actions.open_qflist, { desc = "Quickfix: marked files or all results" })
+      return true
+    end,
+  }
+end
+
+function M.flash(prompt_bufnr)
+  local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+  require("flash").jump {
+    pattern = "^",
+    label = { after = { 0, 0 } },
+    search = { mode = "search", exclude = { function(win) return win ~= picker.results_win end } },
+    action = function(match) picker:set_selection(match.pos[1] - 1) end,
+  }
+end
+
 M.pickers = {
+  project_files = project_files,
   files = files,
   grep = grep,
   buffers = buffers,

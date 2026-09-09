@@ -1,7 +1,7 @@
 ---@type NvPluginSpec
 return {
   "ChuufMaster/markdown-toc",
-  ft = { "markdown" },
+  cmd = { "MarkdownTocGenerate", "MarkdownTocUpdate", "MarkdownTocDelete" },
   config = function()
     require("markdown-toc").setup {
       heading_level_to_match = -1, -- -1 means match all heading levels

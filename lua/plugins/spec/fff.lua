@@ -1,87 +1,89 @@
 ---@type NvPluginSpec
 return {
   "dmtrKovalenko/fff.nvim",
-  -- Load triggers: user commands from plugin/fff.lua + keys defined in
-  -- lua/noah/fff.lua. Without these, `nvim .` (no file argument) would leave
-  -- the plugin dormant and `<cmd>FFF*<cr>` keymaps would fail with E492.
+  -- Load on the :FFF* user commands. The <leader>f* keymaps live in
+  -- plugins/override/telescope.lua (they call noah.fff.* wrappers with root
+  -- sync + custom title); those wrappers `require "fff"` which triggers
+  -- lazy.nvim to load this plugin on-demand.
   cmd = { "FFFFind", "FFFResume", "FFFScan", "FFFRefreshGit", "FFFClearCache" },
-  keys = {
-    { "<leader>ff", "<cmd>FFFFind<cr>", desc = "FFF: find files" },
-    { "<leader>fF", "<cmd>FFFResume<cr>", desc = "FFF: resume last" },
-  },
   build = function() require("fff.download").download_or_build_binary() end,
+  init = function()
+    -- If nvim launches with cwd=$HOME, FFF's ensure_initialized() fires
+    -- "Refusing to index home directory" during setup because its default
+    -- base_path = cwd. Pre-seed base_path with the nvim config dir (never
+    -- $HOME) so setup is silent; noah/fff.lua's sync_root() then swaps to
+    -- the real project root on first <leader>ff call.
+    vim.g.fff = { lazy_sync = true, base_path = vim.fn.stdpath "config" }
+  end,
   opts = function()
     local threads = 4
     if vim.uv.available_parallelism then threads = vim.uv.available_parallelism() end
 
     return {
-      -- prompt = " ",
-      prompt = "   ",
-      -- title = "Files",
-      title = " 󰱼 Project Files ",
-      -- max_results = 200,
+      prompt = "   ",
+      title = "FFF",
       max_results = 250,
       max_threads = math.max(2, math.min(8, threads)),
       lazy_sync = true,
       prompt_vim_mode = false,
+      -- Explicitly enabled: user wants FFF from $HOME. First scan may take
+      -- 10-60s (scans ~/Library, ~/Downloads etc. — no .gitignore in $HOME
+      -- to prune). Subsequent calls reuse the in-memory index. If startup
+      -- latency becomes a problem, add per-repo .gitignore under HOME or
+      -- switch back to false.
+      enable_home_dir_scanning = true,
+      enable_fs_root_scanning = false,
+
       layout = {
-        -- height = 0.9,
+        -- Balanced modal: leaves visible context of the buffer beneath.
+        -- Scale down gracefully on smaller terminals so the picker never
+        -- overshoots or hides the list.
         height = function(_, lines)
-          if lines >= 56 then return 0.82 end
-
-          if lines >= 44 then return 0.88 end
-
-          return 0.94
+          if lines >= 60 then return 0.74 end
+          if lines >= 44 then return 0.80 end
+          return 0.90
         end,
-        -- width = 0.9,
         width = function(columns)
-          if columns >= 220 then return 0.78 end
-
-          if columns >= 180 then return 0.84 end
-
-          if columns >= 140 then return 0.9 end
-
+          if columns >= 200 then return 0.82 end
+          if columns >= 160 then return 0.86 end
+          if columns >= 120 then return 0.92 end
           return 0.96
         end,
-        -- prompt_position = "bottom",
         prompt_position = "top",
         preview_position = "right",
-        -- preview_size = 0.55,
-        preview_size = function(columns)
-          if columns >= 220 then return 0.56 end
-
-          if columns >= 160 then return 0.52 end
-
-          return 0.48
-        end,
+        -- Preview slightly wider than the list: code readability > long
+        -- filenames. Long paths are shortened by path_shorten_strategy below.
+        preview_size = 0.58,
         flex = {
-          -- size = 140,
-          size = 150,
-          -- wrap = "top",
-          wrap = "bottom",
+          size = 120,
+          wrap = "top",
         },
+        min_list_height = 12,
         show_scrollbar = true,
         path_shorten_strategy = "middle_number",
         anchor = "center",
       },
+
       preview = {
         enabled = true,
-        -- max_size = 8 * 1024 * 1024,
         max_size = 12 * 1024 * 1024,
         chunk_size = 8192,
         binary_file_threshold = 1024,
         imagemagick_info_format_str = "%m  %wx%h  %[colorspace]  %q-bit",
+        -- Line numbers in the preview column — muted via LineNr / FFFPreviewLineNr
+        -- so they never outweigh source text.
         line_numbers = true,
         cursorlineopt = "both",
         wrap_lines = false,
         filetypes = {
           markdown = { wrap_lines = true },
-          svg = { wrap_lines = true },
           text = { wrap_lines = true },
-          gitcommit = { wrap_lines = true },
           help = { wrap_lines = true },
+          svg = { wrap_lines = true },
+          gitcommit = { wrap_lines = true },
         },
       },
+
       keymaps = {
         close = { "<Esc>", "<C-c>" },
         select = "<CR>",
@@ -97,31 +99,28 @@ return {
         cycle_previous_query = "<C-Up>",
         toggle_select = "<Tab>",
         send_to_quickfix = "<C-q>",
-        focus_list = "<leader>l",
-        focus_preview = "<leader>p",
+        -- <leader>* doesn't fire inside the picker prompt because leader=Space
+        -- is a valid input character consumed by the query field. Function
+        -- keys have no collision with typed input.
+        focus_list = "<F3>",
+        focus_preview = "<F4>",
       },
+
       hl = {
-        -- border = "FloatBorder",
         border = "FFFBorder",
-        -- normal = "NormalFloat",
         normal = "FFFNormal",
-        -- cursor = "CursorLine",
         cursor = "FFFSelectedActive",
-        -- matched = "IncSearch",
         matched = "FFFMatched",
-        -- title = "Title",
         title = "FFFTitle",
-        -- prompt = "Question",
         prompt = "FFFPrompt",
         frecency = "Number",
         debug = "Comment",
         combo_header = "FFFComboHeader",
-        -- directory_path = "Comment",
         directory_path = "FFFDirectory",
-        -- scrollbar = "Comment",
         scrollbar = "FFFScrollbar",
         selected = "FFFSelected",
         selected_active = "FFFSelectedActive",
+
         git_staged = "FFFGitStaged",
         git_modified = "FFFGitModified",
         git_deleted = "FFFGitDeleted",
@@ -140,14 +139,15 @@ return {
         git_sign_renamed_selected = "FFFGitSignRenamedSelected",
         git_sign_untracked_selected = "FFFGitSignUntrackedSelected",
         git_sign_ignored_selected = "FFFGitSignIgnoredSelected",
-        -- grep_match = "IncSearch",
-        grep_match = "FFFMatched",
-        grep_line_number = "LineNr",
+
+        grep_match = "FFFGrepMatch",
+        grep_line_number = "FFFGrepLineNumber",
         grep_regex_active = "DiagnosticInfo",
         grep_plain_active = "Comment",
         grep_fuzzy_active = "DiagnosticHint",
         suggestion_header = "FFFSuggestionHeader",
       },
+
       frecency = {
         enabled = true,
         db_path = vim.fn.stdpath "cache" .. "/fff_nvim",
@@ -158,26 +158,46 @@ return {
         min_combo_count = 2,
         combo_boost_score_multiplier = 120,
       },
+
       grep = {
-        -- max_file_size = 10 * 1024 * 1024,
         max_file_size = 12 * 1024 * 1024,
         max_matches_per_file = 100,
         smart_case = true,
-        time_budget_ms = 200,
+        -- Drop the column part of the location so rows read as `path:line`
+        -- rather than `path:line:col` — column noise was hurting scan speed.
+        location_format = ":%d",
+        -- Keep leading indentation of source lines: it carries structural
+        -- meaning when reading code.
+        trim_whitespace = false,
+        time_budget_ms = 150,
         modes = { "plain", "regex", "fuzzy" },
-        trim_whitespace = true,
       },
+
       git = {
-        -- status_text_color = false,
-        status_text_color = true,
+        -- Do NOT tint filenames by git status — that competes with the fuzzy
+        -- match highlight. Sign column still uses git colors.
+        status_text_color = false,
       },
+
       file_picker = {
         current_file_label = "󰁕 current",
+        -- Highlight the fuzzy-match characters in the filename column.
+        fuzzy_query_highlighting = true,
       },
+
       debug = {
+        -- Progressive disclosure: default UI stays clean. <F2> toggles the
+        -- full file-info panel (path / size / git / frecency / score / times).
         enabled = false,
         show_scores = false,
+        show_file_info = {
+          file_info = true,
+          score_breakdown = true,
+          timings = true,
+          full_path = true,
+        },
       },
+
       logging = {
         enabled = false,
       },

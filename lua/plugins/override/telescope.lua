@@ -13,6 +13,14 @@ return {
   -- bug as fff.nvim before we added its own keys trigger.
   cmd = "Telescope",
   event = "VeryLazy",
+  keys = {
+    { "<leader>fe", function() require("noah.telescope").pickers.project_files() end, desc = "Browse project files with preview" },
+    {
+      "<leader>fE",
+      function() require("noah.telescope").pickers.project_files { cwd = vim.fn.getcwd() } end,
+      desc = "Browse cwd files with preview",
+    },
+  },
   -- fzf-native was installed as a dropbar dependency but had no build step.
   -- Declaring it here ensures lazy.nvim compiles it after install/update.
   dependencies = {
@@ -37,6 +45,7 @@ return {
       "<leader>fa",
       function()
         pickers.files("find", {
+          cwd = require("noah.project").root(),
           layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
           previewer = true,
           follow = true,
@@ -58,19 +67,32 @@ return {
     -- end, { desc = "Telescope find files" })
     map("n", "<leader>ff", fff.find_files, { desc = "Find files" })
 
-    map("n", "<leader>fg", "<cmd>Telescope git_files<CR>", { desc = "Telescope git files (tracked only)" })
+    map(
+      "n",
+      "<leader>fg",
+      function() require("telescope.builtin").git_files { cwd = require("noah.project").root() } end,
+      { desc = "Telescope git files (tracked only)" }
+    )
 
     map(
       "n",
       "<leader>fo",
       function()
         pickers.files("old", {
+          cwd = require("noah.project").root(),
+          cwd_only = true,
           layout_config = { horizontal = { width = SIZES.WIDTH, height = SIZES.HEIGHT } },
           previewer = true,
-          prompt_title = "Recent Files",
+          prompt_title = "Recent Project Files",
         })
       end,
-      { desc = "Telescope recent files" }
+      { desc = "Telescope recent project files" }
+    )
+    map(
+      "n",
+      "<leader>fO",
+      function() pickers.files("old", { previewer = true, cwd_only = false, prompt_title = "All Recent Files" }) end,
+      { desc = "Telescope recent files (all projects)" }
     )
 
     -- ── Grep / text search ────────────────────────────────────────────────
@@ -179,8 +201,30 @@ return {
     -- Workspace symbols — fuzzy search across all LSP symbols in project
     map("n", "<leader>fS", "<cmd>Telescope lsp_dynamic_workspace_symbols<CR>", { desc = "Telescope LSP workspace symbols" })
 
+    -- SSH hosts — pick a Host entry from ~/.ssh/config, open `ssh <host>` in
+    -- a new tab. <C-v> vsplit, <C-x> split. See noah/ssh.lua.
+    map("n", "<leader>fH", function() require("noah.ssh").pick() end, { desc = "SSH connect (picker)" })
+
+    -- Custom pickers (see noah/pickers.lua). Grouped as capital-letter
+    -- variants to avoid stepping on the existing lowercase <leader>f* keys.
+    local P = function(name)
+      return function() require("noah.pickers")[name]() end
+    end
+    map("n", "<leader>fZ", P "zoxide", { desc = "Zoxide dir jump (+FFF)" })
+    map("n", "<leader>fP", P "projects", { desc = "Project root picker (+FFF)" })
+    map("n", "<leader>fJ", P "git_repos_all", { desc = "All git repos ($HOME + /Volumes)" })
+    map("n", "<leader>fM", P "makefile", { desc = "Makefile targets" })
+    map("n", "<leader>fT", P "colorscheme", { desc = "Colorscheme (live preview)" })
+    map("n", "<leader>fu", P "undo", { desc = "Undo history" })
+    map("n", "<leader>fB", P "backups", { desc = "Backups (~/.config/nvim/.backups)" })
+
     -- ── Git ───────────────────────────────────────────────────────────────
-    map("n", "<leader>ge", "<cmd>Telescope git_status<CR>", { desc = "Telescope git status" })
+    map(
+      "n",
+      "<leader>ge",
+      function() require("telescope.builtin").git_status { cwd = require("noah.project").root() } end,
+      { desc = "Telescope project git status" }
+    )
     map("n", "<leader>gC", "<cmd>Telescope git_commits<CR>", { desc = "Telescope git commits" })
 
     -- Branches — checkout/create without leaving Neovim
@@ -212,17 +256,31 @@ return {
         dynamic_preview_title = true,
 
         preview = { hide_on_startup = false },
+        prompt_prefix = "   ",
         results_title = false,
-        selection_caret = " ",
-        entry_prefix = " ",
+        selection_caret = " ▎ ",
+        entry_prefix = "   ",
+        multi_icon = " ",
+        -- Thin rounded corners for all three windows.
+        borderchars = {
+          prompt = { "─", "│", "─", "│", "╭", "╮", "┤", "├" },
+          results = { "─", "│", "─", "│", "├", "┤", "╯", "╰" },
+          preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+        },
+        winblend = 0,
         layout_strategy = "horizontal",
         layout_config = {
           horizontal = {
             width = SIZES.WIDTH,
             height = SIZES.HEIGHT,
             preview_width = SIZES.PREVIEW_WIDTH,
+            prompt_position = "top",
           },
+          vertical = { mirror = false },
+          -- Ivy pickers: prompt on top, tighter results.
+          bottom_pane = { prompt_position = "top" },
         },
+        sorting_strategy = "ascending",
 
         -- Filename-first layout: "init.lua  lua/plugins/" instead of full path.
         -- The noah/telescope.lua custom entry_makers already apply this style for
@@ -242,6 +300,7 @@ return {
 
         mappings = {
           i = {
+            ["<C-s>"] = function(buf) require("noah.telescope").flash(buf) end,
             ["<C-j>"] = actions.move_selection_next,
             ["<C-k>"] = actions.move_selection_previous,
             ["<C-h>"] = actions_layout.toggle_preview,
@@ -261,6 +320,7 @@ return {
             end,
           },
           n = {
+            s = function(buf) require("noah.telescope").flash(buf) end,
             ["<C-h>"] = actions_layout.toggle_preview,
             ["<F1>"] = actions_layout.toggle_preview,
             ["<C-d>"] = actions.preview_scrolling_down,

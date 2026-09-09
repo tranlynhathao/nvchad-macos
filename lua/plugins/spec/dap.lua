@@ -1,7 +1,13 @@
 return {
   "mfussenegger/nvim-dap",
+  -- DAP is heavy (mason.setup + adapter defs). Only load when the user
+  -- actually reaches for the debugger.
+  cmd = { "DapContinue", "DapToggleBreakpoint", "DapTerminate", "DapStepOver", "DapStepInto", "DapStepOut" },
+  keys = {
+    { "<leader>db", "<cmd>DapToggleBreakpoint<CR>", desc = "DAP toggle breakpoint" },
+    { "<leader>dr", "<cmd>DapContinue<CR>", desc = "DAP continue" },
+  },
   dependencies = {
-    -- Installs the debug adapters for you
     "williamboman/mason.nvim",
     "theHamsta/nvim-dap-virtual-text",
     { "rcarriga/nvim-dap-ui", dependencies = { "nvim-neotest/nvim-nio" } },

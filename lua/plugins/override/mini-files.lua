@@ -3,109 +3,67 @@ return {
   "echasnovski/mini.files",
   version = false,
   keys = {
-    --   {
-    --     "<leader>E",
-    --     function()
-    --       local mini_files = require "mini.files"
-    --       mini_files.open(vim.api.nvim_buf_get_name(0), true)
-    --     end,
-    --     desc = "Open file manager popup",
-    --   },
     {
       "<leader>E",
       function()
-        local path = vim.api.nvim_buf_get_name(0)
-        if path == "" or vim.fn.filereadable(path) == 0 then path = vim.fn.getcwd() end
-        require("mini.files").open(path, true)
+        local project = require "noah.project"
+        local root, anchor = project.root(), project.anchor()
+        if vim.fn.filereadable(anchor) == 0 and vim.fn.isdirectory(anchor) == 0 then anchor = root end
+        local width = vim.o.columns
+        local files = require "mini.files"
+        files.open(anchor, false, {
+          windows = {
+            max_number = width >= 120 and 3 or (width >= 80 and 2 or 1),
+            width_focus = math.min(40, math.max(20, width - 8)),
+            width_preview = width >= 120 and 50 or 30,
+          },
+        })
+        local is_file = vim.fn.filereadable(anchor) == 1
+        local folder = is_file and vim.fs.dirname(anchor) or anchor
+        local branch = folder == root and { folder } or { vim.fs.dirname(folder), folder }
+        local focus = #branch
+        if is_file then branch[#branch + 1] = anchor end
+        files.set_branch(branch, { depth_focus = focus })
+        files.set_bookmark("p", root, { desc = "Project root" })
+        files.set_bookmark("w", vim.fn.getcwd(), { desc = "Working directory" })
       end,
-      desc = "Open file manager popup",
+      desc = "Browse columns at current file (MiniFiles)",
     },
   },
-
-  --[[
-  mini.files - Default keybindings inside the popup:
-
-  - `a`            : Create a new file or folder
-  - `r`            : Rename file or folder
-  - `d`            : Delete file or folder
-  - `l` or `Enter` : Open file or enter folder
-  - `h`            : Go back to the parent directory
-  - `q`            : Close the popup
-  - `g?`           : Show help with all keybindings
-
-  Notes:
-  - To create a folder, add a trailing slash (e.g., `myfolder/`)
-  - If `use_as_default_explorer = true`, it replaces netrw as default
-  ]]
-
   config = function(_, opts)
-    require("mini.files").setup(opts)
-    -- Show a bordered float with file info when pressing <C-k> in the explorer
+    local files = require "mini.files"
+    files.setup(opts)
+    local group = vim.api.nvim_create_augroup("NoahMiniFiles", { clear = true })
     vim.api.nvim_create_autocmd("User", {
+      group = group,
       pattern = "MiniFilesBufferCreate",
       callback = function(args)
         local buf = args.data.buf_id
+        local function split(vertical)
+          local entry, state = files.get_fs_entry(), files.get_explorer_state()
+          if not entry or not state then return end
+          if entry.fs_type ~= "file" then return files.go_in() end
+          local target = vim.api.nvim_win_call(state.target_window, function()
+            vim.cmd(vertical and "vsplit" or "split")
+            return vim.api.nvim_get_current_win()
+          end)
+          files.set_target_window(target)
+          files.go_in { close_on_file = true }
+        end
+        vim.keymap.set("n", "<C-v>", function() split(true) end, { buffer = buf, desc = "Open file in vertical split" })
+        vim.keymap.set("n", "<C-x>", function() split(false) end, { buffer = buf, desc = "Open file in horizontal split" })
         vim.keymap.set("n", "<C-k>", function()
-          local entry = require("mini.files").get_fs_entry()
-          if entry and entry.path then
-            require("noah.fileinfo").show(entry.path)
-          else
-            vim.notify("No file under cursor", vim.log.levels.WARN)
-          end
+          local entry = files.get_fs_entry()
+          if entry then require("noah.fileinfo").show(entry.path) end
         end, { buffer = buf, desc = "Show file info (popup)" })
+        vim.keymap.set("n", "<Esc>", files.close, { buffer = buf, desc = "Close MiniFiles" })
       end,
     })
   end,
   opts = {
-    use_as_default_explorer = true,
-    windows = {
-      preview = true,
-      width_focus = 40,
-      width_preview = 60,
-    },
+    options = { use_as_default_explorer = false, permanent_delete = false },
+    windows = { preview = true, max_number = 3, width_focus = 40, width_nofocus = 20, width_preview = 50 },
     mappings = {
-      custom = {
-        a = function()
-          local MiniFiles = require "mini.files"
-          local cwd = MiniFiles.get_fs_entry().path
-
-          vim.ui.input({ prompt = "New file: ", default = cwd .. "/" }, function(input)
-            if input and input ~= "" then
-              vim.fn.mkdir(vim.fn.fnamemodify(input, ":h"), "p")
-              vim.fn.writefile({}, input)
-              MiniFiles.refresh()
-              MiniFiles.close()
-              vim.cmd("edit " .. input)
-            end
-          end)
-        end,
-
-        d = function()
-          local mf = require "mini.files"
-          local entry = mf.get_fs_entry()
-          local path = entry.path
-          local confirm = vim.fn.confirm("Delete " .. path .. "?", "&Yes\n&No", 2)
-          if confirm == 1 then
-            if vim.fn.isdirectory(path) == 1 then
-              vim.fn.delete(path, "rf")
-            else
-              vim.fn.delete(path)
-            end
-            mf.refresh()
-          end
-        end,
-
-        l = function()
-          local mf = require "mini.files"
-          local entry = mf.get_fs_entry()
-          if entry.fs_type == "file" then
-            vim.cmd("split " .. entry.path)
-            mf.close()
-          else
-            mf.go_in()
-          end
-        end,
-      },
       close = "q",
       go_in = "l",
       go_in_plus = "<CR>",
@@ -116,9 +74,6 @@ return {
       synchronize = "=",
       trim_left = "<",
       trim_right = ">",
-      -- create = "a",
-      -- delete = "d",
-      -- rename = "r",
     },
   },
 }

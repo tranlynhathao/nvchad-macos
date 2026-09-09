@@ -4,11 +4,6 @@ if vim.g.noah_compat_loaded then return M end
 
 vim.g.noah_compat_loaded = true
 
--- vim.health.report_* aliases block removed: all plugins on Nvim 0.10+ that
--- still touch the legacy names ship their own local fallback (see
--- which-key.nvim/lua/which-key/health.lua and friends), so the aliases here
--- were dead weight adding ~5ms per startup.
-
 if vim.fn.has "nvim-0.12" == 1 then
   local ts = vim.treesitter
   local original_validate = vim.validate
@@ -192,10 +187,6 @@ end
 if not vim.g.noah_lsp_deprecate_compat then
   vim.g.noah_lsp_deprecate_compat = true
 
-  -- Several third-party plugins (flutter-tools.nvim, nvim-ufo, nvim-highlight-colors,
-  -- rustaceanvim, nvim-lspconfig, nvim-lsp-endhints, ...) still hit Nvim 0.12
-  -- deprecations we can't fix at their source. Silence only those specific
-  -- plugin-originated cases; every other deprecation passes through unchanged.
   local original_deprecate = vim.deprecate
   local silenced = {
     "^client%.", -- client.request / client.notify dot-syntax

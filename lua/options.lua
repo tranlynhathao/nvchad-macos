@@ -11,10 +11,6 @@ local opt = {
   encoding = "utf-8",
   fileencoding = "utf-8",
   clipboard = "unnamedplus", -- extended via "noah.wsl"
-  -- Folds: nvim-ufo (lua/plugins/override/nvim-ufo.lua) manages foldmethod
-  -- and foldexpr per buffer with LSP + indent providers. Setting them here
-  -- forced builtin `vim.treesitter.foldexpr()` to run before UFO attached,
-  -- which races with async parse and emits "invalid bot" errors.
   foldcolumn = "1",
   foldtext = "",
   foldlevel = 99,
@@ -43,7 +39,8 @@ local opt = {
   cursorlineopt = "both",
   inccommand = "split",
   ignorecase = true,
-  updatetime = 100,
+  -- Keep CursorHold responsive without continuously polling the filesystem/LSP.
+  updatetime = 300,
   lazyredraw = false,
   path = vim.opt.path:append { "**", "lua", "src" },
 }

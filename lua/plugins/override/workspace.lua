@@ -1,47 +1,45 @@
 ---@type NvPluginSpec
 return {
-
-  { -- manage projects
+  {
+    "echasnovski/mini.nvim",
+    cmd = { "SessionSave", "SessionLoad", "SessionPick", "SessionStop" },
+    keys = {
+      { "<leader>Qs", "<cmd>SessionSave<CR>", desc = "Save project session" },
+      { "<leader>Ql", "<cmd>SessionLoad<CR>", desc = "Restore project session" },
+      { "<leader>Qp", "<cmd>SessionPick<CR>", desc = "Pick project session" },
+      { "<leader>Qd", "<cmd>SessionStop<CR>", desc = "Stop session autosave" },
+    },
+    config = function()
+      for command, method in pairs { SessionSave = "save", SessionLoad = "load", SessionPick = "pick", SessionStop = "stop" } do
+        vim.api.nvim_create_user_command(command, function()
+          local sessions = require "noah.sessions"
+          sessions.setup()
+          sessions[method]()
+        end, {})
+      end
+    end,
+  },
+  {
     "gnikdroy/projections.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim" },
     keys = {
       {
-        "<leader>fp",
-        function() vim.cmd "Telescope projections" end,
-        desc = "[p]rojects",
+        "<leader>fV",
+        function()
+          require("telescope").extensions.projections.projections {
+            action = function(selected)
+              if not selected then return end
+              vim.cmd.cd(vim.fn.fnameescape(selected.value))
+              vim.schedule(function() require("noah.fff").find_files { cwd = selected.value } end)
+            end,
+          }
+        end,
+        desc = "Find registered workspaces (Projections)",
       },
     },
     config = function()
-      -- Save localoptions to session file
-      vim.opt.sessionoptions:append "localoptions"
-      require("projections").setup {
-        store_hooks = {
-          pre = function()
-            -- nvim-tree
-            local nvim_tree_present, api = pcall(require, "nvim-tree.api")
-            if nvim_tree_present then api.tree.close() end
-          end,
-        },
-      }
-
-      -- Autostore session on VimExit
-      local Session = require "projections.session"
-      vim.api.nvim_create_autocmd({ "VimLeavePre" }, {
-        callback = function()
-          local cwd = vim.uv.cwd()
-          if cwd ~= nil then Session.store(cwd) end
-        end,
-      })
-
-      -- Switch to project if vim was started in a project dir
-      local switcher = require "projections.switcher"
-      vim.api.nvim_create_autocmd({ "VimEnter" }, {
-        callback = function()
-          if vim.fn.argc() == 0 then
-            local cwd = vim.uv.cwd()
-            if cwd ~= nil then switcher.switch(cwd) end
-          end
-        end,
-      })
+      require("projections").setup {}
+      require("telescope").load_extension "projections"
     end,
   },
 }
